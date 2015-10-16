@@ -3,7 +3,7 @@ extends ./layout.jade
 block content
   .content
     #problemCaption.row
-      span Broken boiler
+      span= issue.issueCaption
       #problemMenu
         .dropdown
           button#fixIssueButton.btn.btn-success(type='button', data-toggle='dropdown', aria-haspopup='true', aria-expanded='false')

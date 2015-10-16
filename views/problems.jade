@@ -8,40 +8,19 @@ block content
           th Problem
           th Property
           th Date
-        tr.newIssue.issue
-          td Broken boiler
-          td Korenlei
-          td 06/09/2015
-        tr.issue
-          td Broken door
-          td Korenlei
-          td 05/08/2015
-        tr.issue
-          td Roof leak
-          td Korenlei
-          td 04/08/2015
-        tr.issue
-          td Water in the cellar
-          td Korenlei
-          td 04/08/2015
-        tr.issue
-          td Rats
-          td Korenlei
-          td 03/08/2015
-        tr
-          td(colspan='3')
-            #solvedIssues Solved
-        tr.issue.solved
-          td New door lock
-          td Rue de Rivoli
-          td 05/09/2015
-        tr.issue.solved
-          td Broken boiler
-          td Vlaanderenstraat 62
-          td 01/09/2015
+        for issue in openIssues
+          tr(class= issue.status == 'new' ? 'newIssue issue' : 'issue', data-id=issue.id)
+            td= issue.issueCaption
+            td= issue.property.name
+            td= issue.creationDate
+        if solvedIssues.length > 0
+          tr
+            td(colspan='3')
+              #solvedIssues Solved
+          for issue in solvedIssues
+            tr.issue.solved(data-action=issue.id)
+              td= issue.issueCaption
+              td= issue.property.name
+              td= issue.creationDate
   script(type='text/javascript', src='js/jquery.js')
-
-  script(type='text/javascript').
-    $(document).on('click', 'tr.issue', function(e){
-      location.href = 'problem.html';
-    })
+  script(type='text/javascript', src='js/problems.js')

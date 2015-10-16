@@ -4,6 +4,7 @@ var express = require('express');
 var fs = require('fs');
 var passport = require('passport');
 var router = require('./routes/routes');
+
 /**
  *  Define the sample application.
  */

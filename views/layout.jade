@@ -23,11 +23,10 @@ html
           .nav-no-collapse.navbar-left.pull-left.hidden-sm.hidden-xs
             ul.nav.navbar-nav.pull-left
               li.dropdown.hidden-xs
-                a.btn.dropdown-toggle.icon(data-toggle='dropdown')
+                a.btn.dropdown-toggle.icon(data-toggle='dropdown' href='/problems.html')
                   i.fa.fa-bell
-                  |  
-                  
-                  span.count 5
+                  if status.totalIssues > 0
+                    span.count= status.totalIssues
               
               li.dropdown.hidden-xs
                 a.btn.dropdown-toggle.icon(data-toggle='dropdown')
@@ -43,10 +42,10 @@ html
                   i.fa.fa-search
               li.dropdown.profile-dropdown
                 a.dropdown-toggle(href='#')
-                  img(src='img/samples/noface.jpg', alt='')
+                  img(src=user.photo, alt='')
                   |  
                   
-                  span.hidden-xs John T. Landlord
+                  span.hidden-xs= user.displayName
               
               li.hidden-xxs
                 a.btn.icon(href='/logout')

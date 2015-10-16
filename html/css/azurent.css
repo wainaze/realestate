@@ -465,6 +465,9 @@ body {
     padding-bottom: 10px;
 }
 
+#loginContainer input[type='submit'] {
+    margin-top: 30px;    
+}
 #loginContainer input {
     width: 100%;
     padding: 5px;
