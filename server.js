@@ -3,6 +3,92 @@
 var express = require('express');
 var fs      = require('fs');
 
+var properties = [
+                {id: 1, name: 'Rue de Rivoli', payment: 600, img: 'img/house1.jpg', issuesTotal : 0},
+                {id: 2, name: 'Vlaanderenstraat 62', payment: 600, img: 'img/house2.jpg', issuesTotal : 0},
+                {id: 3, name: 'Korenlei', payment: -1200, img: 'img/house3.jpg', issuesTotal : 5},
+                {id: 4, name: 'Appartment Kortrijk', payment: 750, img: 'img/Flat1.jpg', issuesTotal : 0},
+                {id: 5, name: 'Gent studio 1', payment: 800, img: 'img/Studio 1.jpg', issuesTotal : 0},
+                {id: 6, name: 'Gent studio 2', payment: 750, img: 'img/Studio 2.jpg', issuesTotal : 0},
+            ];
+
+var payments = [
+    {propertyId: 1, month: 'October', monthId: 10, dueDate: '7/10/2015', payedDate: '7/10/2015', payment: 600 },
+    {propertyId: 1, month: 'September', monthId: 9, dueDate: '7/09/2015', payedDate: '7/09/2015', payment: 600 },
+    {propertyId: 1, month: 'August', monthId: 8, dueDate: '7/08/2015', payedDate: '7/08/2015', payment: 600 },
+    {propertyId: 1, month: 'July', monthId: 7, dueDate: '7/07/2015', payedDate: '7/07/2015', payment: 600 },
+    {propertyId: 1, month: 'June', monthId: 6, dueDate: '7/06/2015', payedDate: '7/06/2015', payment: 600 },
+    {propertyId: 1, month: 'May', monthId: 5, dueDate: '7/05/2015', payedDate: '7/05/2015', payment: 600 },
+    {propertyId: 1, month: 'April', monthId: 4, dueDate: '7/04/2015', payedDate: '7/04/2015', payment: 600 },
+    {propertyId: 1, month: 'March', monthId: 3, dueDate: '7/03/2015', payedDate: '7/03/2015', payment: 600 },
+    {propertyId: 1, month: 'February', monthId: 2, dueDate: '7/02/2015', payedDate: '7/02/2015', payment: 600 },
+    {propertyId: 1, month: 'January', monthId: 1, dueDate: '7/01/2015', payedDate: '7/01/2015', payment: 600 },
+    {propertyId: 1, month: 'December', monthId: 0, dueDate: '7/12/2015', payedDate: '7/12/2015', payment: 600 },
+    {propertyId: 1, month: 'November', monthId: -1, dueDate: '7/11/2015', payedDate: '7/11/2015', payment: 600 }
+];
+
+var tenants = [
+    { propertyId: 1, name: 'Adam Jacque', contractBegin: '06/05/2014', contractEnd: '-', picture: 'img/samples/noface.jpg', age: 36, phone: '+32 483 657638' },
+    { propertyId: 1, name: 'Marie Claude', contractBegin: '01/01/2014', contractEnd: '01/05/2014', picture: 'img/samples/noface.jpg', age: 36, phone: '+32 457 155345' },
+    { propertyId: 1, name: 'Luis Filip Hugo', contractBegin: '01/07/2013', contractEnd: '27/12/2013', picture: 'img/samples/noface.jpg', age: 36, phone: '+32 482 123452' },
+]
+
+var issues = [
+    { id: 1, issueCaption: 'Broken boiler', issuePropertyId: 3, creationDate: '06/09/2015', status: 'new'},
+    { id: 2, issueCaption: 'Broken boiler', issuePropertyId: 3, creationDate: '05/08/2015', status: 'open'},
+    { id: 3, issueCaption: 'Broken boiler', issuePropertyId: 3, creationDate: '04/08/2015', status: 'open'},
+    { id: 4, issueCaption: 'Broken boiler', issuePropertyId: 3, creationDate: '04/08/2015', status: 'open'},
+    { id: 5, issueCaption: 'Rats', issuePropertyId: 3, creationDate: '03/08/2015', status: 'open'},
+    { id: 6, issueCaption: 'New door lock', issuePropertyId: 1, creationDate: '05/09/2015', status: 'solved'},
+    { id: 7, issueCaption: 'Broken boiler', issuePropertyId: 2, creationDate: '01/09/2015', status: 'solved'},
+]
+
+var propertiesController = {
+    getProperty: function(propertyId){
+        for(var i = 0; i < properties.length; i++){
+            if (properties[i].id == propertyId)
+             return properties[i];
+        } 
+
+        return null;
+    }
+}
+
+var paymentsController = {
+    geyPayments: function(propertyId){
+        return payments.filter(function(value){
+            return value.propertyId == propertyId;
+        });
+    }
+}
+
+var tenantsController = {
+    getTenants: function(propertyId){
+        return tenants.filter(function(value){
+            return value.propertyId == propertyId;
+        });
+    }
+}
+
+var issueController = {
+    getAllSolvedIssues: function() {
+        return issues.filter(function(value){
+            return value.status != 'new' && value.status != 'open';
+        });
+    },
+
+    getAllUnsolvedIssues: function(){
+        return issues.filter(function(value){
+            return value.status == 'new' || value.status == 'open';
+        });
+    },
+
+    getOpenIssuesForProperty: function(propertyId) {
+        return issues.filter(function(value){
+            return value.issuePropertyId == propertyId && (value.status == 'new' || value.status == 'open');
+        });
+    }
+}
 
 /**
  *  Define the sample application.
@@ -92,33 +178,70 @@ var SampleApp = function() {
     /**
      *  Create the routing table entries + handlers for the application.
      */
-    self.createRoutes = function() {
-        self.routes = { };
-
-        self.routes['/asciimo'] = function(req, res) {
-            var link = "http://i.imgur.com/kmbjB.png";
-            res.send("<html><body><img src='" + link + "'></body></html>");
-        };
-
-        self.routes['/'] = function(req, res) {
-            res.setHeader('Content-Type', 'text/html');
-            res.send(self.cache_get('index.html') );
-        };
-    };
-
 
     /**
      *  Initialize the server (express) and create the routes and register
      *  the handlers.
      */
     self.initializeServer = function() {
-        self.createRoutes();
-        self.app = express.createServer();
+        var server = self;
 
-        //  Add handlers for the app (from the routes).
-        for (var r in self.routes) {
-            self.app.get(r, self.routes[r]);
-        }
+        self.propertiesController = propertiesController;
+        self.paymentsController = paymentsController;
+        self.tenantsController = tenantsController;
+        self.issueController = issueController;
+
+        self.app = express();
+
+    	self.app.set('views', './views');	
+        self.app.set('view engine', 'jade');
+
+    	self.app.use(express.static('./html'));
+
+    	self.app.get('/', function (req, res) {
+    	  res.render('index', { title: 'Hey', message: 'Hello there!'});
+    	});
+
+        self.app.get('/index.html', function (req, res) {
+          res.render('index', { title: 'Hey', message: 'Hello there!'});
+        }); 	
+
+        self.app.get('/properties.html', function (req, res) {
+          res.render('properties', { 
+            status: {
+                due: 1200,
+                totalIssues: 5,
+                newIssues: 1,
+                totalIncome: '39.800',
+                totalCosts: '12.564'
+            },
+            properties: properties
+          });
+        }); 
+
+        self.app.get('/payments.html', function (req, res) {
+          res.render('payments', { title: 'Hey', message: 'Hello there!'});
+        }); 
+
+        self.app.get('/property.html', function (req, res) {
+          var property = server.propertiesController.getProperty(req.query.id);
+          var payments = server.paymentsController.geyPayments(req.query.id);
+          var tenants = server.tenantsController.getTenants(req.query.id);
+          var issues = server.issueController.getOpenIssuesForProperty(req.query.id);
+          res.render('property', { property: property, payments: payments, tenants: tenants, issues: issues });
+        });
+
+        self.app.get('/tenants.html', function (req, res) {
+          res.render('tenants', { title: 'Hey', message: 'Hello there!'});
+        });
+
+        self.app.get('/problem.html', function (req, res) {
+          res.render('problem', { title: 'Hey', message: 'Hello there!'});
+        });
+
+        self.app.get('/problems.html', function (req, res) {
+          res.render('problems', { title: 'Hey', message: 'Hello there!'});
+        });
     };
 
 

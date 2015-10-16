@@ -1,0 +1,120 @@
+extends ./layout.jade
+
+block content
+  .row(style='opacity: 1;')
+    .propertyPage.col-xs-12
+      .row.propertyDataRow
+        #propertyCaption.col-xs-12
+          = property.name
+      
+      .row
+        .col-xs-12
+          div
+            // Nav tabs
+            ul#tabs.nav.nav-tabs(role='tablist')
+              li.active(role='presentation')
+                a(href='#paymentsList', aria-controls='paymentsList', role='tab', data-toggle='tab')
+                  | Payments (
+                  span(class= property.payment > 0 ? 'paymentOK' : 'paymentNOK')
+                    = property.payment
+                    |&euro;
+                  | )
+                  
+              li(role='presentation')
+                a(href='#tenants', aria-controls='tenants', role='tab', data-toggle='tab') Tenants
+                  
+              li(role='presentation')
+                a(href='#issues', aria-controls='issues', role='tab', data-toggle='tab') Issues (5)
+                  
+              li(role='presentation')
+                a(href='#documents', aria-controls='documents', role='tab', data-toggle='tab') Documents
+                  
+              li(role='presentation')
+                a(href='#photos', aria-controls='photos', role='tab', data-toggle='tab') Pictures
+            // Tab panes
+            .tab-content
+              #paymentsList.tab-pane.active(role='tabpanel')
+                table.table
+                  tr
+                    th(style='min-width: 200px;') Moth
+                    th(style='min-width: 200px;') Due
+                    th(style='min-width: 200px;') Payed
+                    th.align-right Payment
+                    th(style='width: 100%')
+                  for payment in payments
+
+                    tr
+                      td= payment.month
+                      td= payment.dueDate
+                      td= payment.payedDate
+                      td(class= payment.payment > 0 ? 'align-right paymentOK' : 'align-right paymentNOK')
+                        = payment.payment 
+                        |&euro;
+                      td.vAlign-center
+                        if payment.payment < 0
+                          a.reminderButton(href='#')
+                            span.label.label-danger Send reminder
+
+              #tenants.tab-pane(role='tabpanel')
+                table.table
+                  tr
+                    th
+                    th Name
+                    th Since
+                    th Till
+                  for tenant in tenants
+                    tr.tenant
+                      td
+                        span.glyphicon.glyphicon-chevron-right
+                      td= tenant.name
+                      td= tenant.contractBegin
+                      td= tenant.contractEnd
+                  
+                    tr.detailsRow
+                      td(colspan='3')
+                        .details
+                          table
+                            tr
+                              td.tenantPicture
+                                img(src=tenant.picture)
+                            
+                              td.vAlign-top.fields
+                                .field
+                                  .fieldName Age:
+                                  .fieldValue= tenant.age
+                              .field
+                                .fieldName Phone:
+                                .fieldValue= tenant.phone
+
+              #issues.tab-pane(role='tabpanel')
+                table.table
+                  tr
+                    th Problem
+                    th Date
+                  for issue in issues
+                    tr(class= issue.status == 'new' ? 'issue newIssue' : 'issue')
+                      td= issue.issueCaption
+                      td= issue.creationDate
+
+              #documents.tab-pane(role='tabpanel')
+                table.table
+                  tr
+                    td
+                      a(href='docs/lease.pdf') Lease contract
+                  tr
+                    td
+                      a(href='docs/check-in.png') Check-in contract
+                  tr
+                    td
+                      a(href='docs/assurance.png') Assurance
+              #photos.tab-pane(role='tabpanel')
+                .row.propertyDataRow
+                  .col-xs-4
+                    #propertyPicture
+                      img(src=property.img)
+
+  script(type='text/javascript', src='js/jquery.js')
+  script(type='text/javascript', src='js/bootstrap.js')
+  script(type='text/javascript', src='js/property.js')
+
+

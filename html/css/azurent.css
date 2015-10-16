@@ -1,0 +1,512 @@
+body {
+    background: none;
+    background-color: #EEE;
+}
+
+.align-right {
+    text-align: right;
+}
+
+.col-xs-3 {
+    width: 25%;
+}
+
+.vAlign-top {
+    vertical-align: top;
+}
+
+.table .vAlign-center {
+    vertical-align: middle;
+}
+
+.nowrap {
+    white-space: nowrap;
+}
+
+.grey {
+    color: #EEE;
+}
+
+#header-navbar {
+    background-color: #1BDCFF;
+}
+
+#logo {
+    padding-left: 10px;
+    margin-top: 5px;
+    padding-bottom: 0px;
+    font-size: larger;
+}
+
+#header-navbar .nav>li>a.icon {
+    padding-top: 18px;
+}
+
+#nav-col {
+    z-index: 0;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    padding-top: 40px;
+}
+
+#side-navbar .nav > li > a:hover {
+    background-color: whitesmoke;
+    border-color: #03a9f4;
+    border-bottom-color: #e7ebee;
+    color: #484848;
+}
+
+#side-navbar .nav > li > a {
+    color: #484848;
+    height: 44px;
+    line-height: 28px;
+    transition: border-color 0.1s ease-in-out 0s, background-color 0.1s ease-in-out 0s, box-shadow 0.1s ease-in-out 0s;
+    overflow: hidden;
+    padding: 8px 15px 8px 20px;
+    border-left: 0 solid transparent;
+}
+
+#side-navbar .nav>li>a>span {
+    margin-left: 10px;
+    font-size: larger;
+    font-weight: 200;
+}
+
+#side-navbar .nav {
+    margin-top: 40px;
+}
+
+#side-navbar li {
+    float: none;
+}
+
+#content-wrapper {
+    background-color: #f9f9f9;
+    border-left: 0;
+    min-height: 100%;
+    position: relative;
+    margin-left: 215px;
+    overflow: auto;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    padding-top: 65px;
+}
+
+.dashboard-button {
+    padding: 10px;
+}
+
+.dashboard-button > div {
+    padding-top: 10px;
+    background-color: white;
+    height: 150px;
+    cursor: pointer;
+    box-shadow: 2px 2px 1px #EEE;
+}
+
+.dashboard-button > div > a,
+.dashboard-button > div > a:hover {
+    text-decoration: none;
+    color: black;
+}
+
+.dashboard-button > div > a > div {
+    text-align: center;
+}
+
+.dashboard-button > div:hover {
+    box-shadow: 3px 3px 2px #DDD;
+}
+
+.dashboard-button > a {
+    text-decoration: none;
+    color: black;
+}
+
+.dashboard-button > a:hover {
+    color: black;
+}
+
+#paymentsTable {
+    left: 50%;
+    position: absolute;
+    transform: translateX(-50%);
+    margin-top: 18px;
+}
+
+#payments {
+    margin-top: 28px;
+    font-size: 55px;
+    text-align: center;
+    text-decoration: none;
+    color: #CCC;
+}
+
+#paymentsCaptions {
+    font-size: small;
+}
+
+#incomes,
+#costs,
+#due,
+#problemCount {
+    margin-top: 28px;
+    font-size: 55px;
+    font-weight: 900;
+    text-align: center;
+}
+
+#incomes,
+#problemCount {
+    color: white;
+}
+
+#costs {
+    color: #BBB;
+}
+
+#due {
+    color: #e84e40;
+}
+
+#incomesContainer {
+    background-color: #90D047!important;
+}
+
+#costsContainer {
+    /*background-color: #e84e40!important;*/
+    background-color: #f3f5f6!important;
+    border: 1px solid #dee4e8;
+}
+
+#costsContainer > div,
+#costsContainer div.buttonCaption {
+    color: #BBB;
+}
+
+#problemsContainer {
+    background-color: #ffc107!important;
+}
+
+#dueContainer > div,
+#dueContainer div.buttonCaption {
+    color: #e84e40;
+}
+
+.buttonCaption {
+    font-size: small;
+    color: white;
+    text-align: center;
+}
+
+.caption {
+    font-size: 1.6vw;
+    text-align: center;
+    padding: 20px;
+    border-bottom: 1px solid #EEE;
+}
+
+#problemCount > span {
+    color: #e84e40;
+}
+
+.property {
+    padding: 10px;
+}
+
+.property > div {
+    padding: 14px;
+    background-color: white;
+    cursor: pointer;
+    box-shadow: 2px 2px 1px #EEE;
+}
+
+.helper {
+    display: inline-block;
+    height: 100%;
+    vertical-align: middle;
+}
+
+.picture {
+    height: 277px;
+    width: 100%;
+    overflow: hidden;
+    vertical-align: middle;
+}
+
+.picture > img {
+    width: 100%;
+    position: relative;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.property a,
+.property a:hover {
+    text-decoration: none;
+    color: black;
+}
+
+.extraInformation {
+    color: #DDD;
+    font-size: 20px;
+    text-align: center;
+}
+
+.extraInformation .paymentOK,
+.extraInformation .paymentNOK {
+    font-size: 28px;
+}
+
+.extraInformation > table {
+    width: 100%;
+}
+
+.paymentOK {
+    color: #8bc34a;
+}
+
+.paymentNOK,
+.hasIssues {
+    color: #e84e40
+}
+
+.tenants {
+    max-height: 100%;
+    min-height: 100%;
+    overflow: auto;
+    background-color: white;
+    padding: 20px;
+}
+
+.tenants a {
+    text-decoration: none;
+    color: black;
+}
+
+.tenants .table>tbody>tr>th {
+    border-top: 0px;
+}
+
+.tenants .details {
+    margin: 5px;
+    padding: 10px;
+    border: 1px solid #e7ebee;
+    font-size: smaller;
+    background-color: white;
+    box-shadow: 2px 2px 1px #EEE;
+}
+
+.tenants .detailsRow {
+    background-color: rgba(238, 238, 238, 0.15);
+}
+
+.fields {
+    padding: 20px;
+}
+
+.fieldName {
+    float: left;
+    width: 100px;
+}
+
+.fieldValue {
+    margin-left: 100px;
+    font-size: 1.125em;
+    font-weight: 300;
+}
+
+.newIssue td {
+    font-weight: bold !important;
+    background-color: rgba(238, 238, 238, 0.15);
+}
+
+#solvedIssues {
+    text-align: center;
+    font-size: larger;
+}
+
+.solved,
+.solved a {
+    color: #ddd;
+}
+
+.solved a:hover {
+    color: #000;
+}
+
+.statusPaid {
+    color: #8bc34a;
+}
+
+.propertyPage {
+    max-height: 100%;
+    min-height: 100%;
+    overflow: auto;
+    background-color: white;
+    padding: 20px;
+}
+
+#propertyCaption {
+    font-size: 36px;
+    font-weight: 100;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #EEE;
+}
+
+#propertyPicture,
+#propertyPicture > img {
+    width: 100%;
+}
+
+#propertyPicture {
+    padding: 10px;
+    margin: 10px;
+    border: 1px solid #EEE;
+    box-shadow: 2px 2px 1px #EEE;
+}
+
+.propertyDataRow {
+    margin-bottom: 20px;
+}
+
+.tab-pane {
+    padding: 20px;
+}
+
+.reminderButton,
+.reminderButton:hover {
+    text-decoration: none;
+}
+
+.content {
+    padding: 20px;
+    background-color: white;
+}
+
+#problemCaption {
+    padding: 20px;
+    padding-top: 0px;
+    font-size: 48px;
+    font-weight: 100;
+    border-bottom: 1px solid #EEE;
+}
+
+#problemMenu {
+    padding-top: 18px;
+    float: right;
+}
+
+#problemDescription {
+    font-size: 24px;
+    font-weight: 100;
+    min-height: 150px;
+    padding-top: 20px;
+    padding-left: 20px;
+    border-bottom: 1px solid #EEE;
+}
+
+#problemCommentsMenu {
+    font-size: 18px;
+    font-weight: 100;
+    padding: 20px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #EEE;
+}
+
+#problemComments {
+    font-size: 18px;
+    font-weight: 100;
+    padding: 20px;
+    padding-top: 10px;
+    padding-bottom: 0px;
+}
+
+#loginContainer {
+    border-radius: 4x;
+    box-shadow: 0 0 8px rgba(0, 0, 0, 0.4);
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    display: block;
+    margin-top: -185px;
+    margin-left: -235px;
+    padding: 25px;
+    width: 420px;
+    height: 320px;
+    background: white;
+    text-align: center;
+}
+
+#loginContainer .footer {
+    position: absolute;
+    height: 60px;
+    border-top: 1px solid #EEE;
+    bottom: 0;
+    left: 0;
+    padding-top: 9px;
+    width: 100%;
+}
+
+#loginContainer .footer>.btn {
+    padding: 10px 30px 10px 30px;
+}
+
+#loginContainer .loginForm {
+    padding-left: 40px;
+    padding-right: 40px;
+}
+
+#loginContainer legend {
+    padding-bottom: 10px;
+}
+
+#loginContainer input {
+    width: 100%;
+    padding: 5px;
+}
+
+#loginContainer label {
+    margin-top: 15px;
+    width: 100%;
+    text-align: left;
+}
+
+.detailsRow {
+    display: none;
+}
+
+.tenant {
+    cursor: pointer;
+}
+
+.tenant:hover {
+    background-color: whitesmoke;
+    border-color: #e7ebee;
+}
+
+.detailsRow {
+    display: none;
+}
+
+.tenant {
+    cursor: pointer;
+}
+
+.tenant:hover {
+    background-color: whitesmoke;
+    border-color: #e7ebee;
+}
+
+.issue {
+    cursor: pointer;
+}
+
+.issue:hover {
+    background-color: whitesmoke;
+    border-color: #e7ebee;
+}

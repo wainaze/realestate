@@ -1,0 +1,46 @@
+extends ./layout.jade
+
+block content
+  .row.contentRow(style='opacity: 1;')
+    .tenants
+      table.table
+        tr
+          th Property
+          th.align-right Status
+        
+        tr.property
+          td
+            a(href='property.html?id=1') Rue de Rivoli
+          
+          td.align-right.statusPaid +600&euro;
+        
+        tr.detailsRow
+          td(colspan='2')
+            .details.align-right(style='width: 100%')
+              canvas#mycanvas(style='width: 100%; max-height:150px;')
+        
+        tr.property.bad
+          td
+            a(href='property.html?id=1') Korenlei
+          
+          td.align-right -1200&euro;
+        
+        tr.detailsRow
+          td(colspan='2')
+            .details.align-right(style='width: 100%')
+              canvas#mycanvas(style='width: 100%; max-height:150px;')
+        
+        tr.property
+          td
+            a(href='property.html?id=1') Vlaanderenstraat 62
+          
+          td.align-right.statusPaid +600&euro;
+        
+        tr.detailsRow
+          td(colspan='2')
+            .details.align-right(style='width: 100%')
+              canvas#mycanvas(style='width: 100%; max-height:150px;')
+    
+  script(type='text/javascript', src='js/Chart.js')
+  script(type='text/javascript', src='js/jquery.js')
+  script(type='text/javascript', src='js/payments.js')
