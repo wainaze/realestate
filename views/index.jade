@@ -26,11 +26,11 @@ html
     
     #content-wrapper(style='margin: 0;')
       #loginContainer
-        legend Sign in
-        .loginForm
-          label Username
-          input(type='text')
-          label Password
-          input(type='password')
-        .footer
-          a.btn.btn-primary(href='properties.html') Login
+        form(action='/login' method='post')
+          legend Sign in
+          .loginForm
+            label Username
+            input(type='text', name='username')
+            label Password
+            input(type='password', name='password')
+          input.btn.btn-primary(type='submit' value='Login')
