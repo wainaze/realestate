@@ -2,8 +2,25 @@ extends ./layout.jade
 
 block content
   .row.contentRow(style='opacity: 1;')
-    table
-      for transaction in transactions
+    .transactions
+      table.table
         tr
-          td= transaction.date
-          td= transaction.amount
+          th Date
+          th.align-right Income
+          th.align-right Cost
+          th Description
+          th Property
+        for transaction in transactions
+          tr.transaction.markSelection
+            td= transaction.date
+            td.paymentOK.transactionAmount.align-right
+              if transaction.amount > 0
+                = transaction.amount
+                |&euro;
+            td.paymentNOK.transactionAmount.align-right
+              if transaction.amount < 0
+                = transaction.amount
+                |&euro;
+            td.fullWidth= transaction.description
+            td.transactionPropety= transaction.property.name
+

@@ -1,13 +1,13 @@
 var properties = require('./properties');
 
 var records = [
-    { id: 1, issueCaption: 'Broken boiler', issuePropertyId: 3, creationDate: '06/09/2015', status: 'new'},
-    { id: 2, issueCaption: 'Broken door', issuePropertyId: 3, creationDate: '05/08/2015', status: 'open'},
-    { id: 3, issueCaption: 'Roof leak', issuePropertyId: 3, creationDate: '04/08/2015', status: 'open'},
-    { id: 4, issueCaption: 'Water in the cellar', issuePropertyId: 3, creationDate: '04/08/2015', status: 'open'},
-    { id: 5, issueCaption: 'Rats', issuePropertyId: 3, creationDate: '03/08/2015', status: 'open'},
-    { id: 6, issueCaption: 'New door lock', issuePropertyId: 1, creationDate: '05/09/2015', status: 'solved'},
-    { id: 7, issueCaption: 'Broken boiler', issuePropertyId: 2, creationDate: '01/09/2015', status: 'solved'},
+    { id: 1, issueCaption: 'Broken boiler', issuePropertyId: 3, creationDate: '06/09/2015', status: 'new', costs: []},
+    { id: 2, issueCaption: 'Broken door', issuePropertyId: 3, creationDate: '05/08/2015', status: 'open', costs: []},
+    { id: 3, issueCaption: 'Roof leak', issuePropertyId: 3, creationDate: '04/08/2015', status: 'open', costs: []},
+    { id: 4, issueCaption: 'Water in the cellar', issuePropertyId: 3, creationDate: '04/08/2015', status: 'open', costs: []},
+    { id: 5, issueCaption: 'Rats', issuePropertyId: 3, creationDate: '03/08/2015', status: 'open', costs: []},
+    { id: 6, issueCaption: 'New door lock', issuePropertyId: 1, creationDate: '05/09/2015', status: 'solved', costs: [18], comments: ['Some comment', 'Some other here']},
+    { id: 7, issueCaption: 'Broken boiler', issuePropertyId: 2, creationDate: '01/09/2015', status: 'solved', costs: []},
 ]
 
 exports.getAllSolvedIssues = function(userId) {

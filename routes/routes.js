@@ -5,35 +5,35 @@ var ensureLogin = require('connect-ensure-login');
 var elasticMailService = require('../services/elasticMailService');
 var emailService = require('../services/emailService');
 
-function getTotalDue(properties){
-	var due = 0;
-	properties.forEach(function(property){
-		if (property.payment < 0)
-			due += property.payment; 
-	});
+function getTotalDue(properties) {
+    var due = 0;
+    properties.forEach(function(property) {
+        if (property.payment < 0)
+            due += property.payment;
+    });
 
-	return Math.abs(due);
+    return Math.abs(due);
 }
 
-function getTotalIssues(properties){
-	var totalIssues = 0;
-	properties.forEach(function(property){
-		var issues = db.issues.getOpenIssuesForProperty(property.id);
-		totalIssues += issues.length;
-	});
-	return totalIssues;
+function getTotalIssues(properties) {
+    var totalIssues = 0;
+    properties.forEach(function(property) {
+        var issues = db.issues.getOpenIssuesForProperty(property.id);
+        totalIssues += issues.length;
+    });
+    return totalIssues;
 }
 
-function getTotalNewIssues(properties){
-	var totalNewIssues = 0;
-	properties.forEach(function(property){
-		var issues = db.issues.getOpenIssuesForProperty(property.id);
-		issues = issues.filter(function(issue){
-			return issue.status == 'new';
-		});
-		totalNewIssues += issues.length;
-	});
-	return totalNewIssues;
+function getTotalNewIssues(properties) {
+    var totalNewIssues = 0;
+    properties.forEach(function(property) {
+        var issues = db.issues.getOpenIssuesForProperty(property.id);
+        issues = issues.filter(function(issue) {
+            return issue.status == 'new';
+        });
+        totalNewIssues += issues.length;
+    });
+    return totalNewIssues;
 }
 
 passport.use(new Strategy(
@@ -104,25 +104,42 @@ module.exports = (function() {
         var totalIssues = getTotalIssues(properties);
         res.render('paymentStatus', {
             status: {
-              totalIssues: totalIssues
-        	},
+                totalIssues: totalIssues
+            },
             user: req.user
         });
     });
 
-    router.get('/payments.html',  ensureLogin.ensureLoggedIn('/'), function(req, res) {
+    router.get('/payments.html', ensureLogin.ensureLoggedIn('/'), function(req, res) {
         var userId = req.user.id;
         var properties = db.properties.getAllProperties(userId);
         var totalIssues = getTotalIssues(properties);
 
         var transactions = db.transactions.getAllPayments(userId);
+        transactions.forEach(function(transaction) {
+            var property = db.properties.getProperty(userId, transaction.propertyId);
+            transaction.property = property;
+        });
+
+        transactions.sort(function(a, b) {
+            if (a.timestamp > b.timestamp) {
+                return 1;
+            }
+            if (a.timestamp < b.timestamp) {
+                return -1;
+            }
+            // a must be equal to b
+            return 0;
+        });
+        transactions.reverse();
+
         res.render('payments', {
             status: {
-              totalIssues: totalIssues
+                totalIssues: totalIssues
             },
             user: req.user,
             transactions: transactions
-        });    
+        });
     });
 
     router.get('/property.html', ensureLogin.ensureLoggedIn('/'), function(req, res) {
@@ -138,8 +155,8 @@ module.exports = (function() {
         var issues = db.issues.getOpenIssuesForProperty(req.query.id);
         res.render('property', {
             status: {
-              totalIssues: totalIssues
-        	},
+                totalIssues: totalIssues
+            },
             user: req.user,
             property: property,
             payments: payments,
@@ -154,8 +171,8 @@ module.exports = (function() {
         var totalIssues = getTotalIssues(properties);
         res.render('tenants', {
             status: {
-              totalIssues: totalIssues
-        	},
+                totalIssues: totalIssues
+            },
             user: req.user
         });
     });
@@ -167,17 +184,22 @@ module.exports = (function() {
 
         var issue = db.issues.getIssue(userId, req.query.issueId);
         if (issue == null)
-        	res.redirect('/problems.html');
+            res.redirect('/problems.html');
 
         if (issue.status == 'new')
             issue.status = 'open';
-
+        var costs = [];
+        issue.costs.forEach(function(transactionId) {
+            var transaction = db.transactions.getTransaction(userId, transactionId);
+            costs.push(transaction);
+        });
         res.render('problem', {
             status: {
-              totalIssues: totalIssues
-        	},
+                totalIssues: totalIssues
+            },
             user: req.user,
-            issue: issue
+            issue: issue,
+            costs: costs
         });
     });
 
@@ -186,18 +208,33 @@ module.exports = (function() {
 
         var properties = db.properties.getAllProperties(userId);
         var totalIssues = getTotalIssues(properties);
-        
+
         var openIssues = db.issues.getAllUnsolvedIssues(userId);
         var solvedIssues = db.issues.getAllSolvedIssues(userId);
-        
+
         res.render('problems', {
             status: {
-              totalIssues: totalIssues
-        	},
+                totalIssues: totalIssues
+            },
             user: req.user,
             openIssues: openIssues,
             solvedIssues: solvedIssues,
         });
+    });
+
+    router.post('/addComment',ensureLogin.ensureLoggedIn('/'), function(req, res) {
+        var userId = req.user.id;
+        var issueId = req.body.issueId;
+        var commentText = req.body.commentText;
+        console.log('comment ' + commentText);
+        if (commentText && commentText.length){
+            var issue = db.issues.getIssue(userId, issueId);
+            var comments = issue.comments;
+            console.log('issue' + JSON.stringify(comments));
+            comments.push(commentText);   
+            console.log('issue' + JSON.stringify(comments));
+        }
+        res.send('ok');
     });
 
     router.post('/login',
@@ -214,19 +251,19 @@ module.exports = (function() {
             res.redirect('/');
         });
 
-	router.get('/subscribe', function(req, res) {
-		var email = req.query.email;
-		emailService.addEmail(email);
-		elasticMailService.sendMail({
-        	to: email, 
-        	subject: 'Thank you for subscribing to Azurent', 
-        	body_text: 'You\'re subscribed', 
-        	body_html: '<H1>Congrats! You are subscribed</H1>', 
-        	from: 'admin@azurent.be', 
-        	fromName: 'Azurent'
+    router.get('/subscribe', function(req, res) {
+        var email = req.query.email;
+        emailService.addEmail(email);
+        elasticMailService.sendMail({
+            to: email,
+            subject: 'Thank you for subscribing to Azurent',
+            body_text: 'You\'re subscribed',
+            body_html: '<H1>Congrats! You are subscribed</H1>',
+            from: 'admin@azurent.be',
+            fromName: 'Azurent'
         });
         res.send('Done');
-	});
+    });
 
     return router;
 })();

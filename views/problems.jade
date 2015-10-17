@@ -18,7 +18,7 @@ block content
             td(colspan='3')
               #solvedIssues Solved
           for issue in solvedIssues
-            tr.issue.solved(data-action=issue.id)
+            tr.issue.solved(data-id=issue.id)
               td= issue.issueCaption
               td= issue.property.name
               td= issue.creationDate

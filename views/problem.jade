@@ -4,21 +4,75 @@ block content
   .content
     #problemCaption.row
       span= issue.issueCaption
-      #problemMenu
-        .dropdown
-          button#fixIssueButton.btn.btn-success(type='button', data-toggle='dropdown', aria-haspopup='true', aria-expanded='false')
-            | Mark fixed 
-            span.caret
-          ul.dropdown-menu(aria-labelledby='dLabel')
-            li Reject
+    #problemMenu.row
+      if issue.status == 'open'
+        .dropdown.btn-group
+          button.btn.btn-danger(type='button') Open
+            button.btn.btn-danger.dropdown-toggle(type='button', data-toggle='dropdown', aria-haspopup='true', aria-expanded='false')
+              span.caret
+              span.sr-only Toggle Dropdown
+            ul.dropdown-menu
+              li
+                a(href='#') Solve issue
+              li
+                a(href='#') Reject issue
+              li
+                a(href='#') Put on hold
+      if issue.status == 'solved'
+        .dropdown.btn-group
+          button.btn.btn-success(type='button') Solved
+            button.btn.btn-success.dropdown-toggle(type='button', data-toggle='dropdown', aria-haspopup='true', aria-expanded='false')
+              span.caret
+              span.sr-only Toggle Dropdown
+            ul.dropdown-menu
+              li
+                a(href='#') Reopen issue
+      if issue.status == 'on-hold'
+        .dropdown.btn-group
+          button.btn.btn-warning(type='button') On-hold
+            button.btn.btn-warning.dropdown-toggle(type='button', data-toggle='dropdown', aria-haspopup='true', aria-expanded='false')
+              span.caret
+              span.sr-only Toggle Dropdown
+            ul.dropdown-menu
+              li
+                a(href='#') Open issue
+              li
+                a(href='#') Solve issue
+              li
+                a(href='#') Reject issue
     #problemDescription.row
       p Dear,
       p Since yeasterday I have problems with the boiler.
+    #problemCosts.row
+      h3 Problem costs
+      if costs.length > 0
+        table.table
+          for cost in costs
+            tr
+              td.paymentNOK
+                = Math.abs(cost.amount)
+                |&euro;
+              td= cost.date
+              td.fullWidth= cost.description
+      if costs.length = 0 
+        .noCost there are no cost yet
     #problemCommentsMenu.row
-      .btn.btn-default
-        span.glyphicon.glyphicon-plus
-        |  add comment
+      h3 Comments
+      #addCommmentArea
+        .commentPlaceholder
+          span.glyphicon.glyphicon-plus
+          | Click here to add a comment
+        .commentEditArea
+          .commentText(contenteditable='true')
+          .commentButtons
+            #addCommentButton.btn.btn-primary Add
+            #cancelCommentButton.btn.btn-default Cancel
     #problemComments.row
-      | No comments yet
+      table.table
+        tbody
+          for comment in issue.comments
+            tr
+              td= comment
   script(type='text/javascript', src='js/jquery.js')
   script(type='text/javascript', src='js/bootstrap.js')
+  script(type='text/javascript', src='js/issue.js')
