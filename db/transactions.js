@@ -26,10 +26,10 @@ exports.getAllPayments = function(userId){
 }
 
 exports.getTransaction = function(userId, transactionId) {
-	var transaction = records.find(function(value){
-		return value.id == transactionId && value.userId == userId;
-	});
-	if (transaction == 'undefined')
-		return null;
-	return transaction;
+    for (var i = 0; i < records.length; i++) {
+        if (records[i].id == propertyId && records[i].userId == userId)
+            return records[i];
+    }
+
+    return null;
 }
