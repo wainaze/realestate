@@ -14,35 +14,34 @@ block content
             ul#tabs.nav.nav-tabs(role='tablist')
               li.active(role='presentation')
                 a(href='#paymentsList', aria-controls='paymentsList', role='tab', data-toggle='tab')
-                  | Payments (
+                  | #{__('Payments')}(
                   span(class= property.payment > 0 ? 'paymentOK' : 'paymentNOK')
                     = property.payment
                     |&euro;
                   | )
                   
               li(role='presentation')
-                a(href='#tenants', aria-controls='tenants', role='tab', data-toggle='tab') Tenants
+                a(href='#tenants', aria-controls='tenants', role='tab', data-toggle='tab') #{__('Tenants')}
                   
               li(role='presentation')
-                a(href='#issues', aria-controls='issues', role='tab', data-toggle='tab') Issues (5)
+                a(href='#issues', aria-controls='issues', role='tab', data-toggle='tab') #{__('Issues')} (5)
                   
               li(role='presentation')
-                a(href='#documents', aria-controls='documents', role='tab', data-toggle='tab') Documents
+                a(href='#documents', aria-controls='documents', role='tab', data-toggle='tab') #{__('Documents')}
                   
               li(role='presentation')
-                a(href='#photos', aria-controls='photos', role='tab', data-toggle='tab') Pictures
+                a(href='#photos', aria-controls='photos', role='tab', data-toggle='tab') #{__('Pictures')}
             // Tab panes
             .tab-content
               #paymentsList.tab-pane.active(role='tabpanel')
                 table.table
                   tr
-                    th(style='min-width: 200px;') Moth
-                    th(style='min-width: 200px;') Due
-                    th(style='min-width: 200px;') Payed
-                    th.align-right Payment
+                    th(style='min-width: 200px;') #{__('Month')}
+                    th(style='min-width: 200px;') #{__('Due')}
+                    th(style='min-width: 200px;') #{__('Payed')}
+                    th.align-right #{__('Payment')}
                     th(style='width: 100%')
                   for payment in payments
-
                     tr
                       td= payment.month
                       td= payment.dueDate
@@ -53,15 +52,14 @@ block content
                       td.vAlign-center
                         if payment.payment < 0
                           a.reminderButton(href='#')
-                            span.label.label-danger Send reminder
-
+                            span.label.label-danger #{__('Send reminder')}
               #tenants.tab-pane(role='tabpanel')
                 table.table
                   tr
                     th
-                    th Name
-                    th Since
-                    th Till
+                    th #{__('Tenants_Name')}
+                    th #{__('Since')}
+                    th #{__('Till')}
                   for tenant in tenants
                     tr.tenant
                       td
@@ -69,7 +67,6 @@ block content
                       td= tenant.name
                       td= tenant.contractBegin
                       td= tenant.contractEnd
-                  
                     tr.detailsRow
                       td(colspan='3')
                         .details
@@ -80,22 +77,20 @@ block content
                             
                               td.vAlign-top.fields
                                 .field
-                                  .fieldName Age:
+                                  .fieldName #{__('Age')}:
                                   .fieldValue= tenant.age
                               .field
-                                .fieldName Phone:
+                                .fieldName #{__('Phone')}:
                                 .fieldValue= tenant.phone
-
               #issues.tab-pane(role='tabpanel')
                 table.table
                   tr
-                    th Problem
-                    th Date
+                    th #{__('Problem')}
+                    th #{__('Date')}
                   for issue in issues
                     tr(class= issue.status == 'new' ? 'issue newIssue' : 'issue')
                       td= issue.issueCaption
                       td= issue.creationDate
-
               #documents.tab-pane(role='tabpanel')
                 table.table
                   tr
@@ -112,7 +107,6 @@ block content
                   .col-xs-4
                     #propertyPicture
                       img(src=property.img)
-
   script(type='text/javascript', src='js/jquery.js')
   script(type='text/javascript', src='js/bootstrap.js')
   script(type='text/javascript', src='js/property.js')

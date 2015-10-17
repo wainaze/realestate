@@ -311,7 +311,13 @@ module.exports = (function() {
             from: 'admin@azurent.be',
             fromName: 'Azurent'
         });
-        res.send('Done');
+        res.send('ok');
+    });
+
+    router.get('/setLang', function(req, res){
+        var lang = req.query.lang;
+        res.cookie('lang',lang);
+        res.send('ok');
     });
 
     return router;

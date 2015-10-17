@@ -5,6 +5,9 @@ var fs = require('fs');
 var passport = require('passport');
 var router = require('./routes/routes');
 
+// load modules
+var i18n = require('i18n-2');
+
 /**
  *  Define the sample application.
  */
@@ -103,9 +106,11 @@ var SampleApp = function() {
 
         self.app.use(require('morgan')('combined'));
         self.app.use(require('cookie-parser')());
+        
         self.app.use(require('body-parser').urlencoded({
             extended: true
         }));
+
         self.app.use(require('express-session')({
             secret: 'somestrangedataazurent',
             resave: false,
@@ -115,13 +120,23 @@ var SampleApp = function() {
         self.app.use(passport.initialize());
         self.app.use(passport.session());
 
+        // Attach the i18n property to the express request object
+        // And attach helper methods for use in templates
+        i18n.expressBind(self.app, {
+            // setup some locales - other locales default to en silently
+            locales: ['en', 'nl', 'fr'],
+            // change the cookie name from 'lang' to 'locale'
+        });
+
+        self.app.use(function(req, res, next) {
+            req.i18n.setLocaleFromCookie();
+            res.locals.locale = req.i18n.getLocale(); 
+            next();
+        });
+
         self.app.use('/', router);
     };
 
-
-    /**
-     *  Initializes the sample application.
-     */
     self.initialize = function() {
         self.setupVariables();
         self.setupTerminationHandlers();
@@ -130,25 +145,15 @@ var SampleApp = function() {
         self.initializeServer();
     };
 
-
-    /**
-     *  Start the server (starts up the sample application).
-     */
     self.start = function() {
-        //  Start the app on the specific interface (and port).
         self.app.listen(self.port, self.ipaddress, function() {
             console.log('%s: Node server started on %s:%d ...',
                 Date(Date.now()), self.ipaddress, self.port);
         });
     };
 
-}; /*  Sample Application.  */
+}; 
 
-
-
-/**
- *  main():  Main code.
- */
 var zapp = new SampleApp();
 zapp.initialize();
 zapp.start();

@@ -1,3 +1,5 @@
+include ./mixins/languages.jade
+
 //- layout.jade
 doctype html
 html
@@ -40,6 +42,7 @@ html
               li.mobile-search
                 a.btn.icon
                   i.fa.fa-search
+              +languages()
               li.dropdown.profile-dropdown
                 a.dropdown-toggle(href='#')
                   img(src=user.photo, alt='')
@@ -56,19 +59,24 @@ html
         ul.nav
           li
             a(href='properties.html')
-              span Properties
+              span #{__('Properties')}
           
           li
             a(href='tenants.html')
-              span Tenants
+              span #{__('Tenants')}
           
           li
             a(href='problems.html')
-              span Problems
+              span #{__('Problems')}
           
           li
             a(href='payments.html')
-              span Payments
+              span #{__('Payments')}
     
     #content-wrapper
       block content
+    
+    script(type='text/javascript', src='js/jquery.js')
+    script(type='text/javascript', src='js/bootstrap.js')
+    script(type='text/javascript', src='js/global.js')
+    block scripts

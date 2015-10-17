@@ -12,7 +12,7 @@ block content
       p Dear,
       p Since yeasterday I have problems with the boiler.
     #problemCosts.row
-      h3 Problem costs
+      h3 #{__('Problem costs')}
       if issue.status == 'open' || issue.status == 'on-hold'
         #addCostsArea
           .costsPlaceholder
@@ -36,12 +36,12 @@ block content
       if costs.length = 0 
         .noCost there are no cost yet
     #problemCommentsMenu.row
-      h3 Comments
+      h3 #{__('Comments')}
       if issue.status == 'open' || issue.status == 'on-hold'
         #addCommmentArea
           .commentPlaceholder
             span.glyphicon.glyphicon-plus
-            | Click here to add a comment
+            | #{__('Click here to add a comment')}
           .commentEditArea
             .commentText(contenteditable='true')
             .commentButtons

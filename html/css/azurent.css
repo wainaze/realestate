@@ -655,3 +655,17 @@ body {
   display: block; /* For Firefox */
   color: #CCC;
 }
+
+#languages {
+    min-width: 50px;
+
+}
+
+#languages a {
+    padding-left: 20px;
+    
+}
+
+li.language-dropdown  span.caret {
+    margin-left: 7px;
+}

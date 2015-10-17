@@ -12,17 +12,17 @@ mixin property(property)
                 span.paymentOK 
                   | &euro;
                   span= Math.abs(property.payment)
-                |  payed
+                |  #{__('payed')}
               else
                 span.paymentNOK
                   | &euro;
                   span= Math.abs(property.payment)
-                |  due
+                |  #{__('due')}
             if property.issuesTotal > 0
               span.hasIssues= property.issuesTotal
               |  issues	
             else
-               div No issues
+               div #{__('No issues')}
 
 extends ./layout.jade
 
@@ -33,7 +33,7 @@ block content
         a(href='paymentStatus.html')
           #due &euro;
             span= status.due
-          .buttonCaption due till now
+          .buttonCaption #{__('due till now')}
     .dashboard-button.col-xs-3
       #problemsContainer
         a(href='problems.html')
@@ -44,21 +44,23 @@ block content
                 |(+
                 = status.newIssues
                 |)
-          .buttonCaption Open problems
+          .buttonCaption #{__('Open problems')}
     .dashboard-button.col-xs-3
       #incomesContainer
         a(href='payments.html')
           #incomes 
             |&euro;
             = status.totalIncome
-          .buttonCaption earned this year
+          .buttonCaption #{__('earned this year')}
     .dashboard-button.col-xs-3
       #costsContainer
         a(href='payments.html')
           #costs
             |&euro;
             = status.totalCosts
-          .buttonCaption spent this year
+          .buttonCaption #{__('spent this year')}
   .row(style='opacity: 1;')
     for property in properties
       +property(property)
+
+block scripts

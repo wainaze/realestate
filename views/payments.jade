@@ -5,11 +5,11 @@ block content
     .transactions
       table.table
         tr
-          th Date
-          th.align-right Income
-          th.align-right Cost
-          th Description
-          th Property
+          th #{__('Date')}
+          th.align-right #{__('Income')}
+          th.align-right #{__('Cost')}
+          th #{__('Description')}
+          th #{__('Property')}
         for transaction in transactions
           tr.transaction.markSelection
             td= transaction.date

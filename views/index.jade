@@ -1,3 +1,5 @@
+include ./mixins/languages.jade
+
 html
   head
     meta(charset='UTF-8')
@@ -23,14 +25,23 @@ html
       .container
         a#logo.navbar-brand(href='properties.html')
           span#logo AZURENT
-    
+
+        .clearfix
+          #header-nav.nav-no-collapse.pull-right
+            ul.nav.navbar-nav.pull-right
+              +languages()
     #content-wrapper(style='margin: 0;')
       #loginContainer
         form(action='/login' method='post')
-          legend Sign in
+          legend= __('Sign in')
           .loginForm
-            label Username
+            label= __('Username')
             input(type='text', name='username')
-            label Password
+            label= __('Password')
             input(type='password', name='password')
-            input.btn.btn-primary(type='submit' value='Login')
+            input.btn.btn-primary(type='submit' value=__('Login'))
+            
+    script(type='text/javascript', src='js/jquery.js')
+    script(type='text/javascript', src='js/bootstrap.js')
+    script(type='text/javascript', src='js/global.js')
+

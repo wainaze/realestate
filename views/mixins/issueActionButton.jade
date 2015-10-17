@@ -1,45 +1,45 @@
 mixin issueActionButton(issue)
   if issue.status == 'open' || issue.status == 'new'
     .dropdown.btn-group
-      button.btn.btn-danger(type='button') Open
+      button.btn.btn-danger(type='button') #{__('Open')}
         button.btn.btn-danger.dropdown-toggle(type='button', data-toggle='dropdown', aria-haspopup='true', aria-expanded='false')
           span.caret
           span.sr-only Toggle Dropdown
         ul.dropdown-menu
           li
-            a.solveIssue(href='#') Solve issue
+            a.solveIssue(href='#') #{__('Solve issue')}
           li
-            a.rejectIssue(href='#') Reject issue
+            a.rejectIssue(href='#') #{__('Reject issue')}
           li
-            a.holdIssue(href='#') Put on hold
+            a.holdIssue(href='#') #{__('Put on hold')}
   if issue.status == 'solved'
     .dropdown.btn-group
-      button.btn.btn-success(type='button') Solved
+      button.btn.btn-success(type='button') #{__('Solved')}
         button.btn.btn-success.dropdown-toggle(type='button', data-toggle='dropdown', aria-haspopup='true', aria-expanded='false')
           span.caret
           span.sr-only Toggle Dropdown
         ul.dropdown-menu
           li
-            a.reopenIssue(href='#') Reopen issue
+            a.reopenIssue(href='#') #{__('Reopen issue')}
   if issue.status == 'on-hold'
     .dropdown.btn-group
-      button.btn.btn-warning(type='button') On-hold
+      button.btn.btn-warning(type='button') #{__('On-hold')}
         button.btn.btn-warning.dropdown-toggle(type='button', data-toggle='dropdown', aria-haspopup='true', aria-expanded='false')
           span.caret
           span.sr-only Toggle Dropdown
         ul.dropdown-menu
           li
-            a.reopenIssue(href='#') Re-open issue
+            a.reopenIssue(href='#') #{__('Reopen issue')}
           li
-            a.solveIssue(href='#') Solve issue
+            a.solveIssue(href='#') #{__('Solve issue')}
           li
-            a.rejectIssue(href='#') Reject issue
+            a.rejectIssue(href='#') #{__('Reject issue')}
   if issue.status == 'rejected'
     .dropdown.btn-group
-      button.btn.btn-warning(type='button') Rejected
+      button.btn.btn-warning(type='button') #{__('Rejected')}
         button.btn.btn-warning.dropdown-toggle(type='button', data-toggle='dropdown', aria-haspopup='true', aria-expanded='false')
           span.caret
           span.sr-only Toggle Dropdown
         ul.dropdown-menu
           li
-            a.reopenIssue(href='#') Re-open issue
+            a.reopenIssue(href='#') #{__('Reopen issue')}

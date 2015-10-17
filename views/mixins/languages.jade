@@ -1,0 +1,13 @@
+mixin languages()
+  li.dropdown.language-dropdown
+    a.btn.icon.dropdown-toggle(type='button', data-toggle='dropdown', aria-haspopup='true', aria-expanded='false')
+      | #{locale.toUpperCase()}
+      span.caret
+      span.sr-only Toggle Dropdown
+    ul#languages.dropdown-menu
+      li
+        a.solveIssue(href='#' onclick='setLocale("en")') EN
+      li
+        a.rejectIssue(href='#' onclick='setLocale("nl")') NL
+      li
+        a.holdIssue(href='#' onclick='setLocale("fr")') FR
