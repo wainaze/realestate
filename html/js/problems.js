@@ -5,3 +5,6 @@ $(document).on('click', 'tr.issue', function(e) {
     location.href = 'problem.html?issueId=' + issueId;
 });
 
+$(document).on('click', '.btn-group', function(e){
+	e.stopImmediatePropagation();
+});

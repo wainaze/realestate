@@ -1,45 +1,13 @@
 extends ./layout.jade
 
+include ./mixins/issueActionButton
+
 block content
   .content
     #problemCaption.row
       span= issue.issueCaption
     #problemMenu.row
-      if issue.status == 'open'
-        .dropdown.btn-group
-          button.btn.btn-danger(type='button') Open
-            button.btn.btn-danger.dropdown-toggle(type='button', data-toggle='dropdown', aria-haspopup='true', aria-expanded='false')
-              span.caret
-              span.sr-only Toggle Dropdown
-            ul.dropdown-menu
-              li
-                a(href='#') Solve issue
-              li
-                a(href='#') Reject issue
-              li
-                a(href='#') Put on hold
-      if issue.status == 'solved'
-        .dropdown.btn-group
-          button.btn.btn-success(type='button') Solved
-            button.btn.btn-success.dropdown-toggle(type='button', data-toggle='dropdown', aria-haspopup='true', aria-expanded='false')
-              span.caret
-              span.sr-only Toggle Dropdown
-            ul.dropdown-menu
-              li
-                a(href='#') Reopen issue
-      if issue.status == 'on-hold'
-        .dropdown.btn-group
-          button.btn.btn-warning(type='button') On-hold
-            button.btn.btn-warning.dropdown-toggle(type='button', data-toggle='dropdown', aria-haspopup='true', aria-expanded='false')
-              span.caret
-              span.sr-only Toggle Dropdown
-            ul.dropdown-menu
-              li
-                a(href='#') Open issue
-              li
-                a(href='#') Solve issue
-              li
-                a(href='#') Reject issue
+      +issueActionButton(issue)
     #problemDescription.row
       p Dear,
       p Since yeasterday I have problems with the boiler.
@@ -58,15 +26,16 @@ block content
         .noCost there are no cost yet
     #problemCommentsMenu.row
       h3 Comments
-      #addCommmentArea
-        .commentPlaceholder
-          span.glyphicon.glyphicon-plus
-          | Click here to add a comment
-        .commentEditArea
-          .commentText(contenteditable='true')
-          .commentButtons
-            #addCommentButton.btn.btn-primary Add
-            #cancelCommentButton.btn.btn-default Cancel
+      if issue.status == 'open' || issue.status == 'on-hold'
+        #addCommmentArea
+          .commentPlaceholder
+            span.glyphicon.glyphicon-plus
+            | Click here to add a comment
+          .commentEditArea
+            .commentText(contenteditable='true')
+            .commentButtons
+              #addCommentButton.btn.btn-primary Add
+              #cancelCommentButton.btn.btn-default Cancel
     #problemComments.row
       table.table
         tbody

@@ -241,6 +241,38 @@ module.exports = (function() {
         res.send('ok');
     });
 
+    router.post('/solveIssue', ensureLogin.ensureLoggedIn('/'), function(req, res) {
+        var userId = req.user.id;
+        var issueId = req.body.issueId;
+        var issue = db.issues.getIssue(userId, issueId);
+        issue.status = 'solved';
+        res.send('ok');
+    });
+
+    router.post('/holdIssue', ensureLogin.ensureLoggedIn('/'), function(req, res) {
+        var userId = req.user.id;
+        var issueId = req.body.issueId;
+        var issue = db.issues.getIssue(userId, issueId);
+        issue.status = 'on-hold';
+        res.send('ok');
+    });
+
+    router.post('/rejectIssue', ensureLogin.ensureLoggedIn('/'), function(req, res) {
+        var userId = req.user.id;
+        var issueId = req.body.issueId;
+        var issue = db.issues.getIssue(userId, issueId);
+        issue.status = 'rejected';
+        res.send('ok');
+    });
+
+    router.post('/reopenIssue', ensureLogin.ensureLoggedIn('/'), function(req, res) {
+        var userId = req.user.id;
+        var issueId = req.body.issueId;
+        var issue = db.issues.getIssue(userId, issueId);
+        issue.status = 'open';
+        res.send('ok');
+    });
+
     router.post('/login',
         passport.authenticate('local', {
             failureRedirect: '/'
