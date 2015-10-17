@@ -5,70 +5,94 @@ function getParameterByName(name) {
     return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
 }
 
-$(document).on('click', '.commentPlaceholder', function(e){
-	$('.commentEditArea').show();
-	$('.commentPlaceholder').hide();
-	$('.commentText').focus();
+$(document).on('click', '.commentPlaceholder', function(e) {
+    $('.commentEditArea').show();
+    $('.commentPlaceholder').hide();
+    $('.commentText').focus();
 })
 
-$('.holdIssue').on('click', function(){
-	holdIssue();
+$('#addCommentButton').on('click', function() {
+    addComment($('.commentText').html());
+    $('.commentEditArea').hide();
+    $('.commentText').html('');
+    $('.commentPlaceholder').show();
 });
 
-$('.reopenIssue').on('click', function(){
-	reopenIssue();
+$('#cancelCommentButton').on('click', function() {
+    $('.commentEditArea').hide();
+    $('.commentText').html('');
+    $('.commentPlaceholder').show();
 });
 
-$('.solveIssue').on('click', function(){
-	solveIssue();
+function addComment(text) {
+    var issueId = getParameterByName('issueId');
+    $.post('/addComment', {
+        issueId: issueId,
+        commentText: text
+    });
+    window.location.reload();
+}
+
+$(document).on('click', '.costsPlaceholder', function(e) {
+    $('.costsEditArea').show();
+    $('.costsPlaceholder').hide();
+    $('.costsDescription').focus();
 });
 
-$('.rejectIssue').on('click', function(){
-	rejectIssue();
+$('#addCostsButton').on('click', function() {
+    addCost($('.costDescription').html(), $('.costAmount').html());
+    $('.costsEditArea').hide();
+    $('.costDescription').html('');
+    $('.costAmount').html('');
+    $('.costsPlaceholder').show();
 });
 
-$('#addCommentButton').on('click', function(){
-	addComment($('.commentText').html());
-	clearCommentEditArea();
+
+function addCost(description, amount) {
+    var issueId = getParameterByName('issueId');
+    $.post('/addCost', {
+        issueId: issueId,
+        costDescription: description,
+        costAmount: amount
+    });
+    window.location.reload();
+}
+
+$('#cancelCostsButton').on('click', function() {
+    $('.costsEditArea').hide();
+    $('.costDescription').html('');
+    $('.costAmount').html('');
+    $('.costsPlaceholder').show();
 });
 
-
-$('#cancelCommentButton').on('click', function(){
-	clearCommentEditArea();
+$('.holdIssue').on('click', function() {
+    var issueId = getParameterByName('issueId');
+    $.post('/holdIssue', {
+        issueId: issueId
+    });
+    window.location.reload();
 });
 
-function clearCommentEditArea() {
-	$('.commentEditArea').hide();
-	$('.commentText').html('');
-	$('.commentPlaceholder').show();
-}
+$('.reopenIssue').on('click', function() {
+    var issueId = getParameterByName('issueId');
+    $.post('/reopenIssue', {
+        issueId: issueId
+    });
+    window.location.reload();
+});
 
-function addComment(text){
-	var issueId = getParameterByName('issueId');
-	$.post('/addComment', {issueId: issueId, commentText : text});
-	window.location.reload();
-}
+$('.solveIssue').on('click', function() {
+    var issueId = getParameterByName('issueId');
+    $.post('/solveIssue', {
+        issueId: issueId
+    });
+    window.location.reload();
+});
 
-function holdIssue(){
-	var issueId = getParameterByName('issueId');
-	$.post('/holdIssue', { issueId: issueId });
-	window.location.reload();
-}
-
-function reopenIssue(){
-	var issueId = getParameterByName('issueId');
-	$.post('/reopenIssue', { issueId: issueId });
-	window.location.reload();
-}
-
-function solveIssue(){
-	var issueId = getParameterByName('issueId');
-	$.post('/solveIssue', { issueId: issueId });
-	window.location.reload();
-}
-
-function rejectIssue(){
-	var issueId = getParameterByName('issueId');
-	$.post('/rejectIssue', { issueId: issueId });
-	window.location.reload();
-}
+$('.rejectIssue').on('click', function() {
+    var issueId = getParameterByName('issueId');
+    $.post('/rejectIssue', {
+        issueId: issueId
+    });
+    window.location.reload();
+});

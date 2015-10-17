@@ -13,6 +13,17 @@ block content
       p Since yeasterday I have problems with the boiler.
     #problemCosts.row
       h3 Problem costs
+      if issue.status == 'open' || issue.status == 'on-hold'
+        #addCostsArea
+          .costsPlaceholder
+            span.glyphicon.glyphicon-plus
+            | Click here to add costs
+          .costsEditArea
+            .costDescription(contenteditable='true' placeholder='Cost description')
+            .costAmount(contenteditable='true' placeholder='Cost amount')
+            .costsButtons
+              #addCostsButton.btn.btn-primary Add
+              #cancelCostsButton.btn.btn-default Cancel
       if costs.length > 0
         table.table
           for cost in costs

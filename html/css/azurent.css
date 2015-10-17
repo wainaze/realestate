@@ -606,3 +606,52 @@ body {
     padding: 10px;
     margin-bottom: 20px;
 }
+
+#addCostsArea {
+}
+
+.costsPlaceholder {
+    border-color: #DDD;
+    padding: 30px;
+    border-width: 3px;
+    border-top-width: 3px;
+    border-right-width: 3px;
+    border-bottom-width: 3px;
+    border-left-width: 3px;
+    border-style: dashed;
+    margin: 15px;
+    border-radius: 5px;
+    color: #BBB;
+}
+
+.costsPlaceholder > span{
+    margin-right: 10px;
+}
+
+.costsEditArea {
+    margin: 15px;
+    display: none;
+}
+
+.costDescription,
+.costAmount {
+    border: 1px solid #DDD;
+    padding: 10px;
+    margin-bottom: 20px;
+}
+
+
+.costAmount {
+    width: 20%;
+}
+.costDescription{
+    float: right;
+    margin-left: 150px;
+    width: 79%;
+}
+
+[contenteditable=true]:empty:before{
+  content: attr(placeholder);
+  display: block; /* For Firefox */
+  color: #CCC;
+}

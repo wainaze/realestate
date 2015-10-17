@@ -227,6 +227,19 @@ module.exports = (function() {
         });
     });
 
+    router.post('/addCost',ensureLogin.ensureLoggedIn('/'), function(req, res) {
+        var userId = req.user.id;
+        var issueId = req.body.issueId;
+        var costDescription = req.body.costDescription;
+        var costAmount = req.body.costAmount;
+        var issue = db.issues.getIssue(userId, issueId);
+        var transactionId = db.transactions.addTransaction(userId, issue.issuePropertyId, costAmount, costDescription);
+        if (issue.costs == null)
+            issue.costs = [];
+        issue.costs.push(transactionId);   
+        res.send('ok');
+    });
+
     router.post('/addComment',ensureLogin.ensureLoggedIn('/'), function(req, res) {
         var userId = req.user.id;
         var issueId = req.body.issueId;

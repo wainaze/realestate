@@ -16,17 +16,19 @@ block content
             td= issue.issueCaption
             td= issue.property.name
             td= issue.creationDate
-            td= +issueActionButton(issue)
+            td
+              +issueActionButton(issue)
         if solvedIssues.length > 0
           tr
             td(colspan='4')
               #solvedIssues Solved
-              for issue in solvedIssues
-                tr.issue.solved(data-id=issue.id)
-                  td= issue.issueCaption
-                  td= issue.property.name
-                  td= issue.creationDate
-                  td= +issueActionButton(issue)
+          for issue in solvedIssues
+            tr.issue.solved(data-id=issue.id)
+              td= issue.issueCaption
+              td= issue.property.name
+              td= issue.creationDate
+              td
+                +issueActionButton(issue)
   script(type='text/javascript', src='js/jquery.js')
   script(type='text/javascript', src='js/bootstrap.js')  
   script(type='text/javascript', src='js/problems.js')
