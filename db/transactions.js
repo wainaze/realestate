@@ -27,7 +27,7 @@ exports.getAllPayments = function(userId){
 
 exports.getTransaction = function(userId, transactionId) {
     for (var i = 0; i < records.length; i++) {
-        if (records[i].id == propertyId && records[i].userId == userId)
+        if (records[i].id == transactionId && records[i].userId == userId)
             return records[i];
     }
 
