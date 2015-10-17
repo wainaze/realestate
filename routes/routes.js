@@ -178,29 +178,34 @@ module.exports = (function() {
     });
 
     router.get('/problem.html', ensureLogin.ensureLoggedIn('/'), function(req, res) {
-        var userId = req.user.id;
-        var properties = db.properties.getAllProperties(userId);
-        var totalIssues = getTotalIssues(properties);
+        try {
+            var userId = req.user.id;
+            var properties = db.properties.getAllProperties(userId);
+            var totalIssues = getTotalIssues(properties);
 
-        var issue = db.issues.getIssue(userId, req.query.issueId);
-        if (issue == null)
-            res.redirect('/problems.html');
+            var issue = db.issues.getIssue(userId, req.query.issueId);
+            if (issue == null)
+                res.redirect('/problems.html');
 
-        if (issue.status == 'new')
-            issue.status = 'open';
-        var costs = [];
-        issue.costs.forEach(function(transactionId) {
-            var transaction = db.transactions.getTransaction(userId, transactionId);
-            costs.push(transaction);
-        });
-        res.render('problem', {
-            status: {
-                totalIssues: totalIssues
-            },
-            user: req.user,
-            issue: issue,
-            costs: costs
-        });
+            if (issue.status == 'new')
+                issue.status = 'open';
+            var costs = [];
+            issue.costs.forEach(function(transactionId) {
+                var transaction = db.transactions.getTransaction(userId, transactionId);
+                costs.push(transaction);
+            });
+            res.render('problem', {
+                status: {
+                    totalIssues: totalIssues
+                },
+                user: req.user,
+                issue: issue,
+                costs: costs
+            });
+        } catch (e) {
+            res.send(e.message);
+        }
+
     });
 
     router.get('/problems.html', ensureLogin.ensureLoggedIn('/'), function(req, res) {
