@@ -56,7 +56,24 @@ block content
               td.fullWidth= cost.description
       if costs.length = 0 
         .noCost there are no cost yet
-
+    #problemCommentsMenu.row
+      h3 Comments
+      #addCommmentArea
+        .commentPlaceholder
+          span.glyphicon.glyphicon-plus
+          | Click here to add a comment
+        .commentEditArea
+          .commentText(contenteditable='true')
+          .commentButtons
+            #addCommentButton.btn.btn-primary Add
+            #cancelCommentButton.btn.btn-default Cancel
+    #problemComments.row
+      table.table
+        tbody
+          if issue.comments
+            for comment in issue.comments
+              tr
+                td= comment
   script(type='text/javascript', src='js/jquery.js')
   script(type='text/javascript', src='js/bootstrap.js')
   script(type='text/javascript', src='js/issue.js')
