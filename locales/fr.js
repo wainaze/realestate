@@ -40,5 +40,8 @@
 	"Since": "Depuis",
 	"Till": "avant",
 	"Age": "Age",
-	"Phone": "Phone"
+	"Phone": "Phone",
+	"Problem costs": "Problem costs",
+	"Comments": "Comments",
+	"Click here to add a comment": "Click here to add a comment"
 }
