@@ -234,10 +234,9 @@ module.exports = (function() {
         console.log('comment ' + commentText);
         if (commentText && commentText.length){
             var issue = db.issues.getIssue(userId, issueId);
-            var comments = issue.comments;
-            console.log('issue' + JSON.stringify(comments));
-            comments.push(commentText);   
-            console.log('issue' + JSON.stringify(comments));
+            if (issue.comments == null)
+                issue.comments = [];
+            issue.comments.push(commentText);   
         }
         res.send('ok');
     });
