@@ -43,6 +43,6 @@
 	"Phone": "Téléphone",
 	"Problem costs": "Coûts de la réparation",
 	"Comments": "Commentaires",
-	"Cost amount": "Montant"
+	"Cost amount": "Montant",
 	"Click here to add a comment": "Cliquez ici pour ajouter un commentaire"
 }
