@@ -90,7 +90,7 @@ module.exports = (function() {
             status: {
                 due: totalDue,
                 totalIssues: totalIssues,
-                newIssues: totalNewIssues,
+                totalNewIssues: totalNewIssues,
                 totalIncome: '39.800',
                 totalCosts: '12.564'
             },
@@ -101,10 +101,11 @@ module.exports = (function() {
     router.get('/paymentStatus.html', ensureLogin.ensureLoggedIn('/'), function(req, res) {
         var userId = req.user.id;
         var properties = db.properties.getAllProperties(userId);
-        var totalIssues = getTotalIssues(properties);
+        var totalNewIssues = getTotalNewIssues(properties);
+
         res.render('paymentStatus', {
             status: {
-                totalIssues: totalIssues
+                totalNewIssues: totalNewIssues
             },
             user: req.user
         });
@@ -113,7 +114,7 @@ module.exports = (function() {
     router.get('/payments.html', ensureLogin.ensureLoggedIn('/'), function(req, res) {
         var userId = req.user.id;
         var properties = db.properties.getAllProperties(userId);
-        var totalIssues = getTotalIssues(properties);
+        var totalNewIssues = getTotalNewIssues(properties);
 
         var transactions = db.transactions.getAllPayments(userId);
         transactions.forEach(function(transaction) {
@@ -135,7 +136,7 @@ module.exports = (function() {
 
         res.render('payments', {
             status: {
-                totalIssues: totalIssues
+                totalNewIssues: totalNewIssues
             },
             user: req.user,
             transactions: transactions
@@ -145,7 +146,7 @@ module.exports = (function() {
     router.get('/property.html', ensureLogin.ensureLoggedIn('/'), function(req, res) {
         var userId = req.user.id;
         var properties = db.properties.getAllProperties(userId);
-        var totalIssues = getTotalIssues(properties);
+        var totalNewIssues = getTotalNewIssues(properties);
         var property = db.properties.getProperty(userId, req.query.id);
         if (property == null)
             res.redirect('/properties.html');
@@ -155,7 +156,7 @@ module.exports = (function() {
         var issues = db.issues.getOpenIssuesForProperty(req.query.id);
         res.render('property', {
             status: {
-                totalIssues: totalIssues
+                totalNewIssues: totalNewIssues
             },
             user: req.user,
             property: property,
@@ -168,10 +169,10 @@ module.exports = (function() {
     router.get('/tenants.html', ensureLogin.ensureLoggedIn('/'), function(req, res) {
         var userId = req.user.id;
         var properties = db.properties.getAllProperties(userId);
-        var totalIssues = getTotalIssues(properties);
+        var totalNewIssues = getTotalNewIssues(properties);
         res.render('tenants', {
             status: {
-                totalIssues: totalIssues
+                totalNewIssues: totalNewIssues
             },
             user: req.user
         });
@@ -181,7 +182,7 @@ module.exports = (function() {
         try {
             var userId = req.user.id;
             var properties = db.properties.getAllProperties(userId);
-            var totalIssues = getTotalIssues(properties);
+            var totalNewIssues = getTotalNewIssues(properties);
 
             var issue = db.issues.getIssue(userId, req.query.issueId);
             if (issue == null)
@@ -196,7 +197,7 @@ module.exports = (function() {
             });
             res.render('problem', {
                 status: {
-                    totalIssues: totalIssues
+                    totalNewIssues: totalNewIssues
                 },
                 user: req.user,
                 issue: issue,
@@ -212,14 +213,14 @@ module.exports = (function() {
         var userId = req.user.id;
 
         var properties = db.properties.getAllProperties(userId);
-        var totalIssues = getTotalIssues(properties);
+        var totalNewIssues = getTotalNewIssues(properties);
 
         var openIssues = db.issues.getAllUnsolvedIssues(userId);
         var solvedIssues = db.issues.getAllSolvedIssues(userId);
 
         res.render('problems', {
             status: {
-                totalIssues: totalIssues
+                totalNewIssues: totalNewIssues
             },
             user: req.user,
             openIssues: openIssues,

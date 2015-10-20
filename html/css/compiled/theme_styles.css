@@ -460,19 +460,20 @@ h1 small, h2 small, h3 small, h1 .small, h2 .small, h3 .small {
 }
 
 #header-navbar .nav>li>a>span.count {
-	background: none repeat scroll 0 0 #e84e40;
-	border-radius: 50%;
-	background-clip: padding-box;
-	color: #fff;
-	display: block;
-	font-size: 9px;
-	height: 14px;
-	line-height: 14px;
-	position: absolute;
-	right: 10px;
-	text-align: center;
-	top: 11px;
-	width: 14px;
+    background: none repeat scroll 0 0 #e84e40;
+    border-radius: 50%;
+    background-clip: padding-box;
+    color: #fff;
+    display: block;
+    font-size: 16px;
+    height: 23px;
+    line-height: 23px;
+    position: absolute;
+    right: 4px;
+    text-align: center;
+    top: 9px;
+    width: 23px;
+    font-weight: bold;
 }
 
 #header-navbar .profile-dropdown>a {
@@ -520,7 +521,7 @@ h1 small, h2 small, h3 small, h1 .small, h2 .small, h3 .small {
 }
 
 #header-navbar .nav>li>a>i, #sidebar-nav .nav>li>a>i {
-	font-size: 1.125em;
+	font-size: 1.5em;
 }
 
 #sidebar-nav .nav>li>a:focus, #sidebar-nav .nav .open>a, #sidebar-nav .nav .open>a:focus

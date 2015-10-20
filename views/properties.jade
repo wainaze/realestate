@@ -20,7 +20,7 @@ mixin property(property)
                 |  #{__('due')}
             if property.issuesTotal > 0
               span.hasIssues= property.issuesTotal
-              |  issues	
+              |  #{__('issues')}	
             else
                div #{__('No issues')}
 
@@ -39,10 +39,10 @@ block content
         a(href='problems.html')
           #problemCount
             = status.totalIssues
-            if status.newIssues > 0
+            if status.totalNewIssues > 0
               span 
                 |(+
-                = status.newIssues
+                = status.totalNewIssues
                 |)
           .buttonCaption #{__('Open problems')}
     .dashboard-button.col-xs-3

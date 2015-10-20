@@ -2,7 +2,7 @@
 	"Username": "Gebruiker",
 	"Password": "Wachtwoord",
 	"Login": "Login",
-	"Sign in": "Sign in",
+	"Sign in": "Aanmelden",
 	"due till now": "verschuldigd tot nu",
 	"Open problems": "openstaande problemen",
 	"earned this year": "total winst",
@@ -35,6 +35,7 @@
 	"Income": "Inkomsten",
 	"Cost": "Kosten",
 	"Issues": "Problemen",
+	"issues": "problemen",
 	"Documents": "Documenten",
 	"Pictures": "Photos",
 	"Month": "Maand",
@@ -44,8 +45,5 @@
 	"Since": "Van",
 	"Till": "Tot",
 	"Age": "Leeftijd",
-	"Phone": "Phone",
-	"EN": "EN",
-	"NL": "NL",
-	"FR": "FR"
+	"Phone": "Phone"
 }

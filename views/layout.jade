@@ -7,7 +7,8 @@ html
     meta(charset='UTF-8')
     meta(name='viewport', content='width=device-width, initial-scale=1.0')
     meta(http-equiv='X-UA-Compatible', content='IE=edge,chrome=1')
-    title Cube - Bootstrap Admin Template
+    title Azurent
+    link(rel="shortcut icon", href="/img/favicon.ico")
     link(rel='stylesheet', type='text/css', href='css/bootstrap/bootstrap.min.css')
     link(rel='stylesheet', type='text/css', href='css/libs/font-awesome.css')
     link(rel='stylesheet', type='text/css', href='css/libs/nanoscroller.css')
@@ -27,8 +28,8 @@ html
               li.dropdown.hidden-xs
                 a.btn.icon(href='/problems.html')
                   i.fa.fa-bell
-                  if status.totalIssues > 0
-                    span.count= status.totalIssues
+                  if status.totalNewIssues > 0
+                    span.count= status.totalNewIssues
               
               li.dropdown.hidden-xs
                 a.btn.icon
