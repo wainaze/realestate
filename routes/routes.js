@@ -122,6 +122,10 @@ module.exports = (function() {
             transaction.property = property;
         });
 
+        transactions = transactions.filter(function(transaction){
+            return transaction.property != null;
+        });
+
         transactions.sort(function(a, b) {
             if (a.timestamp > b.timestamp) {
                 return 1;
@@ -319,6 +323,39 @@ module.exports = (function() {
         var lang = req.query.lang;
         res.cookie('lang',lang);
         res.send('ok');
+    });
+
+    router.get('/manageProperties.html', ensureLogin.ensureLoggedIn('/'), function(req, res) {
+        var userId = req.user.id;
+        var properties = db.properties.getAllProperties(userId);
+        var totalNewIssues = getTotalNewIssues(properties);
+        res.render('manageProperties', {
+            status: {
+                totalNewIssues: totalNewIssues
+            },
+            properties: properties,
+            user: req.user
+        });        
+    });
+
+    router.post('/addProperty', ensureLogin.ensureLoggedIn('/'), function(req, res) {
+        var userId = req.user.id;
+        var newProperty = {
+            userId: userId,
+            name: req.body.name,
+            address: req.body.address,
+            img: 'img/house1.jpg',
+            issuesTotal: 0
+        }
+        var propertyId = db.properties.addProperty(newProperty);
+        res.redirect('/manageProperties.html');
+    });
+
+    router.post('/removeProperty', ensureLogin.ensureLoggedIn('/'), function(req, res) {
+        var userId = req.user.id;
+        var propertyId = req.body.propertyId;
+        db.properties.removeProperty(propertyId);
+        res.redirect('/manageProperties.html');
     });
 
     return router;
