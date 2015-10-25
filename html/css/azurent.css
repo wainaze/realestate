@@ -314,6 +314,10 @@ body {
     background-color: rgba(238, 238, 238, 0.15);
 }
 
+tr.tenant > td:first-child{
+    width : 25px;
+}
+
 .fields {
     padding: 20px;
 }

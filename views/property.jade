@@ -68,7 +68,7 @@ block content
                       td= tenant.contractBegin
                       td= tenant.contractEnd
                     tr.detailsRow
-                      td(colspan='3')
+                      td(colspan='999')
                         .details
                           table
                             tr
@@ -79,9 +79,9 @@ block content
                                 .field
                                   .fieldName #{__('Age')}:
                                   .fieldValue= tenant.age
-                              .field
-                                .fieldName #{__('Phone')}:
-                                .fieldValue= tenant.phone
+                                .field
+                                  .fieldName #{__('Phone')}:
+                                  .fieldValue= tenant.phone
               #issues.tab-pane(role='tabpanel')
                 table.table
                   tr
