@@ -31,6 +31,8 @@
     "i18n-2": "~0.4.6",
     "jade": "^1.11.0",
     "morgan": "^1.6.1",
+    "nodemailer": "^1.8.0",
+    "nodemailer-smtp-transport": "^1.0.3",
     "passport": "^0.2.2",
     "passport-local": "^1.0.0"
   },

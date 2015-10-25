@@ -2,7 +2,6 @@ var passport = require('passport');
 var Strategy = require('passport-local').Strategy;
 var db = require('../db');
 var ensureLogin = require('connect-ensure-login');
-var elasticMailService = require('../services/elasticMailService');
 var emailService = require('../services/emailService');
 
 function getTotalDue(properties) {
@@ -308,7 +307,7 @@ module.exports = (function() {
     router.get('/subscribe', function(req, res) {
         var email = req.query.email;
         emailService.addEmail(email);
-        elasticMailService.sendMail({
+        emailService.sendMail({
             to: email,
             subject: 'Thank you for subscribing to Azurent',
             body_text: 'You\'re subscribed',
