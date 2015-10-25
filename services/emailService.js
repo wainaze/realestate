@@ -17,13 +17,8 @@ var transporter = nodemailer.createTransport(smtpTransport({
 }));
 
 exports.addEmail = function(email) {
-	var emails = [];
-	try {
-    	emails = JSON.parse(fs.readFileSync('emails.json', 'utf8'));
-    } catch (e) {
-    	console.log('Emails file does not exist and will be created');
-    }
-    
+	var emails = this.listEmails();
+
     if (emails.indexOf(email) < 0) {
         emails.push(email);
         fs.writeFile('emails.json', JSON.stringify(emails), function(err) {
@@ -48,3 +43,14 @@ exports.sendMail = function(mail) {
 	    console.log('Message sent: ' + info.response);
 	});
 }
+
+exports.listEmails = function() {
+	var emails = [];
+	try {
+    	emails = JSON.parse(fs.readFileSync('emails.json', 'utf8'));
+    } catch (e) {
+    	console.log('Emails file does not exist and will be created');
+    };
+
+    return emails;
+ }

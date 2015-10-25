@@ -231,6 +231,31 @@ module.exports = (function() {
         });
     });
 
+    router.get('/manageProperties.html', ensureLogin.ensureLoggedIn('/'), function(req, res) {
+        var userId = req.user.id;
+        var properties = db.properties.getAllProperties(userId);
+        var totalNewIssues = getTotalNewIssues(properties);
+        res.render('manageProperties', {
+            status: {
+                totalNewIssues: totalNewIssues
+            },
+            properties: properties,
+            user: req.user
+        });        
+    });
+
+    router.get('/listSubscribers.html', function(req, res) {
+         // Disable caching for content files
+        res.header("Cache-Control", "no-cache, no-store, must-revalidate");
+        res.header("Pragma", "no-cache");
+        res.header("Expires", 0);
+        
+        var subscribers = emailService.listEmails();
+        res.render('listSubscribers', {
+            subscribers: subscribers
+        });        
+    });
+
     router.post('/addCost',ensureLogin.ensureLoggedIn('/'), function(req, res) {
         var userId = req.user.id;
         var issueId = req.body.issueId;
@@ -322,19 +347,6 @@ module.exports = (function() {
         var lang = req.query.lang;
         res.cookie('lang',lang);
         res.send('ok');
-    });
-
-    router.get('/manageProperties.html', ensureLogin.ensureLoggedIn('/'), function(req, res) {
-        var userId = req.user.id;
-        var properties = db.properties.getAllProperties(userId);
-        var totalNewIssues = getTotalNewIssues(properties);
-        res.render('manageProperties', {
-            status: {
-                totalNewIssues: totalNewIssues
-            },
-            properties: properties,
-            user: req.user
-        });        
     });
 
     router.post('/addProperty', ensureLogin.ensureLoggedIn('/'), function(req, res) {
