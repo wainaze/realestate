@@ -17,7 +17,13 @@ var transporter = nodemailer.createTransport(smtpTransport({
 }));
 
 exports.addEmail = function(email) {
-    var emails = JSON.parse(fs.readFileSync('emails.json', 'utf8'));
+	var emails = [];
+	try {
+    	emails = JSON.parse(fs.readFileSync('emails.json', 'utf8'));
+    } catch (e) {
+    	console.log('Emails file does not exist and will be created');
+    }
+    
     if (emails.indexOf(email) < 0) {
         emails.push(email);
         fs.writeFile('emails.json', JSON.stringify(emails), function(err) {
