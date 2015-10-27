@@ -1,3 +1,5 @@
+var moment = require('moment');
+
 var records = [{
     propertyId: 1,
     name: 'Adam Jacque',
@@ -25,7 +27,21 @@ var records = [{
 }, ]
 
 exports.getTenants = function(propertyId) {
-    return records.filter(function(value) {
+    var tenants = records.filter(function(value) {
         return value.propertyId == propertyId;
     });
+    tenants = tenants.sort(function(a,b){
+        return moment(a.contractBegin, 'DD/MM/YYYY').diff(moment(b.contractBegin, 'DD/MM/YYYY'), 'days');
+    });
+    tenants.reverse();
+    tenants.forEach(function(tenant){
+        if (tenant.birthDate) {
+            tenant.age = moment().diff(moment(tenant.birthDate, 'DD/MM/YYYY'), 'years');   
+        }
+    });
+    return tenants;
+}
+
+exports.addTenant = function(tenant) {
+    records.push(tenant);
 }

@@ -876,13 +876,6 @@ h1 small, h2 small, h3 small, h1 .small, h2 .small, h3 .small {
 	width: 220px;
 }
 
-@media ( max-width : 991px) {
-	#nav-col {
-		position: relative;
-		width: auto;
-	}
-}
-
 #sidebar-nav {
 	max-height: 100%;
 	padding-left: 0;

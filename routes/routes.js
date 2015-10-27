@@ -369,5 +369,20 @@ module.exports = (function() {
         res.redirect('/manageProperties.html');
     });
 
+    router.post('/saveTenant', ensureLogin.ensureLoggedIn('/'), function(req, res) {
+        var userId = req.user.id;
+        var propertyId = req.body.propertyId;
+        db.tenants.addTenant({
+            propertyId: propertyId,
+            name: req.body.tenantName,
+            contractBegin: req.body.since,
+            contractEnd: req.body.till,
+            picture: 'img/samples/noface.jpg',
+            birthDate: req.body.birthDate,
+            phone: req.body.phoneNumber
+        });
+        res.send('ok');
+    });
+
     return router;
 })();

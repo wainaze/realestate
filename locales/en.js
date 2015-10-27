@@ -40,5 +40,12 @@
 	"Since": "Since",
 	"Till": "Till",
 	"Age": "Age",
-	"Phone": "Phone"
+	"Phone": "Phone",
+	"issues": "issues",
+	"Add tenant": "Add tenant",
+	"Cancel": "Cancel",
+	"Save": "Save",
+	"Tenant name": "Tenant name",
+	"Birth date": "Birth date",
+	"Phone Number": "Phone Number"
 }
