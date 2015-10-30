@@ -340,7 +340,7 @@ module.exports = (function() {
             from: 'admin@azurent.be',
             fromName: 'Azurent'
         });
-        res.send('ok');
+        res.redirect('http://www.azurent.be/index.html?subscribed=ok');
     });
 
     router.get('/setLang', function(req, res){
