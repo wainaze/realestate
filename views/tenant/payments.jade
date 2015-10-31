@@ -2,26 +2,33 @@ extends ../layoutTenant.jade
 
 block content
   .row(style='opacity: 1;')
-    table.table
-      tr
-        th(style='min-width: 200px;') #{__('Month')}
-        th(style='min-width: 200px;') #{__('Due')}
-        th(style='min-width: 200px;') #{__('Payed')}
-        th.align-right #{__('Payment')}
-        th(style='width: 100%')
-      for payment in payments
-        tr
-          td= payment.month
-          td= payment.dueDate
-          td= payment.payedDate
-          td(class= payment.payment > 0 ? 'align-right paymentOK' : 'align-right paymentNOK')
-            = payment.payment 
-            |&euro;
-          td.vAlign-center
-            if payment.payment < 0
-              a.reminderButton(href='#')
-                span.label.label-danger #{__('Send reminder')}
-                
+    .propertyPage.col-xs-12
+      .row
+        #pageCaption.col-xs-12
+          = __('Payments')
+      
+      .row
+        .col-xs-12
+          table.table
+            tr
+              th(style='min-width: 200px;') #{__('Month')}
+              th(style='min-width: 200px;') #{__('Due')}
+              th(style='min-width: 200px;') #{__('Payed')}
+              th.align-right #{__('Payment')}
+              th(style='width: 100%')
+            for payment in payments
+              tr
+                td= payment.month
+                td= payment.dueDate
+                td= payment.payedDate
+                td(class= payment.payment > 0 ? 'align-right paymentOK' : 'align-right paymentNOK')
+                  = payment.payment 
+                  |&euro;
+                td.vAlign-center
+                  if payment.payment < 0
+                    a.reminderButton(href='#')
+                      span.label.label-danger #{__('Send reminder')}
+
 block scripts    
   script(type='text/javascript', src='js/jquery.mask.min.js')
   script(type='text/javascript', src='js/bootstrap-datepicker.min.js')
