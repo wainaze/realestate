@@ -39,7 +39,7 @@ router.use(ensureLogin.ensureLoggedIn('/'));
 router.use(userAccess.userHasRole('landlord'));
 
 router.get('/', function(req, res){
-	res.redirect('/properties.html');
+	res.redirect('properties.html');
 });
 
 // define the home page route
@@ -120,7 +120,7 @@ router.get('/property.html', function(req, res) {
     var property = db.properties.getProperty(req.query.id);
 
     if (!property || property.userId != userId)
-        res.redirect('/properties.html');
+        res.redirect('properties.html');
 
     var payments = db.payments.geyPayments(req.query.id);
     var tenants = db.tenants.getTenants(req.query.id);
@@ -158,7 +158,7 @@ router.get('/problem.html', function(req, res) {
 
         var issue = db.issues.getIssue(userId, req.query.issueId);
         if (issue == null)
-            res.redirect('/problems.html');
+            res.redirect('problems.html');
 
         if (issue.status == 'new')
             issue.status = 'open';
