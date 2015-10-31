@@ -19,7 +19,7 @@ $('#cancelCommentButton').on('click', function() {
 
 function addComment(text) {
     var issueId = getParameterByName('issueId');
-    $.post('/addComment', {
+    $.post('/api/addComment', {
         issueId: issueId,
         commentText: text
     });
@@ -43,7 +43,7 @@ $('#addCostsButton').on('click', function() {
 
 function addCost(description, amount) {
     var issueId = getParameterByName('issueId');
-    $.post('/addCost', {
+    $.post('/api/addCost', {
         issueId: issueId,
         costDescription: description,
         costAmount: amount
@@ -60,7 +60,7 @@ $('#cancelCostsButton').on('click', function() {
 
 $('.holdIssue').on('click', function() {
     var issueId = getParameterByName('issueId');
-    $.post('/holdIssue', {
+    $.post('/api/holdIssue', {
         issueId: issueId
     });
     window.location.reload();
@@ -68,7 +68,7 @@ $('.holdIssue').on('click', function() {
 
 $('.reopenIssue').on('click', function() {
     var issueId = getParameterByName('issueId');
-    $.post('/reopenIssue', {
+    $.post('/api/reopenIssue', {
         issueId: issueId
     });
     window.location.reload();
@@ -76,7 +76,7 @@ $('.reopenIssue').on('click', function() {
 
 $('.solveIssue').on('click', function() {
     var issueId = getParameterByName('issueId');
-    $.post('/solveIssue', {
+    $.post('/api/solveIssue', {
         issueId: issueId
     });
     window.location.reload();
@@ -84,7 +84,7 @@ $('.solveIssue').on('click', function() {
 
 $('.rejectIssue').on('click', function() {
     var issueId = getParameterByName('issueId');
-    $.post('/rejectIssue', {
+    $.post('/api/rejectIssue', {
         issueId: issueId
     });
     window.location.reload();

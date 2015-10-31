@@ -137,6 +137,7 @@ var SampleApp = function() {
         self.app.use('/', router);
         self.app.use('/landlord', require('./routes/landlords.js'));
         self.app.use('/tenant', require('./routes/tenants.js'));
+        self.app.use('/api', require('./routes/api.js'));
     };
 
     self.initialize = function() {

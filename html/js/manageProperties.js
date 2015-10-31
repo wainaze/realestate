@@ -16,7 +16,7 @@ $('#cancelAddPropertyButton').on('click', function() {
 });
 
 function addProperty() {
-    $.post('/addProperty', {
+    $.post('/api/addProperty', {
         name: $('#propertyName').val(),
         address: $('#propertyAddress').val()
     }).done(function(){
@@ -25,11 +25,11 @@ function addProperty() {
 };
 $(document).on('click', '.viewProperty', function(){
     var propertyId = $(this).data('propertyid');
-    location.href='/property.html?id=' + propertyId;
+    location.href='property.html?id=' + propertyId;
 });
 $(document).on('click', '.removeProperty', function(){
     var propertyId = $(this).data('propertyid');
-    $.post('/removeProperty', {
+    $.post('/api/removeProperty', {
         propertyId: propertyId
     }).done(function(){
         window.location.reload();

@@ -45,5 +45,11 @@
 	"Problem costs": "Coûts de la réparation",
 	"Comments": "Commentaires",
 	"Cost amount": "Montant",
-	"Click here to add a comment": "Cliquez ici pour ajouter un commentaire"
+	"Click here to add a comment": "Cliquez ici pour ajouter un commentaire",
+	"Add tenant": "Add tenant",
+	"Cancel": "Cancel",
+	"Save": "Save",
+	"Tenant name": "Tenant name",
+	"Birth date": "Birth date",
+	"Phone Number": "Phone Number"
 }

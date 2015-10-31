@@ -30,7 +30,7 @@ function closeTenantDialog(){
 function saveTenant(){
 	propertyId = getParameterByName('id');
 	$.post(
-		'/saveTenant', 
+		'/api/saveTenant', 
 		{
 			propertyId : propertyId,
 			tenantName : $('#tenantName').val(),

@@ -11,24 +11,24 @@ $(document).on('click', '.btn-group', function(e){
 
 $('.holdIssue').on('click', function(){
 	var issueId = $(this).parents('tr.issue').first().data('id');
-	$.post('/holdIssue', { issueId: issueId });
+	$.post('/api/holdIssue', { issueId: issueId });
 	window.location.reload();
 });
 
 $('.reopenIssue').on('click', function(){
 	var issueId = $(this).parents('tr.issue').first().data('id');
-	$.post('/reopenIssue', { issueId: issueId });
+	$.post('/apireopenIssue', { issueId: issueId });
 	window.location.reload();
 });
 
 $('.solveIssue').on('click', function(){
 	var issueId = $(this).parents('tr.issue').first().data('id');
-	$.post('/solveIssue', { issueId: issueId });
+	$.post('/api/solveIssue', { issueId: issueId });
 	window.location.reload();
 });
 
 $('.rejectIssue').on('click', function(){
 	var issueId = $(this).parents('tr.issue').first().data('id');
-	$.post('/rejectIssue', { issueId: issueId });
+	$.post('/api/rejectIssue', { issueId: issueId });
 	window.location.reload();
 });
