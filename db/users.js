@@ -6,7 +6,10 @@ var records = [{
     photo: '/img/samples/noface.jpg',
     emails: [{
         value: 'jack@example.com'
-    }]
+    }],
+    roles: [
+        'landlord'
+    ]
 }, {
     id: 2,
     username: 'jill',
@@ -15,7 +18,22 @@ var records = [{
     photo: '/img/samples/noface.jpg',
     emails: [{
         value: 'jill@example.com'
-    }]
+    }],
+    roles: [
+        'landlord'
+    ]
+}, {
+    id: 3,
+    username: 'tenant',
+    password: 'tenant',
+    displayName: 'Tenant',
+    photo: '/img/samples/noface.jpg',
+    emails: [{
+        value: 'wbearfromru@gmail.com'
+    }],
+    roles: [
+        'tenant'
+    ]
 }];
 
 exports.findById = function(id, cb) {

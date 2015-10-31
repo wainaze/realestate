@@ -24,18 +24,11 @@ html
         
         .clearfix
           .nav-no-collapse.navbar-left.pull-left.hidden-sm.hidden-xs
-            ul.nav.navbar-nav.pull-left
-              li.dropdown.hidden-xs
-                a.btn.icon(href='/problems.html')
-                  i.fa.fa-bell
-                  if status.totalNewIssues > 0
-                    span.count= status.totalNewIssues
-              
+            ul.nav.navbar-nav.pull-left              
               li.dropdown.hidden-xs
                 a.btn.icon
                   i.fa.fa-envelope-o
                   |  
-                  
                   span.count 1
           
           #header-nav.nav-no-collapse.pull-right
@@ -48,7 +41,6 @@ html
                 a.dropdown-toggle(href='#')
                   img(src=user.photo, alt='')
                   |  
-                  
                   span.hidden-xs= user.displayName
               
               li.hidden-xxs
@@ -59,23 +51,14 @@ html
       #side-navbar
         ul.nav
           li
-            a(href='properties.html')
-              span #{__('Properties')}
-            .edit
-              a(href='manageProperties.html')
-                span.glyphicon.glyphicon-wrench            
-          li
-            a(href='tenants.html')
-              span #{__('Tenants')}
-          
+            a(href='payments.html')
+              span #{__('Payments')}         
           li
             a(href='problems.html')
-              span #{__('Problems')}
-          
+              span #{__('Problems')}          
           li
-            a(href='payments.html')
-              span #{__('Payments')}
-    
+            a(href='documents.html')
+              span #{__('Documents')}    
     #content-wrapper
       block content
     

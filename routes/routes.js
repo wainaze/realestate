@@ -1,39 +1,9 @@
 var passport = require('passport');
 var Strategy = require('passport-local').Strategy;
-var db = require('../db');
 var ensureLogin = require('connect-ensure-login');
+var db = require('../db');
 var emailService = require('../services/emailService');
-
-function getTotalDue(properties) {
-    var due = 0;
-    properties.forEach(function(property) {
-        if (property.payment < 0)
-            due += property.payment;
-    });
-
-    return Math.abs(due);
-}
-
-function getTotalIssues(properties) {
-    var totalIssues = 0;
-    properties.forEach(function(property) {
-        var issues = db.issues.getOpenIssuesForProperty(property.id);
-        totalIssues += issues.length;
-    });
-    return totalIssues;
-}
-
-function getTotalNewIssues(properties) {
-    var totalNewIssues = 0;
-    properties.forEach(function(property) {
-        var issues = db.issues.getOpenIssuesForProperty(property.id);
-        issues = issues.filter(function(issue) {
-            return issue.status == 'new';
-        });
-        totalNewIssues += issues.length;
-    });
-    return totalNewIssues;
-}
+var userAccess = require('../services/userAccessService');
 
 passport.use(new Strategy(
     function(username, password, cb) {
@@ -69,265 +39,39 @@ module.exports = (function() {
     var router = express.Router();
 
     router.get('/', function(req, res) {
-        res.redirect('/index.html');
+        res.redirect('/home.html');
     });
 
-    router.get('/index.html', function(req, res) {
-        res.render('index', {});
+    router.get('/login.html', function(req, res) {
+        res.render('login', {});
     });
 
-    router.get('/properties.html', ensureLogin.ensureLoggedIn('/'), function(req, res) {
-        var userId = req.user.id;
-        var properties = db.properties.getAllProperties(userId);
-
-        var totalDue = getTotalDue(properties);
-        var totalIssues = getTotalIssues(properties);
-        var totalNewIssues = getTotalNewIssues(properties);
-
-        res.render('properties', {
-            user: req.user,
-            status: {
-                due: totalDue,
-                totalIssues: totalIssues,
-                totalNewIssues: totalNewIssues,
-                totalIncome: '39.800',
-                totalCosts: '12.564'
-            },
-            properties: properties
-        });
-    });
-
-    router.get('/paymentStatus.html', ensureLogin.ensureLoggedIn('/'), function(req, res) {
-        var userId = req.user.id;
-        var properties = db.properties.getAllProperties(userId);
-        var totalNewIssues = getTotalNewIssues(properties);
-
-        res.render('paymentStatus', {
-            status: {
-                totalNewIssues: totalNewIssues
-            },
-            user: req.user
-        });
-    });
-
-    router.get('/payments.html', ensureLogin.ensureLoggedIn('/'), function(req, res) {
-        var userId = req.user.id;
-        var properties = db.properties.getAllProperties(userId);
-        var totalNewIssues = getTotalNewIssues(properties);
-
-        var transactions = db.transactions.getAllPayments(userId);
-        transactions.forEach(function(transaction) {
-            var property = db.properties.getProperty(userId, transaction.propertyId);
-            transaction.property = property;
-        });
-
-        transactions = transactions.filter(function(transaction){
-            return transaction.property != null;
-        });
-
-        transactions.sort(function(a, b) {
-            if (a.timestamp > b.timestamp) {
-                return 1;
-            }
-            if (a.timestamp < b.timestamp) {
-                return -1;
-            }
-            // a must be equal to b
-            return 0;
-        });
-        transactions.reverse();
-
-        res.render('payments', {
-            status: {
-                totalNewIssues: totalNewIssues
-            },
-            user: req.user,
-            transactions: transactions
-        });
-    });
-
-    router.get('/property.html', ensureLogin.ensureLoggedIn('/'), function(req, res) {
-        var userId = req.user.id;
-        var properties = db.properties.getAllProperties(userId);
-        var totalNewIssues = getTotalNewIssues(properties);
-        var property = db.properties.getProperty(userId, req.query.id);
-        if (property == null)
-            res.redirect('/properties.html');
-
-        var payments = db.payments.geyPayments(req.query.id);
-        var tenants = db.tenants.getTenants(req.query.id);
-        var issues = db.issues.getOpenIssuesForProperty(req.query.id);
-        res.render('property', {
-            status: {
-                totalNewIssues: totalNewIssues
-            },
-            user: req.user,
-            property: property,
-            payments: payments,
-            tenants: tenants,
-            issues: issues
-        });
-    });
-
-    router.get('/tenants.html', ensureLogin.ensureLoggedIn('/'), function(req, res) {
-        var userId = req.user.id;
-        var properties = db.properties.getAllProperties(userId);
-        var totalNewIssues = getTotalNewIssues(properties);
-        res.render('tenants', {
-            status: {
-                totalNewIssues: totalNewIssues
-            },
-            user: req.user
-        });
-    });
-
-    router.get('/problem.html', ensureLogin.ensureLoggedIn('/'), function(req, res) {
-        try {
-            var userId = req.user.id;
-            var properties = db.properties.getAllProperties(userId);
-            var totalNewIssues = getTotalNewIssues(properties);
-
-            var issue = db.issues.getIssue(userId, req.query.issueId);
-            if (issue == null)
-                res.redirect('/problems.html');
-
-            if (issue.status == 'new')
-                issue.status = 'open';
-            var costs = [];
-            issue.costs.forEach(function(transactionId) {
-                var transaction = db.transactions.getTransaction(userId, transactionId);
-                costs.push(transaction);
-            });
-            res.render('problem', {
-                status: {
-                    totalNewIssues: totalNewIssues
-                },
-                user: req.user,
-                issue: issue,
-                costs: costs
-            });
-        } catch (e) {
-            res.send(e.message);
-        }
-
-    });
-
-    router.get('/problems.html', ensureLogin.ensureLoggedIn('/'), function(req, res) {
-        var userId = req.user.id;
-
-        var properties = db.properties.getAllProperties(userId);
-        var totalNewIssues = getTotalNewIssues(properties);
-
-        var openIssues = db.issues.getAllUnsolvedIssues(userId);
-        var solvedIssues = db.issues.getAllSolvedIssues(userId);
-
-        res.render('problems', {
-            status: {
-                totalNewIssues: totalNewIssues
-            },
-            user: req.user,
-            openIssues: openIssues,
-            solvedIssues: solvedIssues,
-        });
-    });
-
-    router.get('/manageProperties.html', ensureLogin.ensureLoggedIn('/'), function(req, res) {
-        var userId = req.user.id;
-        var properties = db.properties.getAllProperties(userId);
-        var totalNewIssues = getTotalNewIssues(properties);
-        res.render('manageProperties', {
-            status: {
-                totalNewIssues: totalNewIssues
-            },
-            properties: properties,
-            user: req.user
-        });        
-    });
-
-    router.get('/listSubscribers.html', function(req, res) {
-         // Disable caching for content files
-        res.header("Cache-Control", "no-cache, no-store, must-revalidate");
-        res.header("Pragma", "no-cache");
-        res.header("Expires", 0);
-        
-        var subscribers = emailService.listEmails();
-        res.render('listSubscribers', {
-            subscribers: subscribers
-        });        
-    });
-
-    router.post('/addCost',ensureLogin.ensureLoggedIn('/'), function(req, res) {
-        var userId = req.user.id;
-        var issueId = req.body.issueId;
-        var costDescription = req.body.costDescription;
-        var costAmount = req.body.costAmount;
-        var issue = db.issues.getIssue(userId, issueId);
-        var transactionId = db.transactions.addTransaction(userId, issue.issuePropertyId, costAmount, costDescription);
-        if (issue.costs == null)
-            issue.costs = [];
-        issue.costs.push(transactionId);   
-        res.send('ok');
-    });
-
-    router.post('/addComment',ensureLogin.ensureLoggedIn('/'), function(req, res) {
-        var userId = req.user.id;
-        var issueId = req.body.issueId;
-        var commentText = req.body.commentText;
-        console.log('comment ' + commentText);
-        if (commentText && commentText.length){
-            var issue = db.issues.getIssue(userId, issueId);
-            if (issue.comments == null)
-                issue.comments = [];
-            issue.comments.push(commentText);   
-        }
-        res.send('ok');
-    });
-
-    router.post('/solveIssue', ensureLogin.ensureLoggedIn('/'), function(req, res) {
-        var userId = req.user.id;
-        var issueId = req.body.issueId;
-        var issue = db.issues.getIssue(userId, issueId);
-        issue.status = 'solved';
-        res.send('ok');
-    });
-
-    router.post('/holdIssue', ensureLogin.ensureLoggedIn('/'), function(req, res) {
-        var userId = req.user.id;
-        var issueId = req.body.issueId;
-        var issue = db.issues.getIssue(userId, issueId);
-        issue.status = 'on-hold';
-        res.send('ok');
-    });
-
-    router.post('/rejectIssue', ensureLogin.ensureLoggedIn('/'), function(req, res) {
-        var userId = req.user.id;
-        var issueId = req.body.issueId;
-        var issue = db.issues.getIssue(userId, issueId);
-        issue.status = 'rejected';
-        res.send('ok');
-    });
-
-    router.post('/reopenIssue', ensureLogin.ensureLoggedIn('/'), function(req, res) {
-        var userId = req.user.id;
-        var issueId = req.body.issueId;
-        var issue = db.issues.getIssue(userId, issueId);
-        issue.status = 'open';
-        res.send('ok');
+    router.get('/home.html', ensureLogin.ensureLoggedIn('/login.html'), function(req, res) {
+        var user = req.user; 
+        if (userAccess.checkUserHasRole(user, 'landlord')) {
+            res.redirect('/landlord/');
+        } else if (userAccess.checkUserHasRole(user, 'tenant')) {
+            res.redirect('/tenant/');
+        } else {
+            res.redirect('/login.html');    
+        }        
     });
 
     router.post('/login',
         passport.authenticate('local', {
-            failureRedirect: '/'
+            failureRedirect: '/login.html'
         }),
         function(req, res) {
-            res.redirect('/properties.html');
-        });
+            res.redirect('/home.html');
+        }
+    );
 
     router.get('/logout',
         function(req, res) {
             req.logout();
             res.redirect('/');
-        });
+        }
+    );
 
     router.get('/subscribe', function(req, res) {
         var email = req.query.email;
@@ -343,44 +87,21 @@ module.exports = (function() {
         res.redirect('http://www.azurent.be/index.html?subscribed=ok');
     });
 
+    router.get('/listSubscribers.html', function(req, res) {
+         // Disable caching for content files
+        res.header("Cache-Control", "no-cache, no-store, must-revalidate");
+        res.header("Pragma", "no-cache");
+        res.header("Expires", 0);
+        
+        var subscribers = emailService.listEmails();
+        res.render('listSubscribers', {
+            subscribers: subscribers
+        });        
+    });
+
     router.get('/setLang', function(req, res){
         var lang = req.query.lang;
         res.cookie('lang',lang);
-        res.send('ok');
-    });
-
-    router.post('/addProperty', ensureLogin.ensureLoggedIn('/'), function(req, res) {
-        var userId = req.user.id;
-        var newProperty = {
-            userId: userId,
-            name: req.body.name,
-            address: req.body.address,
-            img: 'img/house1.jpg',
-            issuesTotal: 0
-        }
-        var propertyId = db.properties.addProperty(newProperty);
-        res.redirect('/manageProperties.html');
-    });
-
-    router.post('/removeProperty', ensureLogin.ensureLoggedIn('/'), function(req, res) {
-        var userId = req.user.id;
-        var propertyId = req.body.propertyId;
-        db.properties.removeProperty(propertyId);
-        res.redirect('/manageProperties.html');
-    });
-
-    router.post('/saveTenant', ensureLogin.ensureLoggedIn('/'), function(req, res) {
-        var userId = req.user.id;
-        var propertyId = req.body.propertyId;
-        db.tenants.addTenant({
-            propertyId: propertyId,
-            name: req.body.tenantName,
-            contractBegin: req.body.since,
-            contractEnd: req.body.till,
-            picture: 'img/samples/noface.jpg',
-            birthDate: req.body.birthDate,
-            phone: req.body.phoneNumber
-        });
         res.send('ok');
     });
 

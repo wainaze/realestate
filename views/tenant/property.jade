@@ -1,0 +1,102 @@
+extends ../layoutTenant.jade
+
+block content
+  .row(style='opacity: 1;')
+    .propertyPage.col-xs-12
+      .row.propertyDataRow
+        #propertyCaption.col-xs-12
+          = property.name
+      
+      .row
+        .col-xs-12
+          div
+            // Nav tabs
+            ul#tabs.nav.nav-tabs(role='tablist')
+              li.active(role='presentation')
+                a(href='#paymentsList', aria-controls='paymentsList', role='tab', data-toggle='tab')
+                  | #{__('Payments')}(
+                  span(class= property.payment > 0 ? 'paymentOK' : 'paymentNOK')
+                    = property.payment
+                    |&euro;
+                  | )
+                  
+              li(role='presentation')
+                a(href='#issues', aria-controls='issues', role='tab', data-toggle='tab') #{__('Issues')} (5)
+                  
+              li(role='presentation')
+                a(href='#documents', aria-controls='documents', role='tab', data-toggle='tab') #{__('Documents')}
+                
+            // Tab panes
+            .tab-content
+              #paymentsList.tab-pane.active(role='tabpanel')
+                table.table
+                  tr
+                    th(style='min-width: 200px;') #{__('Month')}
+                    th(style='min-width: 200px;') #{__('Due')}
+                    th(style='min-width: 200px;') #{__('Payed')}
+                    th.align-right #{__('Payment')}
+                    th(style='width: 100%')
+                  for payment in payments
+                    tr
+                      td= payment.month
+                      td= payment.dueDate
+                      td= payment.payedDate
+                      td(class= payment.payment > 0 ? 'align-right paymentOK' : 'align-right paymentNOK')
+                        = payment.payment 
+                        |&euro;
+                      td.vAlign-center
+                        if payment.payment < 0
+                          a.reminderButton(href='#')
+                            span.label.label-danger #{__('Send reminder')}
+              #issues.tab-pane(role='tabpanel')
+                table.table
+                  tr
+                    th #{__('Problem')}
+                    th #{__('Date')}
+                  for issue in issues
+                    tr(class= issue.status == 'new' ? 'issue newIssue' : 'issue')
+                      td= issue.issueCaption
+                      td= issue.creationDate
+              #documents.tab-pane(role='tabpanel')
+                table.table
+                  tr
+                    td
+                      a(href='docs/lease.pdf') Lease contract
+                  tr
+                    td
+                      a(href='docs/check-in.png') Check-in contract
+                  tr
+                    td
+                      a(href='docs/assurance.png') Assurance
+    #addTenantDialog
+      .addTenantDialogWrapper
+        .addTenantDialogContainer
+          .addTenantDialogData
+            .addTenantDialogHeader
+              .headerCaption
+                h1 #{__('Add tenant')}
+              #addTenantDialogClose.btn.btn-default.float-right(onclick='closePrestatieHistory();') #{__('Cancel')}
+              #addTenantDialogSave.btn.btn-primary.float-right(onclick='closePrestatieHistory();') #{__('Save')}
+            .container
+              form
+                .form-group
+                  label(for='tenantName') #{__('Tenant name')}
+                  input#tenantName.form-control(type='text', placeholder= __('Tenant name'))
+                .form-group
+                  label(for='birthDate') #{__('Birth date')}
+                  input#birthDate.form-control(type='text', placeholder= __('Birth date'), data-date-format='dd/mm/yyyy', data-provide='datepicker')
+                .form-group
+                  label(for='phonenumber') #{__('Phone Number')}
+                  input#phonenumber.form-control(type='text', placeholder= __('Phone Number'))
+                .form-group
+                  label(for='fromDate') #{__('Since')}
+                  input#fromDate.form-control(type='text', placeholder= __('Since'), data-date-format='dd/mm/yyyy', data-provide='datepicker')
+                .form-group
+                  label(for='tillDate') #{__('Till')}
+                  input#tillDate.form-control(type='text', placeholder= __('Till'), data-date-format='dd/mm/yyyy', data-provide='datepicker')
+block scripts    
+  script(type='text/javascript', src='js/jquery.mask.min.js')
+  script(type='text/javascript', src='js/bootstrap-datepicker.min.js')
+  script(type='text/javascript', src='js/property.js')
+
+

@@ -1,0 +1,21 @@
+extends ../layoutTenant.jade
+
+block content
+  .row(style='opacity: 1;')
+    table.table
+      tr
+        td
+          a(href='docs/lease.pdf') Lease contract
+      tr
+        td
+          a(href='docs/check-in.png') Check-in contract
+      tr
+        td
+          a(href='docs/assurance.png') Assurance
+
+block scripts    
+  script(type='text/javascript', src='js/jquery.mask.min.js')
+  script(type='text/javascript', src='js/bootstrap-datepicker.min.js')
+  script(type='text/javascript', src='js/property.js')
+
+

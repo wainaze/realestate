@@ -15,7 +15,8 @@ var records = [{
     contractEnd: '01/05/2014',
     picture: 'img/samples/noface.jpg',
     age: 36,
-    phone: '+32 457 155345'
+    phone: '+32 457 155345',
+    userId: 3
 }, {
     propertyId: 1,
     name: 'Luis Filip Hugo',
@@ -44,4 +45,13 @@ exports.getTenants = function(propertyId) {
 
 exports.addTenant = function(tenant) {
     records.push(tenant);
+}
+
+exports.getTenantByUserId = function(userId) {
+    for (var i = 0; i < records.length; i++) {
+        if (records[i].userId == userId)
+            return records[i];
+    }
+
+    return null;
 }
