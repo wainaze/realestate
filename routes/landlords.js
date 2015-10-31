@@ -38,6 +38,10 @@ function getTotalNewIssues(properties) {
 router.use(ensureLogin.ensureLoggedIn('/'));
 router.use(userAccess.userHasRole('landlord'));
 
+router.get('/', function(req, res){
+	res.redirect('/properties.html');
+});
+
 // define the home page route
 router.get('/properties.html', function(req, res) {
     var userId = req.user.id;
