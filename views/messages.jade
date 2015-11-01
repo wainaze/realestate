@@ -1,0 +1,18 @@
+extends ./layout.jade
+
+block content
+  .row.contentRow(style='opacity: 1;')
+    .col-xs-3
+      .tenant Jack
+      .tenant Jill
+      .tenant Tenant
+    .col-xs-9
+      .row
+        input#messageText(type='text')
+        #sendButton.btn.btn-primary #{__('Send')}
+      #messages.row
+        span Test message
+
+block scripts    
+  script(type='text/javascript', src='/js/mustache.min.js')    
+  script(type='text/javascript', src='/js/messages.js')

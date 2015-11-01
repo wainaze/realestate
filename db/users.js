@@ -36,6 +36,15 @@ var records = [{
     ]
 }];
 
+exports.getUser = function(userId) {
+    for (var i = 0; i < records.length; i++) {
+        if (records[i].id == userId)
+            return records[i];
+    }
+
+    return null;     
+}
+
 exports.findById = function(id, cb) {
     process.nextTick(function() {
         var idx = id - 1;

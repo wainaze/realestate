@@ -51,5 +51,7 @@
 	"Save": "Save",
 	"Tenant name": "Tenant name",
 	"Birth date": "Birth date",
-	"Phone Number": "Phone Number"
+	"Phone Number": "Phone Number",
+	"Messages": "Messages",
+	"Send": "Send"
 }

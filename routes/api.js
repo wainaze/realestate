@@ -2,7 +2,9 @@ var express = require('express');
 var db = require('../db');
 var ensureLogin = require('connect-ensure-login');
 var userAccess = require('../services/userAccessService');
+var messagesService = require('../services/messagesService');
 var router = express.Router();
+var moment = require('moment');
 
 // middleware specific to this router
 router.use(ensureLogin.ensureLoggedIn('/'));
@@ -98,6 +100,27 @@ router.post('/saveTenant', function(req, res) {
         birthDate: req.body.birthDate,
         phone: req.body.phoneNumber
     });
+    res.send('ok');
+});
+
+router.get('/loadMessages', function(req, res){
+    var userId = req.user.id;
+    var messages = messagesService.getMessages(userId);
+    res.send(messages);    
+});
+
+router.post('/addMessage', function(req, res){
+    var userId = req.user.id;
+    var recepients = req.body.recepients;
+    var messageText = req.body.messageText;
+    var message = { 
+        senderId : userId,
+        recepients : [3],
+        date : moment().format('YYYYMMDDhhmmss'),
+        messageText : messageText,
+        status: 'new'
+    };
+    db.messages.addMessage(message); 
     res.send('ok');
 });
 

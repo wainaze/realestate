@@ -213,4 +213,18 @@ router.get('/manageProperties.html', function(req, res) {
     });        
 });
 
+router.get('/messages.html', function(req, res) {
+    var userId = req.user.id;
+    var properties = db.properties.getAllProperties(userId);
+    var totalNewIssues = getTotalNewIssues(properties);
+    var messages = [{messageText : 'Test message'}];
+    res.render('messages', {
+        status: {
+            totalNewIssues: totalNewIssues
+        },
+        messages: messages,
+        user: req.user
+    });        
+});
+
 module.exports = router;
