@@ -64,6 +64,22 @@ router.get('/properties.html', function(req, res) {
     });
 });
 
+router.get('/contracts.html', function(req, res) {
+
+    var userId = req.user.id;
+    var properties = db.properties.getAllProperties(userId);
+    var totalNewIssues = getTotalNewIssues(properties);
+    var tenants = db.tenants.getAllTenants(userId);
+
+    res.render('contracts', {
+        user: req.user,
+        status: {
+            totalNewIssues: totalNewIssues,
+        },
+        tenants: tenants
+    });
+});
+
 router.get('/paymentStatus.html', function(req, res) {
     var userId = req.user.id;
     var properties = db.properties.getAllProperties(userId);
@@ -209,6 +225,18 @@ router.get('/manageProperties.html', function(req, res) {
             totalNewIssues: totalNewIssues
         },
         properties: properties,
+        user: req.user
+    });        
+});
+
+router.get('/addProperty.html', function(req, res) {
+    var userId = req.user.id;
+    var properties = db.properties.getAllProperties(userId);
+    var totalNewIssues = getTotalNewIssues(properties);
+    res.render('addProperty', {
+        status: {
+            totalNewIssues: totalNewIssues
+        },
         user: req.user
     });        
 });

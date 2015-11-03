@@ -1,0 +1,36 @@
+extends ./layout.jade
+
+block content
+  #tenants.tab-pane(role='tabpanel')
+    .actions.row
+      #addTenant.btn.btn-default Add contract
+    table.table
+      tr
+        th
+        th #{__('Contract name')}
+        th #{__('Since')}
+        th #{__('Till')}
+        th #{__('Payment status')}
+      for tenant in tenants
+        tr.tenant
+          td
+            span.glyphicon.glyphicon-chevron-right
+          td= tenant.name
+          td= tenant.contractBegin
+          td= tenant.contractEnd
+          td= tenant.payment
+        tr.detailsRow
+          td(colspan='999')
+            .details
+              table
+                tr
+                  td.tenantPicture
+                    img(src=tenant.picture)
+                
+                  td.vAlign-top.fields
+                    .field
+                      .fieldName #{__('Age')}:
+                      .fieldValue= tenant.age
+                    .field
+                      .fieldName #{__('Phone')}:
+                      .fieldValue= tenant.phone

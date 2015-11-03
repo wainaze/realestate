@@ -21,13 +21,10 @@ block content
                   | )
                   
               li(role='presentation')
-                a(href='#tenants', aria-controls='tenants', role='tab', data-toggle='tab') #{__('Tenants')}
+                a(href='#tenants', aria-controls='tenants', role='tab', data-toggle='tab') #{__('Rents')}
                   
               li(role='presentation')
                 a(href='#issues', aria-controls='issues', role='tab', data-toggle='tab') #{__('Issues')} (5)
-                  
-              li(role='presentation')
-                a(href='#documents', aria-controls='documents', role='tab', data-toggle='tab') #{__('Documents')}
                   
               li(role='presentation')
                 a(href='#photos', aria-controls='photos', role='tab', data-toggle='tab') #{__('Pictures')}
@@ -55,13 +52,14 @@ block content
                             span.label.label-danger #{__('Send reminder')}
               #tenants.tab-pane(role='tabpanel')
                 .actions.row
-                  #addTenant.btn.btn-default Add tenant
+                  #addTenant.btn.btn-default Add contract
                 table.table
                   tr
                     th
-                    th #{__('Tenants_Name')}
+                    th #{__('Contract name')}
                     th #{__('Since')}
                     th #{__('Till')}
+                    th #{__('Payment status')}
                   for tenant in tenants
                     tr.tenant
                       td
@@ -69,6 +67,7 @@ block content
                       td= tenant.name
                       td= tenant.contractBegin
                       td= tenant.contractEnd
+                      td= tenant.payment
                     tr.detailsRow
                       td(colspan='999')
                         .details
@@ -93,17 +92,6 @@ block content
                     tr(class= issue.status == 'new' ? 'issue newIssue' : 'issue')
                       td= issue.issueCaption
                       td= issue.creationDate
-              #documents.tab-pane(role='tabpanel')
-                table.table
-                  tr
-                    td
-                      a(href='docs/lease.pdf') Lease contract
-                  tr
-                    td
-                      a(href='docs/check-in.png') Check-in contract
-                  tr
-                    td
-                      a(href='docs/assurance.png') Assurance
               #photos.tab-pane(role='tabpanel')
                 .row.propertyDataRow
                   .col-xs-4

@@ -62,3 +62,10 @@ block content
   .row(style='opacity: 1;')
     for property in properties
       +property(property)
+    .addPropertyButton.col-sm-4
+      div 
+        span Click here to add new property
+
+block scripts
+  script(type='text/javascript', src='/js/properties.js')
+

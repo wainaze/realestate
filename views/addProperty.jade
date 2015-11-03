@@ -1,0 +1,20 @@
+extends ./layout.jade
+
+block content
+  .addPropertyForm
+    h1 Add new property
+    form#property(method='POST')
+      .row
+        label.fullWidth(for='propertyName') Caption
+        input#propertyName(type='text' name='name')
+      .row
+        label.fullWidth(for='propertyAddress') Address
+        input#propertyAddress(type='text' name='address')
+      .row
+        label.fullWidth(for='propertyPayment') Monthly payment
+        input#propertyPayment(type='text' name='payment')
+      .row
+        #addPropertyButton.btn.btn-primary(type='submit') Add
+        #cancelAddPropertyButton.btn.btn-default(type='cancel') Cancel
+block scripts
+  script(type='text/javascript', src='/js/addProperty.js')

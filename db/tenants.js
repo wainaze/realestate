@@ -55,3 +55,7 @@ exports.getTenantByUserId = function(userId) {
 
     return null;
 }
+
+exports.getAllTenants = function(userId) {
+    return records;    
+}

@@ -853,3 +853,32 @@ li.language-dropdown  span.caret {
     padding-bottom: 10px;
     border-bottom: 1px solid #EEE;
 }
+
+.addPropertyButton {
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+.addPropertyButton > div {
+    border: 6px dashed #DDD;
+    border-radius: 10px;
+    height: 436px;
+    text-align: center;
+    box-sizing: border-box;
+    cursor: pointer;
+}
+
+.addPropertyButton > div > span{
+    line-height: 436px;
+    box-sizing: border-box;
+    font-size: 22px;
+    color: #DDD;
+}
+
+.addPropertyForm {
+    max-height: 100%;
+    min-height: 100%;
+    overflow: auto;
+    background-color: white;
+    padding: 20px;
+}

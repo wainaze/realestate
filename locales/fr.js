@@ -53,5 +53,7 @@
 	"Birth date": "Birth date",
 	"Phone Number": "Phone Number",
 	"Messages": "Messages",
-	"Send": "Send"
+	"Send": "Send",
+	"Payment status": "Payment status",
+	"Contracts": "Contracts"
 }
