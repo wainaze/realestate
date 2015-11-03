@@ -46,6 +46,7 @@
 	"Comments": "Commentaires",
 	"Cost amount": "Montant",
 	"Click here to add a comment": "Cliquez ici pour ajouter un commentaire",
+<<<<<<< HEAD
 	"Add tenant": "Add tenant",
 	"Cancel": "Cancel",
 	"Save": "Save",
@@ -56,4 +57,12 @@
 	"Send": "Send",
 	"Payment status": "Payment status",
 	"Contracts": "Contracts"
+=======
+	"Add tenant": "Ajouter locataire",
+	"Cancel": "Annuler",
+	"Save": "Sauvegarder",
+	"Tenant name": "Nom du locataire",
+	"Birth date": "Date de naissance",
+	"Phone Number": "N° de téléphone"
+>>>>>>> fa1aa15a7e40f0f4903d5fc53183f00a7316c459
 }
