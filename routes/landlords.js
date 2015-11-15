@@ -3,6 +3,7 @@ var db = require('../db');
 var ensureLogin = require('connect-ensure-login');
 var userAccess = require('../services/userAccessService');
 var router = express.Router();
+var Promise = require('bluebird');
 var worker = require('../common/worker.js');
 
 function getTotalDue(properties) {
