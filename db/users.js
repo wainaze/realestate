@@ -17,7 +17,9 @@ exports.findById = function(id, callback) {
 }
 
 exports.findByUsername = function(username, callback) {
+    console.log('Before looking up user');
     process.nextTick(function() {
+        console.log('Looking up user');
         records.findOne({ username: username })
         .on('success', function (doc) {
             callback(null, doc);   
