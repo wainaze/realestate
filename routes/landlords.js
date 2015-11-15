@@ -49,9 +49,9 @@ router.get('/', function(req, res){
 function run(func){
     return function(callback){
         if (typeof(func.success) == 'function') {
-            func.success(function(data){ callback(null, data); }).error(function(err){callback(err)});
+            return func.success(function(data){ callback(null, data); }).error(function(err){callback(err)});
         } else {
-            func.then(function(data){ callback(null, data); }).catch(function(err){callback(err)});
+            return func.then(function(data){ callback(null, data); }).catch(function(err){callback(err)});
         }
     }
 }
@@ -93,18 +93,22 @@ router.get('/properties.html', function(req, res) {
 });
 
 router.get('/contracts.html', function(req, res) {
-
-    var userId = req.user.id;
-    var properties = db.properties.getAllProperties(userId);
-    var totalNewIssues = getTotalNewIssues(properties);
-    var tenants = db.tenants.getAllTenants(userId);
-
-    res.render('contracts', {
-        user: req.user,
-        status: {
-            totalNewIssues: totalNewIssues,
-        },
-        tenants: tenants
+    var data = {};
+    Promise
+    .join(
+        db.tenants.getAllTenants(req.user.id),
+        db.issues.getNewIssuesCount(req.user.id),
+        function(tenants, newIssuesCount){
+            data.user = req.user;
+            data.status = {totalNewIssues: newIssuesCount};
+            data.tenants = tenants;
+            console.log(data);
+        })
+    .then(function() {
+        res.render('contracts', data)
+    })
+    .catch(function(err) {
+        res.send(err);
     });
 });
 
@@ -182,10 +186,8 @@ router.get('/property.html', function(req, res) {
             data.issues = issues;
         })
     .then(function() {
-            console.log(data);
-            res.render('property', data);
-        }
-    ) 
+        res.render('property', data)
+    }) 
     .catch(commonExceptions.AccessNotAllowed, function(err){
         console.log('Error is here');
         res.redirect('properties.html');

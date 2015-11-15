@@ -29,7 +29,7 @@ var SampleApp = function() {
         self.ipaddress = process.env.OPENSHIFT_NODEJS_IP;
         self.port = process.env.OPENSHIFT_NODEJS_PORT || 8080;
         
-        console.log(JSON.stringify(process.env));
+        //console.log(JSON.stringify(process.env));
         if (typeof self.ipaddress === "undefined") {
             //  Log errors on OpenShift but continue w/ 127.0.0.1 - this
             //  allows us to run/test the app locally.
@@ -158,6 +158,18 @@ var SampleApp = function() {
 
 }; 
 
+// NOTE: event name is camelCase as per node convention
+process.on("unhandledRejection", function(reason, promise) {
+    console.log('Unhandled rejection');
+    console.log(reason);
+});
+
+// NOTE: event name is camelCase as per node convention
+process.on("rejectionHandled", function(promise) {
+    // See Promise.onUnhandledRejectionHandled for parameter documentation
+});
+
 var zapp = new SampleApp();
 zapp.initialize();
 zapp.start();
+

@@ -11,6 +11,14 @@ exports.getAllProperties = function(userId){
     return records.find({userId : userId});
 };
 
+exports.getAllPropertiesIds = function(userId){
+    console.log('getting all the ids');
+    return new Promise(function(resolve){
+        resolve([1,2,3]);
+    });
+    //return records.find({userId : userId}, { id : 1 });
+};
+
 exports.addProperty = function(property){
     var newId = Math.max.apply(Math, records.map(function(o) {
         return o.id;

@@ -1,35 +1,9 @@
 var moment = require('moment');
+var properties = require('./properties');
 var Promise = require('bluebird');
 var records = Promise.promisifyAll(require('./dbconnection').db.get('tenants'));
 
-function sortTenants(tenants) {
-    console.log('sort them');
-    return new Promise(function(resolve){
-        console.log(tenants);
-        tenants = tenants.sort(function(a,b){
-            return moment(a.contractBegin, 'DD/MM/YYYY').diff(moment(b.contractBegin, 'DD/MM/YYYY'), 'days');
-        });
-        tenants.reverse();
-        resolve(tenants);
-        console.log(tenants);
-    })
-}
-
-function updateTenantsAge(tenants) {
-    console.log('Update age');
-    return new Promise(function(resolve) {
-        tenants.forEach(function(tenant){
-            if (tenant.birthDate) {
-                tenant.age = moment().diff(moment(tenant.birthDate, 'DD/MM/YYYY'), 'years');   
-            }      
-        });
-        resolve(tenants);
-        console.log(tenants);
-    });
-}
-
 exports.getTenants = function(propertyId) {
-    console.log('Get tenants ' + propertyId);
     return records.find({propertyId: parseInt(propertyId)})
     .then(sortTenants)
     .then(updateTenantsAge);
@@ -48,6 +22,42 @@ exports.getTenantByUserId = function(userId) {
     return null;
 }
 
+function getTenantsForPropertiesIds(propertiesIds) {
+    console.log('Finding tenants for properties ' + propertiesIds);
+    return records.find({propertyId : { $in : propertiesIds}})  
+        .then(sortTenants)
+        .then(updateTenantsAge);  
+}
+
 exports.getAllTenants = function(userId) {
-    return records;    
+    console.log('get all tenants ' + userId);
+
+    return properties.getAllPropertiesIds(userId)
+            .then(getTenantsForPropertiesIds);
+}
+
+/* Internal functions */
+
+function sortTenants(tenants) {
+    return new Promise(function(resolve){
+        console.log(tenants);
+        tenants = tenants.sort(function(a,b){
+            return moment(a.contractBegin, 'DD/MM/YYYY').diff(moment(b.contractBegin, 'DD/MM/YYYY'), 'days');
+        });
+        tenants.reverse();
+        resolve(tenants);
+        console.log(tenants);
+    })
+}
+
+function updateTenantsAge(tenants) {
+    return new Promise(function(resolve) {
+        tenants.forEach(function(tenant){
+            if (tenant.birthDate) {
+                tenant.age = moment().diff(moment(tenant.birthDate, 'DD/MM/YYYY'), 'years');   
+            }      
+        });
+        resolve(tenants);
+        console.log(tenants);
+    });
 }
