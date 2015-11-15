@@ -1,69 +1,29 @@
-var records = [{
-    id: 1,
-    username: 'jack',
-    password: 'secret',
-    displayName: 'Jack',
-    photo: '/img/samples/noface.jpg',
-    emails: [{
-        value: 'jack@example.com'
-    }],
-    roles: [
-        'landlord'
-    ]
-}, {
-    id: 2,
-    username: 'jill',
-    password: 'birthday',
-    displayName: 'Jill',
-    photo: '/img/samples/noface.jpg',
-    emails: [{
-        value: 'jill@example.com'
-    }],
-    roles: [
-        'landlord'
-    ]
-}, {
-    id: 3,
-    username: 'tenant',
-    password: 'tenant',
-    displayName: 'Tenant',
-    photo: '/img/samples/noface.jpg',
-    emails: [{
-        value: 'wbearfromru@gmail.com'
-    }],
-    roles: [
-        'tenant'
-    ]
-}];
+var records = require('./dbconnection.js').db.get('users');
 
-exports.getUser = function(userId) {
-    for (var i = 0; i < records.length; i++) {
-        if (records[i].id == userId)
-            return records[i];
-    }
-
-    return null;     
+exports.getUser = function(userId, callback) {
+    return records.findOne({ id: userId }, callback);     
 }
 
-exports.findById = function(id, cb) {
+exports.findById = function(id, callback) {
     process.nextTick(function() {
-        var idx = id - 1;
-        if (records[idx]) {
-            cb(null, records[idx]);
-        } else {
-            cb(new Error('User ' + id + ' does not exist'));
-        }
+        records.findOne({ id: id })
+        .on('success', function (doc) {
+            callback(null, doc);   
+        })
+        .on('error', function(err){
+            callback(new Error('User ' + id + ' does not exist'));    
+        });
     });
 }
 
-exports.findByUsername = function(username, cb) {
+exports.findByUsername = function(username, callback) {
     process.nextTick(function() {
-        for (var i = 0, len = records.length; i < len; i++) {
-            var record = records[i];
-            if (record.username === username) {
-                return cb(null, record);
-            }
-        }
-        return cb(null, null);
+        records.findOne({ username: username })
+        .on('success', function (doc) {
+            callback(null, doc);   
+        })
+        .on('error', function(err){
+            callback(null, null);    
+        });
     });
 }

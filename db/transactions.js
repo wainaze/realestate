@@ -1,4 +1,5 @@
-var records = [{
+var records = require('./dbconnection.js').db.get('transactions');
+var oldrecords = [{
     id: 1,
     date: '07/04/2015',
     timestamp: '20150407',
@@ -127,22 +128,15 @@ var records = [{
     description: 'Costs for this house'
 }, ]
 
-exports.getAllPayments = function(userId) {
-    return records.filter(function(transaction) {
-        return transaction.userId == userId;
-    });
+exports.getAllPayments = function(userId, callback) {
+    return records.find({userId : userId}, callback);
 }
 
-exports.getTransaction = function(userId, transactionId) {
-    for (var i = 0; i < records.length; i++) {
-        if (records[i].id == transactionId && records[i].userId == userId)
-            return records[i];
-    }
-
-    return null;
+exports.getTransaction = function(userId, transactionId, callback) {
+    return records.find({id: transactionId, userId: userId}, callback);
 }
 
-exports.addTransaction = function(userId, issuePropertyId, costAmount, costDescription) {
+exports.addTransaction = function(userId, issuePropertyId, costAmount, costDescription, callback) {
     var newId = Math.max.apply(Math, records.map(function(o) {
         return o.id;
     })) + 1;

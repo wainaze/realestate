@@ -45,5 +45,7 @@
 	"Since": "Van",
 	"Till": "Tot",
 	"Age": "Leeftijd",
-	"Phone": "Phone"
+	"Phone": "Phone",
+	"Contracts": "Contracts",
+	"Messages": "Messages"
 }

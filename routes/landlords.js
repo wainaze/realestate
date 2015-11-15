@@ -3,6 +3,7 @@ var db = require('../db');
 var ensureLogin = require('connect-ensure-login');
 var userAccess = require('../services/userAccessService');
 var router = express.Router();
+var worker = require('../common/worker.js');
 
 function getTotalDue(properties) {
     var due = 0;
@@ -42,26 +43,50 @@ router.get('/', function(req, res){
 	res.redirect('properties.html');
 });
 
+function run(func){
+    return function(callback){
+        if (typeof(func.success) == 'function') {
+            func.success(function(data){ callback(null, data); }).error(function(err){callback(err)});
+        } else {
+            func.then(function(data){ callback(null, data); }).catch(function(err){callback(err)});
+        }
+    }
+}
+
+function issuesCounters(properties) {
+    var propertyIds = properties.map(function(property){
+        return property.id;
+    });
+    console.log('issueCounter');    
+    return worker.series({
+        issues: run(db.issues.getOpenIssuesForPropertiesCount(propertyIds)),
+        newIssues: run(db.issues.getNewIssuesForPropertiesCount(propertyIds))
+    });
+}
+
 // define the home page route
 router.get('/properties.html', function(req, res) {
     var userId = req.user.id;
-    var properties = db.properties.getAllProperties(userId);
-
-    var totalDue = getTotalDue(properties);
-    var totalIssues = getTotalIssues(properties);
-    var totalNewIssues = getTotalNewIssues(properties);
-
-    res.render('properties', {
-        user: req.user,
-        status: {
-            due: totalDue,
-            totalIssues: totalIssues,
-            totalNewIssues: totalNewIssues,
+    var data = {user: req.user};
+    
+    Promise.resolve(db.properties.getAllProperties(userId))
+    .then(function(properties){
+        data.properties = properties;
+        return issuesCounters(properties);
+    })
+    .then(function(results){
+        data.status = {
+            totalIssues: results.issues,
+            totalNewIssues: results.newIssues,
+            due: getTotalDue(data.properties),
             totalIncome: '39.800',
             totalCosts: '12.564'
-        },
-        properties: properties
-    });
+        };   
+        res.render('properties', data);
+    })
+    .catch(function(err){
+         res.send(err);
+    });  
 });
 
 router.get('/contracts.html', function(req, res) {
