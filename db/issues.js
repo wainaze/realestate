@@ -1,31 +1,43 @@
 var properties = require('./properties');
 var Promise = require('bluebird');
 var records = Promise.promisifyAll(require('./dbconnection').db.get('issues'));
+    
+function setProperty(issue) {
+    return function(property) {
+        issue.property = property;
+        return issue;
+    };
+}
+
+function bindProperty(issue) {
+    return properties.getPropertyById(issue.issuePropertyId)
+            .then(setProperty(issue));
+}
+
+function bindAllProperties(issues) {
+    return Promise.all(issues.map(function(issue){
+        return bindProperty(issue);
+    }));
+}
+
+function getAllSolvedIssuesForPropertiesIds(propertyIds) {
+    return records.find({issuePropertyId : { $in : propertyIds}, status : { $nin: ['new', 'open'] } });    
+}
+
+function getAllUnsolvedIssuesForPropertiesIds(propertyIds) {
+    return records.find({issuePropertyId : { $in : propertyIds}, status : { $in: ['new', 'open'] } });    
+}
 
 exports.getAllSolvedIssues = function(userId) {
-    var issues = records.filter(function(issue){
-    	if (properties.getProperty(userId, issue.issuePropertyId) == null)
-    		return false;
-        return issue.status != 'new' && issue.status != 'open';
-    });
-    issues.forEach(function(issue){
-    	var property = properties.getProperty(userId, issue.issuePropertyId);
-    	issue.property = property;
-    });
-    return issues
+    return properties.getAllPropertiesIds(userId)
+            .then(getAllSolvedIssuesForPropertiesIds)
+            .then(bindAllProperties);
 }
 
 exports.getAllUnsolvedIssues = function(userId){
-    var issues = records.filter(function(issue){
-    	if (properties.getProperty(userId, issue.issuePropertyId) == null)
-    		return false;
-        return issue.status == 'new' || issue.status == 'open';
-    });
-    issues.forEach(function(issue){
-    	var property = properties.getProperty(userId, issue.issuePropertyId);
-    	issue.property = property;
-    });
-    return issues;
+    return properties.getAllPropertiesIds(userId)
+            .then(getAllUnsolvedIssuesForPropertiesIds)
+            .then(bindAllProperties);
 }
 
 function getNewIssuesForPropertiesCount(propertyIds){
@@ -53,11 +65,11 @@ exports.getNewIssuesForPropertiesCount = function(propertyIds) {
     return getNewIssuesForPropertiesCount(propertyIds)
 }
 
-exports.getOpenIssuesForProperty = function(propertyId, callback) {
+exports.getOpenIssuesForProperty = function(propertyId) {
     return records.find({issuePropertyId : propertyId, status : { $in: ['new', 'open'] } });
 }
 
-exports.getOpenIssuesForPropertiesCount = function(propertyIds, callback) {
+exports.getOpenIssuesForPropertiesCount = function(propertyIds) {
     return new Promise(
         function(resolve) {
             records.find({issuePropertyId : { $in : propertyIds} , status : { $in: ['new', 'open'] } })

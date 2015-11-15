@@ -195,14 +195,19 @@ router.get('/property.html', function(req, res) {
 });
 
 router.get('/tenants.html', function(req, res) {
-    var userId = req.user.id;
-    var properties = db.properties.getAllProperties(userId);
-    var totalNewIssues = getTotalNewIssues(properties);
-    res.render('tenants', {
-        status: {
-            totalNewIssues: totalNewIssues
-        },
-        user: req.user
+    var data = {};
+    Promise
+    .join(
+        db.tenants.getAllTenants(req.user.id),
+        db.issues.getNewIssuesCount(req.user.id),
+        function(tenants, newIssuesCount){
+            data.user = req.user;
+            data.status = {totalNewIssues: newIssuesCount};
+            data.tenants = tenants;
+            console.log(data);
+        })
+    .then(function() {
+        res.render('tenants', data)
     });
 });
 
@@ -238,21 +243,24 @@ router.get('/problem.html', function(req, res) {
 });
 
 router.get('/problems.html', function(req, res) {
-    var userId = req.user.id;
-
-    var properties = db.properties.getAllProperties(userId);
-    var totalNewIssues = getTotalNewIssues(properties);
-
-    var openIssues = db.issues.getAllUnsolvedIssues(userId);
-    var solvedIssues = db.issues.getAllSolvedIssues(userId);
-
-    res.render('problems', {
-        status: {
-            totalNewIssues: totalNewIssues
-        },
-        user: req.user,
-        openIssues: openIssues,
-        solvedIssues: solvedIssues,
+    var data = {}
+    db.issues.getAllUnsolvedIssues(req.user.id).then(function(data) {console.log('unsolved'); console.log(data);});
+    db.issues.getAllSolvedIssues(req.user.id).then(function(data) {console.log('solved'); console.log(data);});
+    db.issues.getNewIssuesCount(req.user.id).then(function(data) {console.log('new count'); console.log(data);});
+    Promise.join(
+        db.issues.getAllUnsolvedIssues(req.user.id),
+        db.issues.getAllSolvedIssues(req.user.id),
+        db.issues.getNewIssuesCount(req.user.id),
+        function(unsolvedIssues, solvedIssues, newIssuesCount){
+            data.user = req.user;
+            data.status = {totalNewIssues: newIssuesCount};
+            data.openIssues = unsolvedIssues;
+            data.solvedIssues = solvedIssues;
+            console.log(data);   
+        }
+    )
+    .then(function() {
+        res.render('problems', data)
     });
 });
 

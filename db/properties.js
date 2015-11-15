@@ -7,6 +7,12 @@ exports.getProperty = function(userId, propertyId) {
     return records.findOne({id : parseInt(propertyId), userId : parseInt(userId)});
 }
 
+exports.getPropertyById = function(propertyId) {
+    console.log('Getting property by id ' + propertyId);
+    //throw new AccessNotAllowed();
+    return records.findOne({id : parseInt(propertyId)});
+}
+
 exports.getAllProperties = function(userId){
     return records.find({userId : userId});
 };
