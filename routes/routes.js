@@ -7,6 +7,7 @@ var userAccess = require('../services/userAccessService');
 
 passport.use(new Strategy(
     function(username, password, cb) {
+        console.log('Checking user');
         db.users.findByUsername(username, function(err, user) {
             if (err) {
                 console.log(err);
