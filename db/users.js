@@ -22,10 +22,12 @@ exports.findByUsername = function(username, callback) {
         console.log('Looking up user');
         records.findOne({ username: username })
         .on('success', function (doc) {
+            console.log('Found user');
             callback(null, doc);   
         })
         .on('error', function(err){
-            callback(null, null);    
+            console.log('Error ' + err);
+            callback(err);    
         });
     });
 }
