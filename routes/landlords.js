@@ -5,6 +5,7 @@ var userAccess = require('../services/userAccessService');
 var router = express.Router();
 var Promise = require('bluebird');
 var worker = require('../common/worker.js');
+var commonExceptions = require('../common/commonExceptions.js');
 
 function getTotalDue(properties) {
     var due = 0;
@@ -36,6 +37,7 @@ function getTotalNewIssues(properties) {
     });
     return totalNewIssues;
 }
+
 // middleware specific to this router
 router.use(ensureLogin.ensureLoggedIn('/'));
 router.use(userAccess.userHasRole('landlord'));
@@ -69,7 +71,7 @@ function issuesCounters(properties) {
 router.get('/properties.html', function(req, res) {
     var userId = req.user.id;
     var data = {user: req.user};
-    
+
     Promise.resolve(db.properties.getAllProperties(userId))
     .then(function(properties){
         data.properties = properties;
@@ -107,16 +109,24 @@ router.get('/contracts.html', function(req, res) {
 });
 
 router.get('/paymentStatus.html', function(req, res) {
-    var userId = req.user.id;
-    var properties = db.properties.getAllProperties(userId);
-    var totalNewIssues = getTotalNewIssues(properties);
+    var data = {
+        user: req.user    
+    }
+    Promise
+    .resolve(db.properties.getAllProperties(req.user.id))
+    .then(function(properties){
+        var propertyIds = properties.map(function(property){return property.id;});
 
-    res.render('paymentStatus', {
-        status: {
-            totalNewIssues: totalNewIssues
-        },
-        user: req.user
-    });
+        return Promise.resolve(db.issues.getNewIssuesForPropertiesCount(propertyIds));
+    })
+    .then(function(count){
+        data.status = {
+            totalNewIssues: count
+        }
+    })
+    .then(function(){
+        res.render('paymentStatus', data);   
+    });    
 });
 
 router.get('/payments.html', function(req, res) {
@@ -156,27 +166,29 @@ router.get('/payments.html', function(req, res) {
 });
 
 router.get('/property.html', function(req, res) {
-    var userId = req.user.id;
-    var properties = db.properties.getAllProperties(userId);
-    var totalNewIssues = getTotalNewIssues(properties);
-    var property = db.properties.getProperty(req.query.id);
-
-    if (!property || property.userId != userId)
+    var data = {};
+    Promise.join(
+        db.properties.getProperty(req.user.id, req.query.id),
+        db.payments.geyPayments(req.query.id),
+        db.tenants.getTenants(req.query.id),
+        db.issues.getOpenIssuesForProperty(req.query.id),
+        db.issues.getNewIssuesCount(req.user.id),
+        function(property, payments, tenants, issues, newIssuesCount)  {
+            data.user = req.user;
+            data.status = {totalNewIssues : newIssuesCount};
+            data.property = property;
+            data.payments = payments;
+            data.tenants = tenants;
+            data.issues = issues;
+        })
+    .then(function() {
+            console.log(data);
+            res.render('property', data);
+        }
+    ) 
+    .catch(commonExceptions.AccessNotAllowed, function(err){
+        console.log('Error is here');
         res.redirect('properties.html');
-
-    var payments = db.payments.geyPayments(req.query.id);
-    var tenants = db.tenants.getTenants(req.query.id);
-    var issues = db.issues.getOpenIssuesForProperty(req.query.id);
-
-    res.render('property', {
-        status: {
-            totalNewIssues: totalNewIssues
-        },
-        user: req.user,
-        property: property,
-        payments: payments,
-        tenants: tenants,
-        issues: issues
     });
 });
 

@@ -1,7 +1,10 @@
-var records = require('./dbconnection.js').db.get('properties');
+var Promise = require('bluebird');
+var records = Promise.promisifyAll(require('./dbconnection.js').db.get('properties'));
+var commonExceptions = require('../common/commonExceptions');
 
-exports.getProperty = function(propertyId, callback) {
-    return records.findOne({id: propertyId}, callback);
+exports.getProperty = function(userId, propertyId) {
+    //throw new AccessNotAllowed();
+    return records.findOne({id : parseInt(propertyId), userId : parseInt(userId)});
 }
 
 exports.getAllProperties = function(userId){

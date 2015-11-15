@@ -1,46 +1,38 @@
 var moment = require('moment');
+var Promise = require('bluebird');
+var records = Promise.promisifyAll(require('./dbconnection').db.get('tenants'));
 
-var records = [{
-    propertyId: 1,
-    name: 'Adam Jacque',
-    contractBegin: '06/05/2014',
-    contractEnd: '-',
-    picture: 'img/samples/noface.jpg',
-    age: 36,
-    phone: '+32 483 657638'
-}, {
-    propertyId: 1,
-    name: 'Marie Claude',
-    contractBegin: '01/01/2014',
-    contractEnd: '01/05/2014',
-    picture: 'img/samples/noface.jpg',
-    age: 36,
-    phone: '+32 457 155345',
-    userId: 3
-}, {
-    propertyId: 1,
-    name: 'Luis Filip Hugo',
-    contractBegin: '01/07/2013',
-    contractEnd: '27/12/2013',
-    picture: 'img/samples/noface.jpg',
-    age: 36,
-    phone: '+32 482 123452'
-}, ]
+function sortTenants(tenants) {
+    console.log('sort them');
+    return new Promise(function(resolve){
+        console.log(tenants);
+        tenants = tenants.sort(function(a,b){
+            return moment(a.contractBegin, 'DD/MM/YYYY').diff(moment(b.contractBegin, 'DD/MM/YYYY'), 'days');
+        });
+        tenants.reverse();
+        resolve(tenants);
+        console.log(tenants);
+    })
+}
+
+function updateTenantsAge(tenants) {
+    console.log('Update age');
+    return new Promise(function(resolve) {
+        tenants.forEach(function(tenant){
+            if (tenant.birthDate) {
+                tenant.age = moment().diff(moment(tenant.birthDate, 'DD/MM/YYYY'), 'years');   
+            }      
+        });
+        resolve(tenants);
+        console.log(tenants);
+    });
+}
 
 exports.getTenants = function(propertyId) {
-    var tenants = records.filter(function(value) {
-        return value.propertyId == propertyId;
-    });
-    tenants = tenants.sort(function(a,b){
-        return moment(a.contractBegin, 'DD/MM/YYYY').diff(moment(b.contractBegin, 'DD/MM/YYYY'), 'days');
-    });
-    tenants.reverse();
-    tenants.forEach(function(tenant){
-        if (tenant.birthDate) {
-            tenant.age = moment().diff(moment(tenant.birthDate, 'DD/MM/YYYY'), 'years');   
-        }
-    });
-    return tenants;
+    console.log('Get tenants ' + propertyId);
+    return records.find({propertyId: parseInt(propertyId)})
+    .then(sortTenants)
+    .then(updateTenantsAge);
 }
 
 exports.addTenant = function(tenant) {

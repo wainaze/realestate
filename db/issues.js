@@ -28,17 +28,27 @@ exports.getAllUnsolvedIssues = function(userId){
     return issues;
 }
 
+exports.getNewIssuesCount = function(userId) {
+    return Promise
+    .resolve(properties.getAllProperties(userId))
+    .then(function(properties){
+        var propertyIds = properties.map(function(property){return property.id;});
+
+        return Promise.resolve(exports.getNewIssuesForPropertiesCount(propertyIds));
+    });
+}
+
 exports.getNewIssuesForPropertiesCount = function(propertyIds) {
     return new Promise(
         function(resolve) {
             records.find({ issuePropertyId : { $in : propertyIds} , status : 'new' })
-                .success(function(issues){
-                    resolve(issues.length);
-                })
-                .error(function(err){
-                    throw err;
-                });
-            }
+            .success(function(issues){
+                resolve(issues.length);
+            })
+            .error(function(err){
+                throw err;
+            });
+        }        
     );
 }
 

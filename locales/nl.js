@@ -47,5 +47,15 @@
 	"Age": "Leeftijd",
 	"Phone": "Phone",
 	"Contracts": "Contracts",
-	"Messages": "Messages"
+	"Messages": "Messages",
+	"Rents": "Rents",
+	"Contract name": "Contract name",
+	"Payment status": "Payment status",
+	"Add tenant": "Add tenant",
+	"Cancel": "Cancel",
+	"Save": "Save",
+	"Tenant name": "Tenant name",
+	"Birth date": "Birth date",
+	"Phone Number": "Phone Number",
+	"Send reminder": "Send reminder"
 }
