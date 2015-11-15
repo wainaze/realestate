@@ -9,6 +9,7 @@ passport.use(new Strategy(
     function(username, password, cb) {
         db.users.findByUsername(username, function(err, user) {
             if (err) {
+                console.log(err);
                 return cb(err);
             }
             if (!user) {
