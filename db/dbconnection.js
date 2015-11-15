@@ -5,9 +5,7 @@ var host = process.env.OPENSHIFT_MONGODB_DB_HOST ? process.env.OPENSHIFT_MONGODB
 var port = process.env.OPENSHIFT_MONGODB_DB_PORT ? process.env.OPENSHIFT_MONGODB_DB_PORT : '27017';
 
 console.log('Connect to DB: ' + JSON.stringify({host: host, port: port}));
-var db = monk(host + ':' + port + '/web', {
-  username : 'azurent',
-  password : 'ZjdtsdfYsdof'
-});
+var db = monk(host + ':' + port + '/web');
+db.authenticate('azurent','ZjdtsdfYsdof');
 
 exports.db = db;
