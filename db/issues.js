@@ -1,4 +1,5 @@
 var properties = require('./properties');
+var transactions = require('./transactions');
 var Promise = require('bluebird');
 var records = Promise.promisifyAll(require('./dbconnection').db.get('issues'));
     
@@ -20,12 +21,38 @@ function bindAllProperties(issues) {
     }));
 }
 
+function fillTranactions(issue){
+    if (!issue.costs) issue.costs = [];
+    return Promise.all(issue.costs.map(function(transactionId){
+        return transactions.getTransaction(transactionId)
+    })).then(function(transactions) {
+        issue.costs = transactions;
+        return issue;
+    });
+}
+
+function getCount(data) {
+    return new Promise(function(resolve){
+        resolve(data.length);
+    });
+}
+
+function getAllNewIssuesForPropertiesIds(propertyIds) {
+    return records.find({issuePropertyId : { $in : propertyIds}, status : { $in: ['new'] } });    
+}
+
 function getAllSolvedIssuesForPropertiesIds(propertyIds) {
     return records.find({issuePropertyId : { $in : propertyIds}, status : { $nin: ['new', 'open'] } });    
 }
 
 function getAllUnsolvedIssuesForPropertiesIds(propertyIds) {
     return records.find({issuePropertyId : { $in : propertyIds}, status : { $in: ['new', 'open'] } });    
+}
+
+exports.getAllNewIssues = function(userId) {
+    return properties.getAllPropertiesIds(userId)
+            .then(getAllNewIssuesForPropertiesIds)
+            .then(bindAllProperties);
 }
 
 exports.getAllSolvedIssues = function(userId) {
@@ -41,7 +68,6 @@ exports.getAllUnsolvedIssues = function(userId){
 }
 
 function getNewIssuesForPropertiesCount(propertyIds){
-    console.log('Getting issues for ' + JSON.stringify(propertyIds));
     return new Promise(
         function(resolve) {
             records.find({ issuePropertyId : { $in : propertyIds} , status : 'new' })
@@ -56,9 +82,15 @@ function getNewIssuesForPropertiesCount(propertyIds){
 }
 
 exports.getNewIssuesCount = function(userId) {
-    console.log('Getting issues count ' + userId);
     return properties.getAllPropertiesIds(userId)
-        .then(getNewIssuesForPropertiesCount);
+        .then(getAllNewIssuesForPropertiesIds)
+        .then(getCount);
+}
+
+exports.getOpenIssuesCount = function(userId) {
+    return properties.getAllPropertiesIds(userId)
+        .then(getAllUnsolvedIssuesForPropertiesIds)
+        .then(getCount);    
 }
 
 exports.getNewIssuesForPropertiesCount = function(propertyIds) {
@@ -83,11 +115,22 @@ exports.getOpenIssuesForPropertiesCount = function(propertyIds) {
     );  
 }
 
-exports.getIssue = function(userId, issueId){
-	for(var issueIndex = 0; issueIndex < records.length; issueIndex++){
-		var issue = records[issueIndex];
-		if (issue.id == issueId)
-			return issue;
-	}
-	return null;
+exports.getIssue = function(issueId){
+    return records.findOne({id : parseInt(issueId)})
+            .then(bindProperty)
+            .then(fillTranactions);
+}
+
+exports.addCost = function(issueId, userId, costAmount, costDescription) {
+    var issueId = parseInt(issueId);
+    return Promise.resolve(  
+    records.findOne({id : issueId})
+    .then(function(issue){
+        return transactions.addTransaction(parseInt(userId), issue.issuePropertyId, parseFloat(costAmount), costDescription)
+    })
+    .then(function(transactionId){
+        return records.update(
+                { id: issueId },
+                { $push: { costs: transactionId } });
+    }));
 }

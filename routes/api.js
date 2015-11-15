@@ -15,12 +15,15 @@ router.post('/addCost', function(req, res) {
     var issueId = req.body.issueId;
     var costDescription = req.body.costDescription;
     var costAmount = req.body.costAmount;
-    var issue = db.issues.getIssue(userId, issueId);
-    var transactionId = db.transactions.addTransaction(userId, issue.issuePropertyId, costAmount, costDescription);
-    if (issue.costs == null)
-        issue.costs = [];
-    issue.costs.push(transactionId);   
-    res.send('ok');
+    db.issues.addCost(issueId, userId, costAmount, costDescription)
+    .then(function() {
+            res.send('ok');
+        }
+    )
+    .catch(function(err){
+            res.send('error');
+        }
+    );
 });
 
 router.post('/addComment', function(req, res) {

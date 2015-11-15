@@ -1,155 +1,104 @@
-var records = require('./dbconnection.js').db.get('transactions');
-var oldrecords = [{
-    id: 1,
-    date: '07/04/2015',
-    timestamp: '20150407',
-    amount: 600,
-    userId: 1,
-    propertyId: 3
-}, {
-    id: 2,
-    date: '07/05/2015',
-    timestamp: '20150507',
-    amount: 600,
-    userId: 1,
-    propertyId: 3
-}, {
-    id: 3,
-    date: '07/06/2015',
-    timestamp: '20150607',
-    amount: 600,
-    userId: 1,
-    propertyId: 3
-}, {
-    id: 4,
-    date: '07/07/2015',
-    timestamp: '20150707',
-    amount: 600,
-    userId: 1,
-    propertyId: 3
-}, {
-    id: 5,
-    date: '07/08/2015',
-    timestamp: '20150807',
-    amount: 600,
-    userId: 1,
-    propertyId: 3
-}, {
-    id: 6,
-    date: '07/11/2014',
-    timestamp: '20141107',
-    amount: 600,
-    userId: 1,
-    propertyId: 1
-}, {
-    id: 7,
-    date: '07/12/2014',
-    timestamp: '20141207',
-    amount: 600,
-    userId: 1,
-    propertyId: 1
-}, {
-    id: 8,
-    date: '07/01/2015',
-    timestamp: '20150107',
-    amount: 600,
-    userId: 1,
-    propertyId: 1
-}, {
-    id: 9,
-    date: '07/02/2015',
-    timestamp: '20150207',
-    amount: 600,
-    userId: 1,
-    propertyId: 1
-}, {
-    id: 10,
-    date: '07/03/2015',
-    timestamp: '20150307',
-    amount: 600,
-    userId: 1,
-    propertyId: 1
-}, {
-    id: 11,
-    date: '07/04/2015',
-    timestamp: '20150407',
-    amount: 600,
-    userId: 1,
-    propertyId: 1
-}, {
-    id: 12,
-    date: '07/05/2015',
-    timestamp: '20150507',
-    amount: 600,
-    userId: 1,
-    propertyId: 1
-}, {
-    id: 13,
-    date: '07/06/2015',
-    timestamp: '20150607',
-    amount: 600,
-    userId: 1,
-    propertyId: 1
-}, {
-    id: 14,
-    date: '07/07/2015',
-    timestamp: '20150707',
-    amount: 600,
-    userId: 1,
-    propertyId: 1
-}, {
-    id: 15,
-    date: '07/08/2015',
-    timestamp: '20150807',
-    amount: 600,
-    userId: 1,
-    propertyId: 1
-}, {
-    id: 16,
-    date: '07/09/2015',
-    timestamp: '20150907',
-    amount: 600,
-    userId: 1,
-    propertyId: 1
-}, {
-    id: 17,
-    date: '07/10/2015',
-    timestamp: '20151007',
-    amount: 600,
-    userId: 1,
-    propertyId: 1
-}, {
-    id: 18,
-    date: '04/05/2015',
-    timestamp: '20150504',
-    amount: -238,
-    userId: 1,
-    propertyId: 1,
-    description: 'Costs for this house'
-}, ]
+var properties = require('./properties');
+var Promise = require('bluebird');
+var records = Promise.promisifyAll(require('./dbconnection.js').db.get('transactions'));
 
-exports.getAllPayments = function(userId, callback) {
-    return records.find({userId : userId}, callback);
+records.aggregate = function(aggregation){
+    var collection = this.col;
+    var options = {};
+    return new Promise(function(resolve) {
+        collection.aggregate(aggregation, options, function(err, data){
+            if (err) throw err;             
+            resolve(data);
+        });
+    });
 }
 
-exports.getTransaction = function(userId, transactionId, callback) {
-    return records.find({id: transactionId, userId: userId}, callback);
+function setProperty(transaction) {
+    return function(property) {
+        transaction.property = property;
+        return transaction;
+    };
 }
 
-exports.addTransaction = function(userId, issuePropertyId, costAmount, costDescription, callback) {
-    var newId = Math.max.apply(Math, records.map(function(o) {
-        return o.id;
-    })) + 1;
-    
-    records.push({
-	    id: newId,
-	    date: '17/10/2015',
-	    timestamp: '20151017',
-	    amount: -costAmount,
-	    userId: userId,
-	    propertyId: issuePropertyId,
-	    description: costDescription
+function bindProperty(transaction) {
+    return properties.getPropertyById(transaction.propertyId)
+            .then(setProperty(transaction));
+}
+
+function bindAllProperties(transactions) {
+    return Promise.all(transactions.map(function(transaction){
+        return bindProperty(transaction);
+    }));
+}
+
+function sortAndCleanTransactions(transactions) {
+    return new Promise(function(resolve) {
+        transactions = transactions.filter(function(transaction){
+            return transaction.property != null;
+        });
+
+        transactions.sort(function(a, b) {
+            if (a.timestamp > b.timestamp) {
+                return 1;
+            }
+            if (a.timestamp < b.timestamp) {
+                return -1;
+            }
+            // a must be equal to b
+            return 0;
+        });
+        transactions.reverse();
+        resolve(transactions);
     });
 
-    return newId;
+}
+
+exports.getAllPayments = function(userId) {
+    return records.find({userId : userId}).then(bindAllProperties).then(sortAndCleanTransactions);
+}
+
+exports.getTransaction = function(transactionId) {
+    return records.findOne({id: parseInt(transactionId)});
+}
+
+exports.addTransaction = function(userId, issuePropertyId, costAmount, costDescription) {
+    return getMaxId()
+    .then(function(maxId){
+        console.log('maxId');
+        console.log(maxId);
+        transaction = {
+                id: maxId + 1,
+                date: '17/10/2015',
+                timestamp: '20151017',
+                amount: -costAmount,
+                userId: userId,
+                propertyId: issuePropertyId,
+                description: costDescription
+            }
+        console.log('transaction before');
+        console.log(transaction);
+        return insertTransaction(
+            transaction
+        );
+    })
+    .then(function(transaction){      
+        return transaction.id;
+    });
+}
+
+function insertTransaction(transaction) {
+    return records.insert(transaction);
+}
+
+function getMaxId() {
+    return records.aggregate(
+       [
+          {
+            $group : {
+               _id : null,
+               maxId: { $max: "$id" }
+            }
+          }
+       ]
+    ).get(0).get('maxId');
 }

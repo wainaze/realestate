@@ -8,8 +8,6 @@ exports.getProperty = function(userId, propertyId) {
 }
 
 exports.getPropertyById = function(propertyId) {
-    console.log('Getting property by id ' + propertyId);
-    //throw new AccessNotAllowed();
     return records.findOne({id : parseInt(propertyId)});
 }
 
@@ -18,7 +16,6 @@ exports.getAllProperties = function(userId){
 };
 
 exports.getAllPropertiesIds = function(userId){
-    console.log('getting all the ids');
     return new Promise(function(resolve){
         resolve([1,2,3]);
     });

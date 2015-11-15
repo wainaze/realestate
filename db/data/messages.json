@@ -1,0 +1,18 @@
+[
+    { 
+        id : 1,
+        senderId : 3,
+        recepients : [1],
+        date : '20151101121821',
+        messageText : 'Please help, I have a trouble',
+        status: 'read'
+    },
+    { 
+        id : 2,
+        senderId : 1,
+        recepients : [3],
+        date : '20151101122015',
+        messageText : 'What can I do for you?',
+        status: 'new'
+    }      
+]

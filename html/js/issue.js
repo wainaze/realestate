@@ -47,8 +47,9 @@ function addCost(description, amount) {
         issueId: issueId,
         costDescription: description,
         costAmount: amount
+    }).success(function(data){
+        window.location.reload();
     });
-    window.location.reload();
 }
 
 $('#cancelCostsButton').on('click', function() {
