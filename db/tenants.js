@@ -10,28 +10,20 @@ exports.getTenants = function(propertyId) {
 }
 
 exports.addTenant = function(tenant) {
-    records.push(tenant);
+    return Promise.resolve(records.insert(tenant));
 }
 
 exports.getTenantByUserId = function(userId) {
-    for (var i = 0; i < records.length; i++) {
-        if (records[i].userId == userId)
-            return records[i];
-    }
-
-    return null;
+    return records.findOne({userId : userId});
 }
 
 function getTenantsForPropertiesIds(propertiesIds) {
-    console.log('Finding tenants for properties ' + propertiesIds);
     return records.find({propertyId : { $in : propertiesIds}})  
         .then(sortTenants)
         .then(updateTenantsAge);  
 }
 
 exports.getAllTenants = function(userId) {
-    console.log('get all tenants ' + userId);
-
     return properties.getAllPropertiesIds(userId)
             .then(getTenantsForPropertiesIds);
 }

@@ -8,14 +8,16 @@ var router = express.Router();
 router.use(ensureLogin.ensureLoggedIn('/'));
 router.use(userAccess.userHasRole('tenant'));
 router.use(function(req, res, next){
-    var userId = req.user.id;
-	var tenant = db.tenants.getTenantByUserId(userId);
-	if (tenant) {
-		req.tenant = tenant;
-		next();
-	} else {
-		res.redirect('/logout');	
-	}	
+    var userId = parseInt(req.user.id);
+	db.tenants.getTenantByUserId(userId)
+    .then(function(tenant){
+        if (tenant) {
+            req.tenant = tenant;
+            next();
+        } else {
+            res.redirect('/logout');    
+        }       
+    });	
 });
 
 router.get('/', function(req, res) {
