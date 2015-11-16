@@ -1,5 +1,7 @@
 extends ./layout.jade
 
+include ./mixins/issueActionButton
+
 block content
   .row(style='opacity: 1;')
     .propertyPage.col-xs-12
@@ -88,10 +90,23 @@ block content
                   tr
                     th #{__('Problem')}
                     th #{__('Date')}
-                  for issue in issues
-                    tr(class= issue.status == 'new' ? 'issue newIssue' : 'issue')
+                    th #{__('Status')}
+                  for issue in openIssues
+                    tr(class= issue.status == 'new' ? 'newIssue issue' : 'issue', data-id=issue.id)
                       td= issue.issueCaption
                       td= issue.creationDate
+                      td
+                        +issueActionButton(issue)
+                  if solvedIssues.length > 0
+                    tr
+                      td(colspan='4')
+                        #solvedIssues #{__('Solved')}
+                    for issue in solvedIssues
+                      tr.issue.solved(data-id=issue.id)
+                        td= issue.issueCaption
+                        td= issue.creationDate
+                        td
+                          +issueActionButton(issue)
               #photos.tab-pane(role='tabpanel')
                 .row.propertyDataRow
                   .col-xs-4

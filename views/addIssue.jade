@@ -1,0 +1,20 @@
+extends ./layout.jade
+
+block content  
+	.addPropertyForm
+		h1 #{__('Add new issue')}
+		form#property(method='POST')
+			.row
+				label.fullWidth(for='issueSubject') #{__('Subject')}
+				input#issueSubject(type='text' name='issueSubject')
+			.row
+				label.fullWidth(for='issueDescription') #{__('Description')}
+				input#issueDescription(type='text' name='issueDescription')
+			.row
+				label.fullWidth(for='propertyPayment') #{__('Monthly payment')}
+				input#propertyPayment(type='text' name='payment')
+			.row
+				#addPropertyButton.btn.btn-primary(type='submit') #{__('Add')}
+				#cancelAddPropertyButton.btn.btn-default(type='cancel') #{__('Cancel')}
+block scripts    
+  script(type='text/javascript', src='/js/issue.js')

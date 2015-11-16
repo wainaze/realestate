@@ -7,83 +7,27 @@ block content
         tr
           th #{__('Tenants_Name')}
           th #{__('Property')}
-        
-        tr.tenant
-          td Adam Jacque
-          td
-            a(href='property.html?id=1') Rue de Rivoly
-        
-        tr.detailsRow
-          td(colspan='2')
-            .details
-              table
-                tr
-                  td.tenantPicture
-                    img(src='img/samples/noface.jpg')
+        for tenant in tenants
+          tr.tenant
+            td
+              span.glyphicon.glyphicon-chevron-right
+            td= tenant.name
+            td= tenant.property.name
+          tr.detailsRow
+            td(colspan='999')
+              .details
+                table
+                  tr
+                    td.tenantPicture
+                      img(src=tenant.picture)
                   
-                  td.vAlign-top.fields
-                    .field
-                      .fieldName Age:
-                      
-                      .fieldValue 36
-                    
-                    .field
-                      .fieldName Phone:
-                      
-                      .fieldValue +32 483 657638
-        
-        tr.tenant
-          td Kristine Lagard
-          td
-            a(href='property.html?id=2') Vlaanderenstraat 62
-        
-        tr.detailsRow
-          td(colspan='2')
-            .details
-              table
-                tr
-                  td.tenantPicture
-                    img(src='img/samples/noface.jpg')
-                  
-                  td.vAlign-top.fields
-                    .field
-                      .fieldName Age:
-                      
-                      .fieldValue 25
-                    
-                    .field
-                      .fieldName Phone:
-                      
-                      .fieldValue +32 425 456812
-        
-        tr.tenant
-          td Michel De Winter
-          td
-            a(href='property.html?id=3') Korenlei
-        
-        tr.detailsRow
-          td(colspan='2')
-            .details
-              table
-                tr
-                  td.tenantPicture
-                    img(src='img/samples/noface.jpg')
-                  
-                  td.vAlign-top.fields
-                    .field
-                      .fieldName Age:
-                      
-                      .fieldValue 52
-                    
-                    .field
-                      .fieldName Phone:
-                      
-                      .fieldValue +32 484 784596
-
-block scripts    
-  script.
-    $(document).on('click', 'tr.tenant', function(e){
-      var prestatieRow = $(this);
-      var prestatieErrorsRow = prestatieRow.next('.detailsRow');
-      prestatieErrorsRow.toggle();
-    });
+                    td.vAlign-top.fields
+                      .field
+                        .fieldName #{__('Age')}:
+                        .fieldValue= tenant.age
+                      .field
+                        .fieldName #{__('Phone')}:
+                        .fieldValue= tenant.phone
+block scripts
+  script(type='text/javascript', src='/js/tenants.js')
+    

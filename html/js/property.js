@@ -10,7 +10,8 @@ $(document).on('click', 'tr.tenant', function(e) {
 
 
 $(document).on('click', 'tr.issue', function(e) {
-    location.href = 'problem.html';
+	var issueId = $(this).data('id');
+    location.href = 'problem.html?issueId='+ issueId;
 });
 
 $(document).on('shown.bs.tab','a[data-toggle="tab"]', function (e) {

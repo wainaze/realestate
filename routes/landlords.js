@@ -107,14 +107,16 @@ router.get('/property.html', function(req, res) {
         db.payments.geyPayments(propertyId),
         db.tenants.getTenants(propertyId),
         db.issues.getOpenIssuesForProperty(propertyId),
+        db.issues.getSolvedIssuesForProperty(propertyId),
         db.issues.getNewIssuesCount(propertyId),
-        function(property, payments, tenants, issues, newIssuesCount)  {
+        function(property, payments, tenants, openIssues, solvedIssues, newIssuesCount)  {
             data.user = req.user;
             data.status = {totalNewIssues : newIssuesCount};
             data.property = property;
             data.payments = payments;
             data.tenants = tenants;
-            data.issues = issues;
+            data.openIssues = openIssues;
+            data.solvedIssues = solvedIssues;
         })
     .then(function() {
         res.render('property', data)
@@ -141,6 +143,12 @@ router.get('/tenants.html', function(req, res) {
 router.get('/problem.html', function(req, res) {
     var data = { status : {}};
     var issueId = parseInt(req.query.issueId);
+    console.log('issueId');
+    console.log(issueId);
+    if (issueId <= 0 || isNaN(issueId)) {
+        res.redirect('problems.html');   
+        return;    
+    }
     Promise
     .join(
         db.issues.getIssue(issueId),

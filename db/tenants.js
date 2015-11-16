@@ -25,7 +25,8 @@ function getTenantsForPropertiesIds(propertiesIds) {
 
 exports.getAllTenants = function(userId) {
     return properties.getAllPropertiesIds(userId)
-            .then(getTenantsForPropertiesIds);
+            .then(getTenantsForPropertiesIds)
+            .then(bindProperties);
 }
 
 /* Internal functions */
@@ -52,4 +53,10 @@ function updateTenantsAge(tenants) {
         resolve(tenants);
         console.log(tenants);
     });
+}
+
+function bindProperties(tenants){
+    return Promise.all(tenants.map(function(tenant){
+        return properties.getPropertyById(tenant.propertyId).then(function(property) { tenant.property = property; return tenant})
+    }));
 }

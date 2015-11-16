@@ -98,7 +98,11 @@ exports.getNewIssuesForPropertiesCount = function(propertyIds) {
 }
 
 exports.getOpenIssuesForProperty = function(propertyId) {
-    return records.find({issuePropertyId : parseInt(propertyId), status : { $in: ['new', 'open'] } });
+    return getAllUnsolvedIssuesForPropertiesIds([parseInt(propertyId)]);
+}
+
+exports.getSolvedIssuesForProperty = function(propertyId) {
+    return getAllSolvedIssuesForPropertiesIds([parseInt(propertyId)]);
 }
 
 exports.getOpenIssuesForPropertiesCount = function(propertyIds) {
