@@ -90,3 +90,24 @@ $('.rejectIssue').on('click', function() {
     });
     window.location.reload();
 });
+
+$('#property').autocomplete({
+    lookup: propertiesLookup,
+    onSelect: function (suggestion) {
+        $('input[name="property"]').val(suggestion.data);
+    }
+});
+
+$('#addIssueButton').on('click', function() {
+    $.post('/api/addIssue', {
+        issueSubject: $('#issueSubject').val(),
+        issueDescription: $('#issueDescription').val(),
+        issueProperty: $('input[name="property"]').val()
+    }).done(function(issueId){
+        window.location = 'problem.html?issueId='+issueId;
+    });
+});
+
+$('#cancelAddIssueButton').on('click', function() {
+    window.location = '/home.html';
+});

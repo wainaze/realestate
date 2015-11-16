@@ -882,3 +882,38 @@ li.language-dropdown  span.caret {
     background-color: white;
     padding: 20px;
 }
+
+
+/* add issue form*/
+
+#issue input {
+    min-width: 400px;
+    margin-bottom: 20px;
+    padding: 5px;
+}
+
+.addIssueForm {
+    max-height: 100%;
+    min-height: 100%;
+    overflow: auto;
+    background-color: white;
+    padding: 20px;
+}
+.addIssueButton {
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+.addIssueButton > div {
+    border: 2px dashed #DDD;
+    border-radius: 10px;
+    text-align: center;
+    box-sizing: border-box;
+    cursor: pointer;
+}
+
+.addIssueButton > div > span{
+    box-sizing: border-box;
+    font-size: 22px;
+    color: #DDD;
+}

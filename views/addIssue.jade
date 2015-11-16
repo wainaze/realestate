@@ -1,20 +1,30 @@
 extends ./layout.jade
 
-block content  
-	.addPropertyForm
+block content
+	style.
+		.autocomplete-suggestions { border: 1px solid #999; background: #FFF; overflow: auto; }
+		.autocomplete-suggestion { padding: 2px 5px; white-space: nowrap; overflow: hidden; }
+		.autocomplete-selected { background: #F0F0F0; }
+		.autocomplete-suggestions strong { font-weight: normal; color: #3399FF; }
+		.autocomplete-group { padding: 2px 5px; }
+		.autocomplete-group strong { display: block; border-bottom: 1px solid #000; }  
+	.addIssueForm
 		h1 #{__('Add new issue')}
-		form#property(method='POST')
+		form#issue(method='POST')
 			.row
 				label.fullWidth(for='issueSubject') #{__('Subject')}
-				input#issueSubject(type='text' name='issueSubject')
+				input#issueSubject(type='text' name='issueSubject' required)
 			.row
 				label.fullWidth(for='issueDescription') #{__('Description')}
-				input#issueDescription(type='text' name='issueDescription')
+				input#issueDescription(type='text' name='issueDescription' required)
 			.row
-				label.fullWidth(for='propertyPayment') #{__('Monthly payment')}
-				input#propertyPayment(type='text' name='payment')
+				label.fullWidth(for='property') #{__('Property')}
+				input#property(type='text' required)
+				input(type='hidden' name='property')
 			.row
-				#addPropertyButton.btn.btn-primary(type='submit') #{__('Add')}
-				#cancelAddPropertyButton.btn.btn-default(type='cancel') #{__('Cancel')}
-block scripts    
-  script(type='text/javascript', src='/js/issue.js')
+				#addIssueButton.btn.btn-primary(type='submit') #{__('Add')}
+				#cancelAddIssueButton.btn.btn-default(type='cancel') #{__('Cancel')}
+block scripts   
+	script(type='text/javascript') var propertiesLookup = 
+		!= JSON.stringify(properties)
+	script(type='text/javascript', src='/js/issue.js')

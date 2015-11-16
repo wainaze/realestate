@@ -68,5 +68,8 @@
 	"Add": "Add",
 	"Property caption": "Property caption",
 	"Property address": "Property address",
-	"Add new property": "Add new property"
+	"Add new property": "Add new property",
+	"Add new issue": "Add new issue",
+	"Subject": "Subject",
+	"Click here to add new issue": "Click here to add new issue"
 }

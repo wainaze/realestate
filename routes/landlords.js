@@ -174,6 +174,25 @@ router.get('/problem.html', function(req, res) {
     });
 });
 
+router.get('/addIssue.html', function(req, res) {
+    var userId = parseInt(req.user.id);
+    var data = {status : {}};
+    Promise
+    .join(
+        db.properties.getAllProperties(userId),
+        db.issues.getNewIssuesCount(req.user.id),  
+        function(properties, newIssuesCount){
+            var properties = properties.map(function(property) { return {data: property.id, value: property.name}});
+            data.user = req.user;
+            data.status.totalNewIssues = newIssuesCount;
+            data.properties = properties;
+        }
+    )
+    .then(function(){
+        res.render('addIssue',data);
+    })
+});
+
 router.get('/problems.html', function(req, res) {
     var data = {}
     Promise.join(

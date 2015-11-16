@@ -42,6 +42,20 @@ router.post('/addComment', function(req, res) {
     });
 });
 
+router.post('/addIssue', function(req, res){
+    var userId = parseInt(req.user.id);
+    var subject = req.body.issueSubject;
+    var description = req.body.issueDescription;
+    var propertyId = parseInt(req.body.issueProperty);
+    db.issues.addIssue(userId, subject, description, propertyId)
+    .then(function(issue){
+        res.send( issue.id.toString());
+    })
+    .catch(function(err){
+        res.send(err);
+    })
+});
+
 router.post('/solveIssue', function(req, res) {
     var userId = parseInt(req.user.id);
     var issueId = parseInt(req.body.issueId);

@@ -1,7 +1,19 @@
 var properties = require('./properties');
 var transactions = require('./transactions');
+var moment = require('moment');
 var Promise = require('bluebird');
 var records = Promise.promisifyAll(require('./dbconnection').db.get('issues'));
+
+records.aggregate = function(aggregation){
+    var collection = this.col;
+    var options = {};
+    return new Promise(function(resolve) {
+        collection.aggregate(aggregation, options, function(err, data){
+            if (err) throw err;             
+            resolve(data);
+        });
+    });
+}
     
 function setProperty(issue) {
     return function(property) {
@@ -38,15 +50,15 @@ function getCount(data) {
 }
 
 function getAllNewIssuesForPropertiesIds(propertyIds) {
-    return records.find({issuePropertyId : { $in : propertyIds}, status : { $in: ['new'] } });    
+    return records.find({issuePropertyId : { $in : propertyIds}, status : { $in: ['new'] } }).then(sortIssues);    
 }
 
 function getAllSolvedIssuesForPropertiesIds(propertyIds) {
-    return records.find({issuePropertyId : { $in : propertyIds}, status : { $nin: ['new', 'open'] } });    
+    return records.find({issuePropertyId : { $in : propertyIds}, status : { $nin: ['new', 'open'] } }).then(sortIssues);    
 }
 
 function getAllUnsolvedIssuesForPropertiesIds(propertyIds) {
-    return records.find({issuePropertyId : { $in : propertyIds}, status : { $in: ['new', 'open'] } });    
+    return records.find({issuePropertyId : { $in : propertyIds}, status : { $in: ['new', 'open'] } }).then(sortIssues);    
 }
 
 exports.getAllNewIssues = function(userId) {
@@ -98,11 +110,11 @@ exports.getNewIssuesForPropertiesCount = function(propertyIds) {
 }
 
 exports.getOpenIssuesForProperty = function(propertyId) {
-    return getAllUnsolvedIssuesForPropertiesIds([parseInt(propertyId)]);
+    return getAllUnsolvedIssuesForPropertiesIds([parseInt(propertyId)]).then(sortIssues);
 }
 
 exports.getSolvedIssuesForProperty = function(propertyId) {
-    return getAllSolvedIssuesForPropertiesIds([parseInt(propertyId)]);
+    return getAllSolvedIssuesForPropertiesIds([parseInt(propertyId)]).then(sortIssues);
 }
 
 exports.getOpenIssuesForPropertiesCount = function(propertyIds) {
@@ -123,6 +135,22 @@ exports.getIssue = function(issueId){
     return records.findOne({id : parseInt(issueId)})
             .then(bindProperty)
             .then(fillTranactions);
+}
+
+exports.addIssue = function(userId, subject, description, propertyId) {
+    return getMaxId()
+    .then(function(maxId){
+        var issue = {
+            id: maxId + 1, 
+            issueCaption: subject, 
+            issueDescription: description,
+            issuePropertyId: propertyId, 
+            creationDate: moment().format("DD/MM/YYYY"), 
+            status: 'new', 
+            costs: []
+        }
+        return records.insert(issue);
+    });
 }
 
 exports.addCost = function(issueId, userId, costAmount, costDescription) {
@@ -147,4 +175,31 @@ exports.addComment = function(userId, issueId, commentText) {
 exports.updateIssueStatus = function(userId, issueId, status) {
     var issueId = parseInt(issueId);
     return Promise.resolve(records.update({ id: issueId }, { $set: { status: status }}));
+}
+
+function getMaxId() {
+    return records.aggregate(
+       [
+          {
+            $group : {
+               _id : null,
+               maxId: { $max: "$id" }
+            }
+          }
+       ]
+    ).get(0).get('maxId');
+}
+
+function sortIssues(issues) {
+    return new Promise(function(resolve){
+        console.log('issues before');
+        console.log(issues);
+        issues = issues.sort(function(a,b){
+            return moment(a.creationDate, 'DD/MM/YYYY').diff(moment(b.creationDate, 'DD/MM/YYYY'), 'days');
+        });
+        issues.reverse();
+        resolve(issues);
+        console.log('issues after');
+        console.log(issues);
+    })
 }

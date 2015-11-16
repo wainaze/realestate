@@ -4,6 +4,9 @@ include ./mixins/issueActionButton
 
 block content
   .row.contentRow(style='opacity: 1;')
+    .addIssueButton
+      div 
+        span #{__('Click here to add new issue')}
     .issues
       table.table
         tr
