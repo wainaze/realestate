@@ -58,5 +58,15 @@
 	"Birth date": "Birth date",
 	"Phone Number": "Phone Number",
 	"Send reminder": "Send reminder",
-	"Send": "Send"
+	"Send": "Send",
+	"Add contract": "Add contract",
+	"Manage properties": "Manage properties",
+	"Click here to add new property": "Click here to add new property",
+	"Caption": "Caption",
+	"Address": "Address",
+	"Monthly payment": "Monthly payment",
+	"Add": "Add",
+	"Property caption": "Property caption",
+	"Property address": "Property address",
+	"Add new property": "Add new property"
 }

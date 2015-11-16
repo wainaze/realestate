@@ -2,19 +2,19 @@ extends ./layout.jade
 
 block content
   .addPropertyForm
-    h1 Add new property
+    h1 #{__('Add new property')}
     form#property(method='POST')
       .row
-        label.fullWidth(for='propertyName') Caption
+        label.fullWidth(for='propertyName') #{__('Caption')}
         input#propertyName(type='text' name='name')
       .row
-        label.fullWidth(for='propertyAddress') Address
+        label.fullWidth(for='propertyAddress') #{__('Address')}
         input#propertyAddress(type='text' name='address')
       .row
-        label.fullWidth(for='propertyPayment') Monthly payment
+        label.fullWidth(for='propertyPayment') #{__('Monthly payment')}
         input#propertyPayment(type='text' name='payment')
       .row
-        #addPropertyButton.btn.btn-primary(type='submit') Add
-        #cancelAddPropertyButton.btn.btn-default(type='cancel') Cancel
+        #addPropertyButton.btn.btn-primary(type='submit') #{__('Add')}
+        #cancelAddPropertyButton.btn.btn-default(type='cancel') #{__('Cancel')}
 block scripts
   script(type='text/javascript', src='/js/addProperty.js')

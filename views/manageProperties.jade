@@ -3,27 +3,27 @@ extends ./layout.jade
 block content
   .proprtyForm
     .header 
-      h1 Manage properties
-    .addPropertyPlaceholder Click here to add new property
+      h1 #{__('Manage properties')}
+    .addPropertyPlaceholder #{__('Click here to add new property')}
     .addPropertyEditArea
       form#property(method='POST')
         .row
-          label.fullWidth(for='propertyName') Caption
+          label.fullWidth(for='propertyName') #{__('Caption')}
           input#propertyName(type='text' name='name')
         .row
-          label.fullWidth(for='propertyAddress') Address
+          label.fullWidth(for='propertyAddress') #{__('Address')}
           input#propertyAddress(type='text' name='address')
         .row
-          label.fullWidth(for='propertyPayment') Monthly payment
+          label.fullWidth(for='propertyPayment') #{__('Monthly payment')}
           input#propertyPayment(type='text' name='payment')
         .row
-          #addPropertyButton.btn.btn-primary(type='submit') Add
-          #cancelAddPropertyButton.btn.btn-default(type='cancel') Cancel
+          #addPropertyButton.btn.btn-primary(type='submit') #{__('Add')}
+          #cancelAddPropertyButton.btn.btn-default(type='cancel') #{__('Cancel')}
     table.table
       tr
         th.actions
-        th.propertyCaption Property caption
-        th.propertyAddress Property address
+        th.propertyCaption #{__('Property caption')}
+        th.propertyAddress #{__('Property address')}
       for property in properties
         tr.markSelection
           td.actions
