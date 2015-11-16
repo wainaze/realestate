@@ -1,6 +1,7 @@
 var db = require('../db');
 var extend = require('util')._extend;
 
+// FIXME 
 exports.getMessages = function(userId){
     var messagesDAOs = db.messages.getMessages(userId); 
     console.log(JSON.stringify(messagesDAOs));

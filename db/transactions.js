@@ -64,8 +64,6 @@ exports.getTransaction = function(transactionId) {
 exports.addTransaction = function(userId, issuePropertyId, costAmount, costDescription) {
     return getMaxId()
     .then(function(maxId){
-        console.log('maxId');
-        console.log(maxId);
         transaction = {
                 id: maxId + 1,
                 date: '17/10/2015',
@@ -75,8 +73,6 @@ exports.addTransaction = function(userId, issuePropertyId, costAmount, costDescr
                 propertyId: issuePropertyId,
                 description: costDescription
             }
-        console.log('transaction before');
-        console.log(transaction);
         return insertTransaction(
             transaction
         );

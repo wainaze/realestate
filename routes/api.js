@@ -11,8 +11,8 @@ router.use(ensureLogin.ensureLoggedIn('/'));
 router.use(userAccess.userHasRole('landlord'));
 
 router.post('/addCost', function(req, res) {
-    var userId = req.user.id;
-    var issueId = req.body.issueId;
+    var userId = parseInt(req.user.id);
+    var issueId = parseInt(req.body.issueId);
     var costDescription = req.body.costDescription;
     var costAmount = req.body.costAmount;
     db.issues.addCost(issueId, userId, costAmount, costDescription)
@@ -27,8 +27,8 @@ router.post('/addCost', function(req, res) {
 });
 
 router.post('/addComment', function(req, res) {
-    var userId = req.user.id;
-    var issueId = req.body.issueId;
+    var userId = parseInt(req.user.id);
+    var issueId = parseInt(req.body.issueId);
     var commentText = req.body.commentText;
     if (!commentText || !commentText.length)
         res.send('ok');
@@ -43,8 +43,8 @@ router.post('/addComment', function(req, res) {
 });
 
 router.post('/solveIssue', function(req, res) {
-    var userId = req.user.id;
-    var issueId = req.body.issueId;
+    var userId = parseInt(req.user.id);
+    var issueId = parseInt(req.body.issueId);
     db.issues.updateIssueStatus(userId, issueId, 'solved')
     .then(function(){
         res.send('ok');
@@ -55,8 +55,8 @@ router.post('/solveIssue', function(req, res) {
 });
 
 router.post('/holdIssue', function(req, res) {
-    var userId = req.user.id;
-    var issueId = req.body.issueId;
+    var userId = parseInt(req.user.id);
+    var issueId = parseInt(req.body.issueId);
     db.issues.updateIssueStatus(userId, issueId, 'on-hold')
     .then(function(){
         res.send('ok');
@@ -67,8 +67,8 @@ router.post('/holdIssue', function(req, res) {
 });
 
 router.post('/rejectIssue', function(req, res) {
-    var userId = req.user.id;
-    var issueId = req.body.issueId;
+    var userId = parseInt(req.user.id);
+    var issueId = parseInt(req.body.issueId);
     db.issues.updateIssueStatus(userId, issueId, 'rejected')
     .then(function(){
         res.send('ok');
@@ -79,8 +79,8 @@ router.post('/rejectIssue', function(req, res) {
 });
 
 router.post('/reopenIssue', function(req, res) {
-    var userId = req.user.id;
-    var issueId = req.body.issueId;
+    var userId = parseInt(req.user.id);
+    var issueId = parseInt(req.body.issueId);
     db.issues.updateIssueStatus(userId, issueId, 'open')
     .then(function(){
         res.send('ok');
@@ -91,7 +91,7 @@ router.post('/reopenIssue', function(req, res) {
 });
 
 router.post('/addProperty', function(req, res) {
-    var userId = req.user.id;
+    var userId = parseInt(req.user.id);
     var newProperty = {
         userId: userId,
         name: req.body.name,
@@ -99,20 +99,30 @@ router.post('/addProperty', function(req, res) {
         img: '/img/house1.jpg',
         issuesTotal: 0
     }
-    var propertyId = db.properties.addProperty(newProperty);
-    res.send('ok');
+    db.properties.addProperty(newProperty)
+    .then(function(){
+        res.send('ok');
+    })
+    .catch(function(err){
+        res.send(err);
+    });
 });
 
 router.post('/removeProperty', function(req, res) {
-    var userId = req.user.id;
-    var propertyId = req.body.propertyId;
-    db.properties.removeProperty(propertyId);
-    res.send('ok');
+    var userId = parseInt(req.user.id);
+    var propertyId = parseInt(req.body.propertyId);
+    db.properties.removeProperty(propertyId)
+    .then(function(){
+        res.send('ok');
+    })
+    .catch(function(err){
+        res.send(err);
+    });
 });
 
 router.post('/saveTenant', function(req, res) {
-    var userId = req.user.id;
-    var propertyId = req.body.propertyId;
+    var userId = parseInt(req.user.id);
+    var propertyId = parseInt(req.body.propertyId);
     db.tenants.addTenant({
         propertyId: propertyId,
         name: req.body.tenantName,
@@ -121,14 +131,24 @@ router.post('/saveTenant', function(req, res) {
         picture: '/img/samples/noface.jpg',
         birthDate: req.body.birthDate,
         phone: req.body.phoneNumber
+    })
+    .then(function(){
+        res.send('ok');
+    })
+    .catch(function(err){
+        res.send(err);
     });
-    res.send('ok');
 });
 
 router.get('/loadMessages', function(req, res){
     var userId = req.user.id;
-    var messages = messagesService.getMessages(userId);
-    res.send(messages);    
+    messagesService.getMessages(userId)
+    .then(function(messages){
+        res.send(messages);
+    })
+    .catch(function(err){
+        res.send(err);
+    });
 });
 
 router.post('/addMessage', function(req, res){
@@ -142,8 +162,13 @@ router.post('/addMessage', function(req, res){
         messageText : messageText,
         status: 'new'
     };
-    db.messages.addMessage(message); 
-    res.send('ok');
+    db.messages.addMessage(message)
+    .then(function(){
+        res.send('ok');
+    })
+    .catch(function(err){
+        res.send(err);
+    });
 });
 
 module.exports = router;

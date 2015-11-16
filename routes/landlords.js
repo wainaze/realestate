@@ -136,10 +136,10 @@ router.get('/tenants.html', function(req, res) {
 
 router.get('/problem.html', function(req, res) {
     var data = { status : {}};
-    db.issues.getIssue(req.query.issueId).then(function(data) { console.log('issue'); console.log(data);});
+    var issueId = parseInt(req.query.issueId);
     Promise
     .join(
-        db.issues.getIssue(req.query.issueId),
+        db.issues.getIssue(issueId),
         db.issues.getNewIssuesCount(req.user.id),  
         function(issue, newIssuesCount){ 
             data.user = req.user;
@@ -151,8 +151,10 @@ router.get('/problem.html', function(req, res) {
     )
     .then(function(){
         if (data.issue) {
-            if (data.issue.status == 'new')
+            if (data.issue.status == 'new') {
+                db.issues.updateIssueStatus(req.user.id, req.query.issueId, 'open');            
                 data.issue.status = 'open';
+            }
             res.render('problem', data);
         } else {
             res.redirect('problems.html');
