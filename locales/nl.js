@@ -57,5 +57,6 @@
 	"Tenant name": "Tenant name",
 	"Birth date": "Birth date",
 	"Phone Number": "Phone Number",
-	"Send reminder": "Send reminder"
+	"Send reminder": "Send reminder",
+	"Send": "Send"
 }

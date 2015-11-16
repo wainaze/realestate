@@ -5,3 +5,4 @@ exports.payments = require('./payments');
 exports.tenants = require('./tenants');
 exports.issues = require('./issues');
 exports.messages = require('./messages');
+exports.subscribers = require('./subscribers');

@@ -95,10 +95,13 @@ module.exports = (function() {
         res.header("Pragma", "no-cache");
         res.header("Expires", 0);
         
-        var subscribers = emailService.listEmails();
-        res.render('listSubscribers', {
-            subscribers: subscribers
-        });        
+        emailService.listEmails()
+        .then(function(subscribers){
+            res.render('listSubscribers', {subscribers: subscribers});
+        })
+        .catch(function(err){
+            res.send(err);
+        });
     });
 
     router.get('/setLang', function(req, res){
