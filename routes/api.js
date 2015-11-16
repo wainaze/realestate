@@ -171,4 +171,20 @@ router.post('/addMessage', function(req, res){
     });
 });
 
+router.get('/propertyPayments', function(req, res){
+    var propertyId = parseInt(req.query.id);
+    db.payments.getLastYearPayments(propertyId)
+    .then(function(payments){
+        payments = payments.map(function(payment){
+            return payment.payment;
+        });
+        console.log('payments');
+        console.log(payments);
+        res.send(payments);
+    })
+    .catch(function(err){
+        res.send(err);
+    });
+});
+
 module.exports = router;

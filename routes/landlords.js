@@ -66,13 +66,15 @@ router.get('/contracts.html', function(req, res) {
 });
 
 router.get('/paymentStatus.html', function(req, res) {
-    var data = {};
+    var data = {status : {}};
     Promise
     .join(
+        db.properties.getAllProperties(req.user.id),
         db.issues.getNewIssuesCount(req.user.id),
-        function(newIssuesCount){
+        function(properties, newIssuesCount){
             data.user = req.user;
-            data.status = {totalNewIssues: newIssuesCount};
+            data.status.totalNewIssues = newIssuesCount;
+            data.properties = properties;
         }
     )
     .then(function(){
@@ -98,12 +100,14 @@ router.get('/payments.html', function(req, res) {
 
 router.get('/property.html', function(req, res) {
     var data = {};
+    var userId = parseInt(req.user.id);
+    var propertyId = parseInt(req.query.id);
     Promise.join(
-        db.properties.getProperty(req.user.id, req.query.id),
-        db.payments.geyPayments(req.query.id),
-        db.tenants.getTenants(req.query.id),
-        db.issues.getOpenIssuesForProperty(req.query.id),
-        db.issues.getNewIssuesCount(req.user.id),
+        db.properties.getProperty(userId, propertyId),
+        db.payments.geyPayments(propertyId),
+        db.tenants.getTenants(propertyId),
+        db.issues.getOpenIssuesForProperty(propertyId),
+        db.issues.getNewIssuesCount(propertyId),
         function(property, payments, tenants, issues, newIssuesCount)  {
             data.user = req.user;
             data.status = {totalNewIssues : newIssuesCount};

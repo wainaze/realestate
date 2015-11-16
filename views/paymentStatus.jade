@@ -8,39 +8,19 @@ block content
           th #{__('Property')}
           th.align-right #{__('Status')}
         
-        tr.property
-          td
-            a(href='property.html?id=1') Rue de Rivoli
-          
-          td.align-right.statusPaid +600&euro;
-        
-        tr.detailsRow
-          td(colspan='2')
-            .details.align-right(style='width: 100%')
-              canvas#mycanvas(style='width: 100%; max-height:150px;')
-        
-        tr.property.bad
-          td
-            a(href='property.html?id=1') Korenlei
-          
-          td.align-right -1200&euro;
-        
-        tr.detailsRow
-          td(colspan='2')
-            .details.align-right(style='width: 100%')
-              canvas#mycanvas(style='width: 100%; max-height:150px;')
-        
-        tr.property
-          td
-            a(href='property.html?id=1') Vlaanderenstraat 62
-          
-          td.align-right.statusPaid +600&euro;
-        
-        tr.detailsRow
-          td(colspan='2')
-            .details.align-right(style='width: 100%')
-              canvas#mycanvas(style='width: 100%; max-height:150px;')
-
+        for property in properties
+          tr.property(data-propertyid=property.id)
+            td
+              a(href='property.html?id='+property.id)= property.name
+            
+            if property.payment > 0
+              td.align-right.statusPaid +#{property.payment}&euro;
+            else
+              td.align-right #{property.payment}&euro;
+          tr.detailsRow
+            td(colspan='2')
+              .details.align-right(style='width: 100%')
+                canvas#mycanvas(style='width: 100%; max-height:150px;')
 block scripts    
   script(type='text/javascript', src='/js/Chart.js')
   script(type='text/javascript', src='/js/payments.js')
