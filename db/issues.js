@@ -134,3 +134,13 @@ exports.addCost = function(issueId, userId, costAmount, costDescription) {
                 { $push: { costs: transactionId } });
     }));
 }
+
+exports.addComment = function(userId, issueId, commentText) {
+    var issueId = parseInt(issueId);
+    return Promise.resolve(records.update({ id: issueId }, { $push: { comments: commentText } }));
+}
+
+exports.updateIssueStatus = function(userId, issueId, status) {
+    var issueId = parseInt(issueId);
+    return Promise.resolve(records.update({ id: issueId }, { $set: { status: status }}));
+}

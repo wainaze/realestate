@@ -30,45 +30,64 @@ router.post('/addComment', function(req, res) {
     var userId = req.user.id;
     var issueId = req.body.issueId;
     var commentText = req.body.commentText;
-    if (commentText && commentText.length){
-        var issue = db.issues.getIssue(userId, issueId);
-        if (issue.comments == null)
-            issue.comments = [];
-        issue.comments.push(commentText);   
-    }
-    res.send('ok');
+    if (!commentText || !commentText.length)
+        res.send('ok');
+
+    db.issues.addComment(userId, issueId, commentText)
+    .then(function(){
+        res.send('ok');
+    })
+    .catch(function(err){
+        res.send(err);
+    });
 });
 
 router.post('/solveIssue', function(req, res) {
     var userId = req.user.id;
     var issueId = req.body.issueId;
-    var issue = db.issues.getIssue(userId, issueId);
-    issue.status = 'solved';
-    res.send('ok');
+    db.issues.updateIssueStatus(userId, issueId, 'solved')
+    .then(function(){
+        res.send('ok');
+    })
+    .catch(function(err){
+        res.send(err);
+    });
 });
 
 router.post('/holdIssue', function(req, res) {
     var userId = req.user.id;
     var issueId = req.body.issueId;
-    var issue = db.issues.getIssue(userId, issueId);
-    issue.status = 'on-hold';
-    res.send('ok');
+    db.issues.updateIssueStatus(userId, issueId, 'on-hold')
+    .then(function(){
+        res.send('ok');
+    })
+    .catch(function(err){
+        res.send(err);
+    });
 });
 
 router.post('/rejectIssue', function(req, res) {
     var userId = req.user.id;
     var issueId = req.body.issueId;
-    var issue = db.issues.getIssue(userId, issueId);
-    issue.status = 'rejected';
-    res.send('ok');
+    db.issues.updateIssueStatus(userId, issueId, 'rejected')
+    .then(function(){
+        res.send('ok');
+    })
+    .catch(function(err){
+        res.send(err);
+    });
 });
 
 router.post('/reopenIssue', function(req, res) {
     var userId = req.user.id;
     var issueId = req.body.issueId;
-    var issue = db.issues.getIssue(userId, issueId);
-    issue.status = 'open';
-    res.send('ok');
+    db.issues.updateIssueStatus(userId, issueId, 'open')
+    .then(function(){
+        res.send('ok');
+    })
+    .catch(function(err){
+        res.send(err);
+    });
 });
 
 router.post('/addProperty', function(req, res) {

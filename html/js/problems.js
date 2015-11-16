@@ -17,7 +17,7 @@ $('.holdIssue').on('click', function(){
 
 $('.reopenIssue').on('click', function(){
 	var issueId = $(this).parents('tr.issue').first().data('id');
-	$.post('/apireopenIssue', { issueId: issueId });
+	$.post('/api/reopenIssue', { issueId: issueId });
 	window.location.reload();
 });
 
