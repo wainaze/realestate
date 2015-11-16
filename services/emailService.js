@@ -18,7 +18,7 @@ var transporter = nodemailer.createTransport(smtpTransport({
 }));
 
 exports.addEmail = function(email) {
-    return db.subscribers.addEmail(email);
+    return db.subscribers.azurentddEmail(email);
 }
 
 exports.sendMail = function(mail) {
@@ -38,5 +38,6 @@ exports.sendMail = function(mail) {
 }
 
 exports.listEmails = function() {
+    console.log('Loading emails'); 
     return db.subscribers.getAllSubscribers();
  }

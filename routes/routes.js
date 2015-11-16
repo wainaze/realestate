@@ -98,11 +98,8 @@ module.exports = (function() {
         emailService.listEmails()
         .then(function(subscribers){
             res.render('listSubscribers', {subscribers: subscribers});
-        })
-        .catch(function(err){
-            res.send(err);
         });
-    });
+    }); 
 
     router.get('/setLang', function(req, res){
         var lang = req.query.lang;

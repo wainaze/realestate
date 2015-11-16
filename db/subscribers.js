@@ -12,5 +12,6 @@ exports.addEmail = function(email) {
 }
 
 exports.getAllSubscribers = function(){
+    console.log('Retrieving emails'); 
 	return records.find();
-}
+}	
