@@ -10,7 +10,20 @@ exports.getTenants = function(propertyId) {
 }
 
 exports.addTenant = function(tenant) {
-    return Promise.resolve(records.insert(tenant));
+    console.log("Add tenant");
+    console.log(tenant);
+    return getMaxId()
+    .then(function(maxId){
+        tenant.id = maxId + 1;
+        return records.insert(tenant);
+    })
+    .then(function(tenant){      
+        return tenant.id;
+    });
+}
+
+exports.getTenantById = function(tenantId) {
+    return records.findOne({id : tenantId});
 }
 
 exports.getTenantByUserId = function(userId) {
@@ -59,4 +72,29 @@ function bindProperties(tenants){
     return Promise.all(tenants.map(function(tenant){
         return properties.getPropertyById(tenant.propertyId).then(function(property) { tenant.property = property; return tenant})
     }));
+}
+
+records.aggregate = function(aggregation){
+    var collection = this.col;
+    var options = {};
+    return new Promise(function(resolve) {
+        collection.aggregate(aggregation, options, function(err, data){
+            if (err) throw err;             
+            resolve(data);
+        });
+    });
+}
+
+
+function getMaxId() {
+    return records.aggregate(
+       [
+          {
+            $group : {
+               _id : null,
+               maxId: { $max: "$id" }
+            }
+          }
+       ]
+    ).get(0).get('maxId');
 }

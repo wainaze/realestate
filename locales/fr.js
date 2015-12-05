@@ -54,5 +54,10 @@
 	"Save": "Sauvegarder",
 	"Tenant name": "Nom du locataire",
 	"Birth date": "Date de naissance",
-	"Phone Number": "N° de téléphone"
+	"Phone Number": "N° de téléphone",
+	"Click here to add new property": "Click here to add new property",
+	"Add contract": "Add contract",
+	"Contract name": "Contract name",
+	"Click here to add new issue": "Click here to add new issue",
+	"Add tenant": "Add tenant"
 }

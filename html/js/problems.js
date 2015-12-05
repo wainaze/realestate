@@ -21,7 +21,7 @@ $('.reopenIssue').on('click', function(){
 	window.location.reload();
 });
 
-$('.solveIssue').on('click', function(){
+$('.solveIssue').on('click', function() {
 	var issueId = $(this).parents('tr.issue').first().data('id');
 	$.post('/api/solveIssue', { issueId: issueId });
 	window.location.reload();

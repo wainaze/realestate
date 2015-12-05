@@ -318,10 +318,6 @@ body {
     background-color: rgba(238, 238, 238, 0.15);
 }
 
-tr.tenant > td:first-child{
-    width : 25px;
-}
-
 .fields {
     padding: 20px;
 }
@@ -760,16 +756,19 @@ li.language-dropdown  span.caret {
 }
 
 #addTenantDialog {
-    display: none;
     position: absolute;
-    top: 0;
+    top: 57px;
     left: 0;
     right: 0;
     bottom: 0;
-    background-color: rgba(250, 250, 250, 0.8);
+    background-color: white;
     z-index: 2;
 }
 
+#addTenantDialog input ,
+#addTenantDialog select {      
+    max-width: 400px;
+}
 
 #addTenantDialog div.addTenantDialogHeader {
     position: relative;
@@ -916,4 +915,61 @@ li.language-dropdown  span.caret {
     box-sizing: border-box;
     font-size: 22px;
     color: #DDD;
+}
+
+/* Autocomplete style */
+
+.autocomplete-suggestions { border: 1px solid #999; background: #FFF; overflow: auto; }
+.autocomplete-suggestion { padding: 2px 5px; white-space: nowrap; overflow: hidden; }
+.autocomplete-selected { background: #F0F0F0; }
+.autocomplete-suggestions strong { font-weight: normal; color: #3399FF; }
+.autocomplete-group { padding: 2px 5px; }
+.autocomplete-group strong { display: block; border-bottom: 1px solid #000; }  
+
+/* contracts */
+
+#contracts {
+    background-color: white;
+    border: 1px solid #DDD;
+}
+
+#addContract {
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+#addContract > div {
+    border: 2px dashed #DDD;
+    border-radius: 10px;
+    text-align: center;
+    box-sizing: border-box;
+    cursor: pointer;
+}
+
+#addContract > div > span{
+    box-sizing: border-box;
+    font-size: 22px;
+    color: #DDD;
+}
+
+/* collapsible */
+
+.collapsible > .contents {
+    display: none;
+}
+
+.collapsible .glyphicon-collapsible {
+    font-size: 10px;
+    font-weight: 100;
+    border: 1px solid #DDD;
+    cursor: pointer;
+    min-height: 10px;
+    min-width: 10px;
+}
+
+.collapsible .glyphicon-collapsible:before {
+    content: "+";
+}
+.collapsible .glyphicon-collapsible.open:before {
+    content:"-";
 }

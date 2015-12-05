@@ -23,7 +23,7 @@ block content
                   | )
                   
               li(role='presentation')
-                a(href='#tenants', aria-controls='tenants', role='tab', data-toggle='tab') #{__('Contracts')}
+                a(href='#contracts', aria-controls='contracts', role='tab', data-toggle='tab') #{__('Contracts')}
                   
               li(role='presentation')
                 a(href='#issues', aria-controls='issues', role='tab', data-toggle='tab') #{__('Issues')} (5)
@@ -52,39 +52,24 @@ block content
                         if payment.payment < 0
                           a.reminderButton(href='#')
                             span.label.label-danger #{__('Send reminder')}
-              #tenants.tab-pane(role='tabpanel')
-                .actions.row
-                  #addTenant.btn.btn-default #{__('Add contract')}
+              #contracts.tab-pane(role='tabpanel')
+                #addContract 
+                  div 
+                    span #{__('Click here to add new contract')}
                 table.table
                   tr
-                    th
-                    th #{__('Contract name')}
-                    th #{__('Since')}
-                    th #{__('Till')}
-                    th #{__('Payment status')}
-                  for tenant in tenants
+                    th.nowrap #{__('Contract name')}
+                    th.nowrap #{__('Since')}
+                    th.nowrap #{__('Till')}
+                    th.nowrap #{__('Payment frequency')}
+                    th.nowrap #{__('Payment')}
+                  for contract in contracts
                     tr.tenant
-                      td
-                        span.glyphicon.glyphicon-chevron-right
-                      td= tenant.name
-                      td= tenant.contractBegin
-                      td= tenant.contractEnd
-                      td= tenant.payment
-                    tr.detailsRow
-                      td(colspan='999')
-                        .details
-                          table
-                            tr
-                              td.tenantPicture
-                                img(src=tenant.picture)
-                            
-                              td.vAlign-top.fields
-                                .field
-                                  .fieldName #{__('Age')}:
-                                  .fieldValue= tenant.age
-                                .field
-                                  .fieldName #{__('Phone')}:
-                                  .fieldValue= tenant.phone
+                      td.fullWidth= contract.contractCaption
+                      td= contract.fromDate
+                      td= contract.tillDate
+                      td= contract.paymentFrequency
+                      td= contract.payment
               #issues.tab-pane(role='tabpanel')
                 .addIssueButton
                   div 
@@ -115,32 +100,6 @@ block content
                   .col-xs-4
                     #propertyPicture
                       img(src=property.img)
-    #addTenantDialog
-      .addTenantDialogWrapper
-        .addTenantDialogContainer
-          .addTenantDialogData
-            .addTenantDialogHeader
-              .headerCaption
-                h1 #{__('Add tenant')}
-              #addTenantDialogClose.btn.btn-default.float-right(onclick='closePrestatieHistory();') #{__('Cancel')}
-              #addTenantDialogSave.btn.btn-primary.float-right(onclick='closePrestatieHistory();') #{__('Save')}
-            .container
-              form
-                .form-group
-                  label(for='tenantName') #{__('Tenant name')}
-                  input#tenantName.form-control(type='text', placeholder= __('Tenant name'))
-                .form-group
-                  label(for='birthDate') #{__('Birth date')}
-                  input#birthDate.form-control(type='text', placeholder= __('Birth date'), data-date-format='dd/mm/yyyy', data-provide='datepicker')
-                .form-group
-                  label(for='phonenumber') #{__('Phone Number')}
-                  input#phonenumber.form-control(type='text', placeholder= __('Phone Number'))
-                .form-group
-                  label(for='fromDate') #{__('Since')}
-                  input#fromDate.form-control(type='text', placeholder= __('Since'), data-date-format='dd/mm/yyyy', data-provide='datepicker')
-                .form-group
-                  label(for='tillDate') #{__('Till')}
-                  input#tillDate.form-control(type='text', placeholder= __('Till'), data-date-format='dd/mm/yyyy', data-provide='datepicker')
 block scripts    
   script(type='text/javascript', src='/js/jquery.mask.min.js')
   script(type='text/javascript', src='/js/bootstrap-datepicker.min.js')

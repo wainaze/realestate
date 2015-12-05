@@ -34,7 +34,8 @@ exports.getAllPropertiesIds = function(userId){
     });
 };
 
-exports.addProperty = function(property){return getMaxId()
+exports.addProperty = function(property){
+    return getMaxId()
     .then(function(maxId){
         property.id = maxId + 1;
         return records.insert(property);

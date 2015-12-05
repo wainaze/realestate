@@ -8,6 +8,12 @@ var router = require('./routes/routes');
 // load modules
 var i18n = require('i18n-2');
 
+var schedule = require('node-schedule');
+
+var j = schedule.scheduleJob('42 * * * * *', function(){
+    console.log('The answer to life, the universe, and everything!');
+});
+
 /**
  *  Define the sample application.
  */
@@ -162,6 +168,7 @@ var SampleApp = function() {
 process.on("unhandledRejection", function(reason, promise) {
     console.log('Unhandled rejection');
     console.log(reason);
+    console.log(promise);
 });
 
 // NOTE: event name is camelCase as per node convention

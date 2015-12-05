@@ -5,6 +5,7 @@ var userAccess = require('../services/userAccessService');
 var router = express.Router();
 var Promise = require('bluebird');
 var commonExceptions = require('../common/commonExceptions.js');
+var moment = require('moment');
 
 function getTotalDue(properties) {
     var due = 0;
@@ -48,23 +49,6 @@ router.get('/properties.html', function(req, res) {
     });
 });
 
-router.get('/contracts.html', function(req, res) {
-    var data = {};
-    Promise
-    .join(
-        db.tenants.getAllTenants(req.user.id),
-        db.issues.getNewIssuesCount(req.user.id),
-        function(tenants, newIssuesCount){
-            data.user = req.user;
-            data.status = {totalNewIssues: newIssuesCount};
-            data.tenants = tenants;
-            console.log(data);
-        })
-    .then(function() {
-        res.render('contracts', data)
-    });
-});
-
 router.get('/paymentStatus.html', function(req, res) {
     var data = {status : {}};
     Promise
@@ -105,16 +89,16 @@ router.get('/property.html', function(req, res) {
     Promise.join(
         db.properties.getProperty(userId, propertyId),
         db.payments.geyPayments(propertyId),
-        db.tenants.getTenants(propertyId),
+        db.contracts.getContracts(propertyId),
         db.issues.getOpenIssuesForProperty(propertyId),
         db.issues.getSolvedIssuesForProperty(propertyId),
         db.issues.getNewIssuesCount(propertyId),
-        function(property, payments, tenants, openIssues, solvedIssues, newIssuesCount)  {
+        function(property, payments, contracts, openIssues, solvedIssues, newIssuesCount)  {
             data.user = req.user;
             data.status = {totalNewIssues : newIssuesCount};
             data.property = property;
             data.payments = payments;
-            data.tenants = tenants;
+            data.contracts = contracts;
             data.openIssues = openIssues;
             data.solvedIssues = solvedIssues;
         })
@@ -261,6 +245,47 @@ router.get('/messages.html', function(req, res) {
     .then(function(){
         res.render('messages', data);
     });
+});
+
+router.get('/contracts.html', function(req, res) {
+    var data = {};
+    Promise
+    .join(
+        db.contracts.getAllContracts(req.user.id),
+        db.issues.getNewIssuesCount(req.user.id),
+        function(contracts, newIssuesCount){
+            data.user = req.user;
+            data.status = {totalNewIssues: newIssuesCount};
+            data.contracts = contracts;
+            console.log(data);
+        })
+    .then(function() {
+        res.render('contracts', data)
+    });
+});
+
+router.get('/addContract.html', function(req, res){
+    var data = {status : {}};
+    Promise
+    .join(
+        db.properties.getPropertyById(req.query.propertyId),
+        db.properties.getAllProperties(req.user.id),
+        db.issues.getNewIssuesCount(req.user.id),
+        function (property, properties, newIssuesCount){
+            var properties = properties.map(function(property) { return {data: property.id, value: property.name}});
+            data.user = req.user;
+            data.status = {totalNewIssues: newIssuesCount};
+            data.properties = properties;
+            data.property = property;
+            data.startDate = moment().format('DD/MM/YYYY');
+            data.endDate = moment().add(1, 'years').format('DD/MM/YYYY');
+            data.paymentDay = 15;
+            console.log(data);   
+        }
+    )
+    .then(function(){
+        res.render('addContract', data);   
+    });           
 });
 
 module.exports = router;

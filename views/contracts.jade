@@ -1,36 +1,25 @@
 extends ./layout.jade
 
 block content
-  #tenants.tab-pane(role='tabpanel')
-    .actions.row
-      #addTenant.btn.btn-default #{__('Add contract')}
+  #contracts.tab-pane(role='tabpanel')
+    #addContract 
+      div 
+        span #{__('Click here to add new contract')}
     table.table
       tr
-        th
-        th #{__('Contract name')}
-        th #{__('Since')}
-        th #{__('Till')}
-        th #{__('Payment status')}
-      for tenant in tenants
+        th.nowrap #{__('Property')}
+        th.nowrap #{__('Contract name')}
+        th.nowrap #{__('Since')}
+        th.nowrap #{__('Till')}
+        th.nowrap #{__('Payment frequency')}
+        th.nowrap #{__('Payment')}
+      for contract in contracts
         tr.tenant
-          td
-            span.glyphicon.glyphicon-chevron-right
-          td= tenant.name
-          td= tenant.contractBegin
-          td= tenant.contractEnd
-          td= tenant.payment
-        tr.detailsRow
-          td(colspan='999')
-            .details
-              table
-                tr
-                  td.tenantPicture
-                    img(src=tenant.picture)
-                
-                  td.vAlign-top.fields
-                    .field
-                      .fieldName #{__('Age')}:
-                      .fieldValue= tenant.age
-                    .field
-                      .fieldName #{__('Phone')}:
-                      .fieldValue= tenant.phone
+          td.nowrap= contract.property.name
+          td.fullWidth= contract.contractCaption
+          td= contract.fromDate
+          td= contract.tillDate
+          td= contract.paymentFrequency
+          td= contract.payment
+block scripts
+  script(type='text/javascript', src='/js/contracts.js')

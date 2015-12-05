@@ -134,6 +134,42 @@ router.post('/removeProperty', function(req, res) {
     });
 });
 
+router.post('/addContract', function(req, res) {
+    var userId = parseInt(req.user.id);
+    var propertyId = parseInt(req.body.propertyId);
+    (function(){
+        if (req.body.tenantName != null) {
+            return db.tenants.addTenant({
+                landlordId: req.user.id,
+                tenantName: req.body.tenantName,
+                birthDate: req.body.birthDate,
+                phonenumber: req.body.phonenumber,
+                email: req.body.email,
+            });
+        } else {
+            Promise.return(null);
+        }
+    })().then(function(tenantId){
+        return db.contracts.addContract({
+            propertyId: parseInt(req.body.propertyId),
+            contractCaption: req.body.contractCaption,
+            fromDate: req.body.fromDate,
+            tillDate: req.body.tillDate,
+            paymentFrequency: req.body.paymentFrequency,
+            payment: req.body.payment,
+            paymentDay: req.body.paymentDay,
+            tenantId: tenantId
+        })
+    })
+    .then(function(){
+        res.send('ok');
+    })
+    .catch(function(err){
+        console.log(err);
+        res.send(err);
+    });        
+});
+
 router.post('/saveTenant', function(req, res) {
     var userId = parseInt(req.user.id);
     var propertyId = parseInt(req.body.propertyId);

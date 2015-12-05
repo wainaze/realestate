@@ -52,5 +52,20 @@
 	"Contracts": "Contracts",
 	"Payment status": "Payment status",
 	"Contract name": "Contract name",
-	"Rents": "Rents"
+	"Rents": "Rents",
+	"Click here to add new property": "Click here to add new property",
+	"Add contract": "Add contract",
+	"Click here to add new issue": "Click here to add new issue",
+	"Add new issue": "Add new issue",
+	"Subject": "Subject",
+	"Add": "Add",
+	"Contract reference": "Contract reference",
+	"Uw reference": "Uw reference",
+	"Payment frequency": "Payment frequency",
+	"Montly": "Montly",
+	"Weekly": "Weekly",
+	"Daily": "Daily",
+	"Payment day": "Payment day",
+	"Email": "Email",
+	"Click here to add new contract": "Click here to add new contract"
 }
