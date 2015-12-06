@@ -5,13 +5,9 @@ var Promise = require('bluebird');
 var records = Promise.promisifyAll(require('./dbconnection').db.get('contracts'));
 
 exports.addContract = function(contract) {
-    console.log('Get add contract promise');
-    console.log(contract);
     return getMaxId()
     .then(function(maxId){
         contract.id = maxId + 1;
-        console.log('Trying to post contract');
-        console.log(contract);
         return records.insert(contract);
     })
     .then(function(contract){      
@@ -41,6 +37,15 @@ exports.getAllContracts = function(userId) {
             .then(getContractsForPropertiesIds)
             .then(bindProperties)
             .then(bindTenanants);
+}
+
+exports.getContractsToPay = function(){
+    return records.find({
+        paymentDay: {
+            $gte: moment().date(),
+            $lte: moment().date() + 2
+        }
+    });
 }
 
 /* Internal functions */

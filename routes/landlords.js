@@ -41,7 +41,6 @@ router.get('/properties.html', function(req, res) {
             data.status.totalIncome = '39.800';
             data.status.totalCosts = '12.564'; 
             data.properties = properties;
-            console.log(data);
         }        
     )
     .then(function(){
@@ -117,7 +116,6 @@ router.get('/tenants.html', function(req, res) {
             data.user = req.user;
             data.status = {totalNewIssues: newIssuesCount};
             data.tenants = tenants;
-            console.log(data);
         })
     .then(function() {
         res.render('tenants', data)
@@ -127,8 +125,6 @@ router.get('/tenants.html', function(req, res) {
 router.get('/problem.html', function(req, res) {
     var data = { status : {}};
     var issueId = parseInt(req.query.issueId);
-    console.log('issueId');
-    console.log(issueId);
     if (issueId <= 0 || isNaN(issueId)) {
         res.redirect('problems.html');   
         return;    
@@ -142,7 +138,6 @@ router.get('/problem.html', function(req, res) {
             data.status.totalNewIssues = newIssuesCount;
             data.issue = issue;
             data.costs = issue.costs;
-            console.log(JSON.stringify(data));
         }    
     )
     .then(function(){
@@ -204,8 +199,7 @@ router.get('/manageProperties.html', function(req, res) {
         function (properties, newIssuesCount){
             data.user = req.user;
             data.status = {totalNewIssues: newIssuesCount};
-            data.properties = properties;
-            console.log(data);   
+            data.properties = properties; 
         }
     )
     .then(function(){
@@ -221,7 +215,6 @@ router.get('/addProperty.html', function(req, res) {
         function (newIssuesCount){
             data.user = req.user;
             data.status = {totalNewIssues: newIssuesCount};
-            console.log(data);   
         }
     )
     .then(function(){
@@ -239,7 +232,6 @@ router.get('/messages.html', function(req, res) {
             data.user = req.user;
             data.status = {totalNewIssues: newIssuesCount};
             data.messages = messages;
-            console.log(data);   
         }        
     )
     .then(function(){
@@ -257,7 +249,6 @@ router.get('/contracts.html', function(req, res) {
             data.user = req.user;
             data.status = {totalNewIssues: newIssuesCount};
             data.contracts = contracts;
-            console.log(data);
         })
     .then(function() {
         res.render('contracts', data)
@@ -281,7 +272,6 @@ router.get('/addContract.html', function(req, res){
             data.contract.fromDate = moment().format('DD/MM/YYYY');
             data.contract.tillDate = moment().add(1, 'years').format('DD/MM/YYYY');
             data.contract.paymentDay = 15;
-            console.log(data);   
         }
     )
     .then(function(){
@@ -297,14 +287,12 @@ router.get('/editContract.html', function(req, res){
         db.properties.getAllProperties(req.user.id),
         db.issues.getNewIssuesCount(req.user.id),
         function (contract, properties, newIssuesCount){
-            console.log(contract);
             var properties = properties.map(function(property) { return {data: property.id, value: property.name}});
             data.user = req.user;
             data.status = {totalNewIssues: newIssuesCount};
             data.title = 'Update contract';
             data.properties = properties;
-            data.contract = contract;   
-            console.log(data);   
+            data.contract = contract;  
         }
     )
     .then(function(){

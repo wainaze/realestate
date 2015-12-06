@@ -68,5 +68,7 @@
 	"Payment day": "Payment day",
 	"Email": "Email",
 	"Click here to add new contract": "Click here to add new contract",
-	"Update contract": "Update contract"
+	"Update contract": "Update contract",
+	"Send reminder": "Send reminder",
+	"Mark payed": "Mark payed"
 }

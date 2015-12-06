@@ -4,15 +4,27 @@ var express = require('express');
 var fs = require('fs');
 var passport = require('passport');
 var router = require('./routes/routes');
+var contractsService = require('./services/contractsService');
 
 // load modules
 var i18n = require('i18n-2');
+var Promise = require('bluebird');
 
-var schedule = require('node-schedule');
+Promise.if = function(condition, func){
+    if (condition)
+        return func();
+    return Promise.return(null);
+}
 
-var j = schedule.scheduleJob('42 * * * * *', function(){
-    console.log('The answer to life, the universe, and everything!');
-});
+Promise.prototype.if = function(condition, func){
+    return Promise.if(condition, func);
+}
+
+Promise.prototype.iif = function(condition, funcYes, funcNo){
+    if (condition)
+        return funcYes();
+    return funcNo();
+}
 
 /**
  *  Define the sample application.
@@ -145,6 +157,9 @@ var SampleApp = function() {
         self.app.use('/landlord', require('./routes/landlords.js'));
         self.app.use('/tenant', require('./routes/tenants.js'));
         self.app.use('/api', require('./routes/api.js'));
+
+        contractsService.startPaymentsGeneration();
+        contractsService.startPaymentsControle();
     };
 
     self.initialize = function() {

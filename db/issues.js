@@ -192,14 +192,10 @@ function getMaxId() {
 
 function sortIssues(issues) {
     return new Promise(function(resolve){
-        console.log('issues before');
-        console.log(issues);
         issues = issues.sort(function(a,b){
             return moment(a.creationDate, 'DD/MM/YYYY').diff(moment(b.creationDate, 'DD/MM/YYYY'), 'days');
         });
         issues.reverse();
         resolve(issues);
-        console.log('issues after');
-        console.log(issues);
     })
 }

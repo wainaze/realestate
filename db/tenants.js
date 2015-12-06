@@ -23,7 +23,7 @@ exports.addTenant = function(tenant) {
 }
 
 exports.updateTenant = function(tenant) {
-    return records.update({ id: tenant.id }, tenant).return(tenant.id);
+    return Promise.resolve(records.update({ id: tenant.id }, tenant)).return(tenant.id);
 }
 
 exports.getTenantById = function(tenantId) {

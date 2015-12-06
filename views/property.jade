@@ -44,12 +44,15 @@ block content
                     tr
                       td= payment.month
                       td= payment.dueDate
-                      td= payment.payedDate
-                      td(class= payment.payment > 0 ? 'align-right paymentOK' : 'align-right paymentNOK')
+                      td= payment.paymentDate
+                      td(class= 'align-right #{payment.overdue ? " paymentNOK" : ""}#{payment.payed ? " paymentOK" : ""}')
                         = payment.payment 
                         |&euro;
                       td.vAlign-center
-                        if payment.payment < 0
+                        if !payment.payed 
+                          a.payedButton(href='#')
+                            span.label.label-default(data-id= payment.id) #{__('Mark payed')}
+                        if payment.overdue
                           a.reminderButton(href='#')
                             span.label.label-danger #{__('Send reminder')}
               #contracts.tab-pane(role='tabpanel')

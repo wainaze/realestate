@@ -47,9 +47,16 @@ function saveTenant(){
 	);
 }
 
+function markPaymentPayed(event){
+	var button = $(event.target);
+	var paymentId = button.data('id');
+	$.post('/api/paymentPayed', {id : paymentId}).done(location.reload());
+}
+
 $(document).on('click', '#addTenant', addTenant);
 $(document).on('click', '#addTenantDialogClose', closeTenantDialog);
 $(document).on('click', '#addTenantDialogSave', saveTenant);
+$(document).on('click', '.payedButton', markPaymentPayed);
 
 $('#fromDate, #tillDate, #birthDate').mask('99/99/9999'); 
 

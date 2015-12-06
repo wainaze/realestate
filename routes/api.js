@@ -134,22 +134,6 @@ router.post('/removeProperty', function(req, res) {
     });
 });
 
-Promise.if = function(condition, func){
-    if (condition)
-        return func();
-    return Promise.return(null);
-}
-
-Promise.prototype.if = function(condition, func){
-    return Promise.if(condition, func);
-}
-
-Promise.prototype.iif = function(condition, funcYes, funcNo){
-    if (condition)
-        return funcYes();
-    return funcNo();
-}
-
 router.post('/saveContract', function(req, res) {
     var userId = parseInt(req.user.id);
     var contractId = (req.body.contractId == '' ? null : parseInt(req.body.contractId));
@@ -168,7 +152,7 @@ router.post('/saveContract', function(req, res) {
                 tillDate: req.body.tillDate,
                 paymentFrequency: req.body.paymentFrequency,
                 payment: req.body.payment,
-                paymentDay: req.body.paymentDay,
+                paymentDay: parseInt(req.body.paymentDay),
                 tenantId: tenantId
             })
         })
@@ -190,7 +174,7 @@ router.post('/saveContract', function(req, res) {
                 tillDate: req.body.tillDate,
                 paymentFrequency: req.body.paymentFrequency,
                 payment: req.body.payment,
-                paymentDay: req.body.paymentDay,
+                paymentDay: parseInt(req.body.paymentDay),
                 tenantId: tenantId
             })
         })
@@ -263,7 +247,7 @@ router.post('/addMessage', function(req, res){
     var message = { 
         senderId : userId,
         recepients : [3],
-        date : moment().format('YYYYMMDDhhmmss'),
+        date : moment().format('YYYYMMDDHHmmss'),
         messageText : messageText,
         status: 'new'
     };
@@ -286,6 +270,17 @@ router.get('/propertyPayments', function(req, res){
         console.log('payments');
         console.log(payments);
         res.send(payments);
+    })
+    .catch(function(err){
+        res.send(err);
+    });
+});
+
+router.post('/paymentPayed', function(req, res){
+    var paymentId = parseInt(req.body.id);
+    db.payments.markPaymentPayed(paymentId)
+    .then(function(){
+        res.send('ok');
     })
     .catch(function(err){
         res.send(err);
