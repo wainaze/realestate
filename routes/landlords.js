@@ -265,7 +265,7 @@ router.get('/contracts.html', function(req, res) {
 });
 
 router.get('/addContract.html', function(req, res){
-    var data = {status : {}};
+    var data = {status : {}, contract : {}};
     Promise
     .join(
         db.properties.getPropertyById(req.query.propertyId),
@@ -275,17 +275,43 @@ router.get('/addContract.html', function(req, res){
             var properties = properties.map(function(property) { return {data: property.id, value: property.name}});
             data.user = req.user;
             data.status = {totalNewIssues: newIssuesCount};
+            data.title = 'Add contract';
             data.properties = properties;
-            data.property = property;
-            data.startDate = moment().format('DD/MM/YYYY');
-            data.endDate = moment().add(1, 'years').format('DD/MM/YYYY');
-            data.paymentDay = 15;
+            data.contract.property = property;
+            data.contract.fromDate = moment().format('DD/MM/YYYY');
+            data.contract.tillDate = moment().add(1, 'years').format('DD/MM/YYYY');
+            data.contract.paymentDay = 15;
             console.log(data);   
         }
     )
     .then(function(){
-        res.render('addContract', data);   
+        res.render('contract', data);   
     });           
 });
+
+router.get('/editContract.html', function(req, res){
+    var data = {status : {}};
+    Promise
+    .join(
+        db.contracts.getContractById(parseInt(req.query.id)),
+        db.properties.getAllProperties(req.user.id),
+        db.issues.getNewIssuesCount(req.user.id),
+        function (contract, properties, newIssuesCount){
+            console.log(contract);
+            var properties = properties.map(function(property) { return {data: property.id, value: property.name}});
+            data.user = req.user;
+            data.status = {totalNewIssues: newIssuesCount};
+            data.title = 'Update contract';
+            data.properties = properties;
+            data.contract = contract;   
+            console.log(data);   
+        }
+    )
+    .then(function(){
+        res.render('contract', data);   
+    });           
+});
+
+
 
 module.exports = router;

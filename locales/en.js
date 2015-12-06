@@ -67,5 +67,6 @@
 	"Daily": "Daily",
 	"Payment day": "Payment day",
 	"Email": "Email",
-	"Click here to add new contract": "Click here to add new contract"
+	"Click here to add new contract": "Click here to add new contract",
+	"Update contract": "Update contract"
 }

@@ -1,6 +1,6 @@
 $('#addTenantDialogSave').on('click', function() {
-    $.post('/api/addContract', {
-
+    $.post('/api/saveContract', {
+        contractId: getParameterByName('id'),    
     	propertyId: $('#propertyId').val(),
     	contractCaption: $('#contractCaption').val(),
     	fromDate: $('#fromDate').val(),

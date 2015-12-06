@@ -134,41 +134,96 @@ router.post('/removeProperty', function(req, res) {
     });
 });
 
-router.post('/addContract', function(req, res) {
+Promise.if = function(condition, func){
+    if (condition)
+        return func();
+    return Promise.return(null);
+}
+
+Promise.prototype.if = function(condition, func){
+    return Promise.if(condition, func);
+}
+
+Promise.prototype.iif = function(condition, funcYes, funcNo){
+    if (condition)
+        return funcYes();
+    return funcNo();
+}
+
+router.post('/saveContract', function(req, res) {
     var userId = parseInt(req.user.id);
-    var propertyId = parseInt(req.body.propertyId);
-    (function(){
-        if (req.body.tenantName != null) {
-            return db.tenants.addTenant({
-                landlordId: req.user.id,
-                tenantName: req.body.tenantName,
-                birthDate: req.body.birthDate,
-                phonenumber: req.body.phonenumber,
-                email: req.body.email,
-            });
-        } else {
-            Promise.return(null);
-        }
-    })().then(function(tenantId){
-        return db.contracts.addContract({
-            propertyId: parseInt(req.body.propertyId),
-            contractCaption: req.body.contractCaption,
-            fromDate: req.body.fromDate,
-            tillDate: req.body.tillDate,
-            paymentFrequency: req.body.paymentFrequency,
-            payment: req.body.payment,
-            paymentDay: req.body.paymentDay,
-            tenantId: tenantId
+    var contractId = (req.body.contractId == '' ? null : parseInt(req.body.contractId));
+
+    if (contractId) {
+        db.contracts.getContractById(contractId)
+        .then(function(contract){
+            return Promise.if(req.body.tenantName != null, function() {return contract.tenant ? updateTenant(req, contract.tenant) : addTenant(req)});
+        })       
+        .then(function(tenantId){
+            return db.contracts.updateContract({
+                id: contractId,
+                propertyId: parseInt(req.body.propertyId),
+                contractCaption: req.body.contractCaption,
+                fromDate: req.body.fromDate,
+                tillDate: req.body.tillDate,
+                paymentFrequency: req.body.paymentFrequency,
+                payment: req.body.payment,
+                paymentDay: req.body.paymentDay,
+                tenantId: tenantId
+            })
         })
-    })
-    .then(function(){
-        res.send('ok');
-    })
-    .catch(function(err){
-        console.log(err);
-        res.send(err);
-    });        
+        .then(function(){
+            res.send('ok');
+        })
+        .catch(function(err){
+            console.log(err);
+            res.send(err);
+        });   
+    } else {
+        var propertyId = parseInt(req.body.propertyId);
+        Promise.if(req.body.tenantName != null, addTenant(req))
+        .then(function(tenantId){
+            return db.contracts.addContract({
+                propertyId: parseInt(req.body.propertyId),
+                contractCaption: req.body.contractCaption,
+                fromDate: req.body.fromDate,
+                tillDate: req.body.tillDate,
+                paymentFrequency: req.body.paymentFrequency,
+                payment: req.body.payment,
+                paymentDay: req.body.paymentDay,
+                tenantId: tenantId
+            })
+        })
+        .then(function(){
+            res.send('ok');
+        })
+        .catch(function(err){
+            console.log(err);
+            res.send(err);
+        });   
+    }         
 });
+
+function addTenant(req) {
+    return db.tenants.addTenant({
+        landlordId: req.user.id,
+        tenantName: req.body.tenantName,
+        birthDate: req.body.birthDate,
+        phonenumber: req.body.phonenumber,
+        email: req.body.email,
+    });    
+}
+
+function updateTenant(req, tenant) {
+    return db.tenants.updateTenant({
+        id: tenant.id,
+        landlordId: req.user.id,
+        tenantName: req.body.tenantName,
+        birthDate: req.body.birthDate,
+        phonenumber: req.body.phonenumber,
+        email: req.body.email,
+    });    
+}
 
 router.post('/saveTenant', function(req, res) {
     var userId = parseInt(req.user.id);

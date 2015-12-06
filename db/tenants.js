@@ -22,6 +22,10 @@ exports.addTenant = function(tenant) {
     });
 }
 
+exports.updateTenant = function(tenant) {
+    return records.update({ id: tenant.id }, tenant).return(tenant.id);
+}
+
 exports.getTenantById = function(tenantId) {
     return records.findOne({id : tenantId});
 }

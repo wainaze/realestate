@@ -14,7 +14,7 @@ block content
         th.nowrap #{__('Payment frequency')}
         th.nowrap #{__('Payment')}
       for contract in contracts
-        tr.tenant
+        tr.tenant(onclick='location.href="editContract.html?id=#{contract.id}"')
           td.nowrap= contract.property.name
           td.fullWidth= contract.contractCaption
           td= contract.fromDate

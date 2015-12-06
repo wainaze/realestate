@@ -19,6 +19,19 @@ exports.addContract = function(contract) {
     });
 }
 
+exports.updateContract = function(contract) {
+    return records.update({ id: contract.id }, contract);
+}
+
+exports.getContractById = function(contractId) {
+    return Promise.resolve(
+                records
+                .findOne({id : contractId})
+                .then(bindProperty)
+                .then(bindTenanant)
+            );  
+}
+
 exports.getContracts = function(propertyId) {
     return getContractsForPropertiesIds([propertyId]);  
 }
@@ -47,16 +60,20 @@ function sortContracts(contracts) {
     })
 }
 
+function bindProperty(contract){
+    return properties.getPropertyById(contract.propertyId).then(function(property) { contract.property = property; return contract})
+}
+
 function bindProperties(contracts){
-    return Promise.all(contracts.map(function(contract){
-        return properties.getPropertyById(contract.propertyId).then(function(property) { contract.property = property; return contract})
-    }));
+    return Promise.all(contracts.map(bindProperty));
+}
+
+function bindTenanant(contract){
+    return tenants.getTenantById(contract.tenantId).then(function(tenant) { contract.tenant = tenant; return contract})
 }
 
 function bindTenanants(contracts){
-    return Promise.all(contracts.map(function(contract){
-        return tenants.getTenantById(contract.tenantId).then(function(tenant) { contract.tenant = tenant; return contract})
-    }));
+    return Promise.all(contracts.map(bindTenanant));
 }
 
 records.aggregate = function(aggregation){
