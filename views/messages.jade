@@ -1,18 +1,28 @@
 extends ./layout.jade
 
 block content
-  .row.contentRow(style='opacity: 1;')
-    .col-xs-3
-      .tenant Jack
-      .tenant Jill
-      .tenant Tenant
-    .col-xs-9
-      .row
-        input#messageText(type='text')
-        #sendButton.btn.btn-primary #{__('Send')}
-      #messages.row
-        span Test message
-
+  #messages.row.contentRow(style='opacity: 1;')
+    .dialogs.col-xs-3
+      #addDialogButton
+        div 
+          span #{__('Add dialog')}
+      for dialog in dialogs
+        .dialog(data-id= dialog.id)
+          .dialogCaption= dialog.caption
+          .people
+            for user in dialog.users
+              .tenant
+                img(src= user.photo)
+    .messagesDataWrapper.col-xs-9
+      .messagesData.row
+      .messageInput.row
+        .form-group
+          label.sr-only(for='messageText') Amount (in dollars)  
+          .input-group
+            input#messageText.form-control(type='text', placeholder='type your message here...')
+            #sendButton.input-group-addon.btn.btn-primary #{__('Send')}
 block scripts    
   script(type='text/javascript', src='/js/mustache.min.js')    
   script(type='text/javascript', src='/js/messages.js')
+  script(type='text/javascript')
+    | loadMessages(#{dialogs[0].id});

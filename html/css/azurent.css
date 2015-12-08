@@ -973,3 +973,160 @@ li.language-dropdown  span.caret {
 .collapsible .glyphicon-collapsible.open:before {
     content:"-";
 }
+
+
+/* messages */
+div#messages {
+    background: white;
+    position: absolute;
+    right: 10px;
+    left: 7px;
+    top: 66px;
+    bottom: 10px;
+}
+
+.messageInput {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    /* height: 100px; */
+    margin: 0;
+    margin-right: 10px;
+    padding-top: 10px;
+}
+
+#addDialogButton {
+    min-height: 40px;
+    border-right: 1px solid #DDD;
+}
+
+#addDialogButton {
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+#addDialogButton > div {
+    border: 2px dashed #DDD;
+    border-radius: 10px;
+    text-align: center;
+    box-sizing: border-box;
+    cursor: pointer;
+}
+
+#addDialogButton > div > span{
+    box-sizing: border-box;
+    font-size: 22px;
+    color: #DDD;
+}
+
+.dialog {
+    background-color: white;
+    border: 1px solid #DDD;
+    border-top: 0px;
+    padding: 15px;
+}
+
+.dialog:nth-child(2) {
+    border-top: 1px solid #DDD;
+}
+
+.dialog .dialogCaption {
+    font-size: 18px;
+    padding-bottom: 10px;
+}
+
+.people {
+    display: inline-block;
+}
+
+.people .tenant {
+    float: left;
+}
+
+.people .tenant > img {
+    max-width: 16px;
+    max-height: 16px;
+}
+
+.messagesDataWrapper {
+    position: relative;
+    height: 100%;
+}
+
+.messagesData {
+    background: #DDD;
+    border: 1px solid #DDD;
+    position: absolute;
+    margin-left: 0px;
+    margin-right: 10px;
+    top: 0;
+    left: 0;
+    margin-top: 0;
+    margin-bottom: 66px;
+    right: 0;
+    bottom: 0;
+    overflow: auto;
+}
+
+.message > div {
+    background-color: white;
+    border: 1px solid #DDD;
+    border-radius: 5px;
+    margin: 10px;
+    padding: 20px;
+    float: left;
+    text-align: left;
+    min-width: 60%;
+    max-width: 90%;
+}
+
+.message {
+    display: inline-block;
+    width: 100%;
+}
+
+.message.mine span {
+    float: right;
+    text-align: right;
+    max-width: 80%;
+}
+
+.message > div > img {
+    max-width: 40px;
+    float: left;
+    margin-right: 20px;
+}
+
+.message.mine > div {
+    float: right;
+}
+
+.message.mine > div > img {
+    margin-left: 20px;
+    margin-right: 0;
+}
+
+.message.mine > div > img {
+    float: right;
+}
+
+.dialogs {
+    padding: 0;
+}
+
+div#sendButton {
+    padding-left: 23px;
+    padding-right: 23px;
+    color: white;
+    border-color: #DDD;
+}
+
+input#messageText {
+    padding: 17px;
+}
+
+.dialog:hover {
+    cursor: pointer;
+    background-color: #FAFAFA;
+}

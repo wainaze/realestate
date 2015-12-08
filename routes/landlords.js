@@ -224,19 +224,60 @@ router.get('/addProperty.html', function(req, res) {
 
 router.get('/messages.html', function(req, res) {
     var data = {};
-    Promise
-    .join(
-        db.messages.getMessages(req.user.id),
-        db.issues.getNewIssuesCount(req.user.id),
-        function(messages, newIssuesCount){
-            data.user = req.user;
-            data.status = {totalNewIssues: newIssuesCount};
-            data.messages = messages;
-        }        
-    )
-    .then(function(){
-        res.render('messages', data);
-    });
+    if (req.query.id != null) {
+        var dialogId = parseInt(req.query.id);
+        Promise
+        .join(
+            db.messages.getDialogs(req.user.id),
+            db.messages.getDialogMessages(dialogId),
+            db.issues.getNewIssuesCount(req.user.id),
+            function(dialogs, messages, newIssuesCount){
+                data.user = req.user;
+                data.status = {totalNewIssues: newIssuesCount};
+                data.dialogs = dialogs;
+                data.messages = messages;
+            }        
+        )
+        .then(function(){
+            res.render('messages', data);
+        });        
+    } else {
+        db.messages.getDialogs(req.user.id).
+        then(function(dialogs){
+            console.log(dialogs);
+            if (dialogs.length) {
+                Promise
+                .join(
+                    db.messages.getDialogMessages(dialogs[0].id),
+                    db.issues.getNewIssuesCount(req.user.id),
+                    function(messages, newIssuesCount){
+                        data.user = req.user;
+                        data.status = {totalNewIssues: newIssuesCount};
+                        data.dialogs = dialogs;
+                        data.messages = messages;
+                    }        
+                )
+                .then(function(){
+                    res.render('messages', data);
+                })  
+            } else {
+                Promise
+                .join(
+                    db.issues.getNewIssuesCount(req.user.id),
+                    function(newIssuesCount){
+                        data.user = req.user;
+                        data.status = {totalNewIssues: newIssuesCount};
+                        data.dialogs = dialogs;
+                        data.messages = [];
+                    }        
+                )
+                .then(function(){
+                    res.render('messages', data);
+                })
+            }
+        })
+    }
+    
 });
 
 router.get('/contracts.html', function(req, res) {

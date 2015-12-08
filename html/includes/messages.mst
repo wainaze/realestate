@@ -1,3 +1,17 @@
 {{#messages}}
-  <div>{{messageText}}</div>
+  {{#mine}}
+  <div class="message mine">	
+  	<div>
+        <span>{{text}}<span/>
+  	</div>
+  </div>
+  {{/mine}}
+  {{^mine}}
+  <div class="message">	
+  	<div>
+  		<img src="{{user.photo}}"/>
+        <span>{{text}}<span/>
+  	</div>
+  </div>
+  {{/mine}}
 {{/messages}}

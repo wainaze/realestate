@@ -1,4 +1,6 @@
+var Promise = require('bluebird');
 var records = require('./dbconnection.js').db.get('users');
+var promiseRecords = Promise.promisifyAll(require('./dbconnection.js').db.get('users'));
 
 exports.getUser = function(userId, callback) {
     return records.findOne({ id: userId }, callback);     
@@ -30,4 +32,12 @@ exports.findByUsername = function(username, callback) {
             callback(err);    
         });
     });
+}
+
+exports.getUserById = function(userId) {
+    return promiseRecords.findOne({id : userId});
+}
+
+exports.getUsersByIds = function(userIds) {
+    return promiseRecords.find({id : {$in : userIds}});
 }

@@ -231,27 +231,30 @@ router.post('/saveTenant', function(req, res) {
 
 router.get('/loadMessages', function(req, res){
     var userId = req.user.id;
-    messagesService.getMessages(userId)
+    var dialogId = parseInt(req.query.dialogId);
+    console.log('dialogId');
+    console.log(dialogId);
+    db.messages.getDialogMessages(dialogId)
     .then(function(messages){
+        messages.forEach(function(message){
+            message.mine = message.userId == userId;
+        });
+        console.log(messages);
         res.send(messages);
     })
-    .catch(function(err){
-        res.send(err);
-    });
+    
 });
 
 router.post('/addMessage', function(req, res){
     var userId = req.user.id;
-    var recepients = req.body.recepients;
+    var dialogId = parseInt(req.body.dialogId);
     var messageText = req.body.messageText;
     var message = { 
-        senderId : userId,
-        recepients : [3],
-        date : moment().format('YYYYMMDDHHmmss'),
-        messageText : messageText,
-        status: 'new'
+        userId : userId,
+        timestamp : moment().format('YYYYMMDDHHmmss'),
+        text : messageText
     };
-    db.messages.addMessage(message)
+    db.messages.addMessage(dialogId, message)
     .then(function(){
         res.send('ok');
     })
