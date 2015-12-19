@@ -1034,6 +1034,10 @@ div#messages {
     padding: 15px;
 }
 
+.dialog.current {
+    border-left: 8px solid #318CE7;
+}
+
 .dialog:nth-child(2) {
     border-top: 1px solid #DDD;
 }

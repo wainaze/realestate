@@ -8,6 +8,8 @@ function loadMessages(dialogId) {
 		    var rendered = Mustache.render(template, {messages : data});
 		    $('.messagesData').html(rendered);
 		    $('.messagesData')[0].scrollTop = $('.messagesData')[0].scrollHeight;
+		    $('.dialog.current').removeClass('current');
+		    $('.dialog[data-id="'+dialogId+'"]').addClass('current');
 		    $('.messagesDataWrapper').show();
 		});	    
 	});
