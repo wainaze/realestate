@@ -18,6 +18,28 @@ exports.getDialogs = function(userId){
     		.then(bindDialogsUsers);
 }
 
+exports.getUnreadDialogsCount = function(userId) {
+	return  records.find({ users : userId,  viewedBy : { $ne : userId }})
+            .then(function(dialogs){
+                return dialogs.length;
+            });
+}
+
+exports.setDialogViewed = function(dialogId, userId) {
+	return records.findOne({id: dialogId})
+	.then(function(dialog){
+		var viewedBy = dialog.viewedBy ? dialog.viewedBy : [];
+		if (viewedBy.indexOf(userId) >= 0)
+			return dialog;
+		viewedBy.push(userId); 
+		return Promise.resolve(records.update({id: dialogId}, { $set :{viewedBy: viewedBy }}));
+	})
+}
+
+function setDialogNotViewed(dialogId, userId) {
+	return Promise.resolve(records.update({id: dialogId}, { $set : {viewedBy: [userId] }}));
+}
+
 exports.getDialogMessages = function(dialogId){
 	return records.findOne({ id : dialogId })
 					.then(function(dialog) {return dialog.messages})
@@ -25,7 +47,10 @@ exports.getDialogMessages = function(dialogId){
 }
 
 exports.addMessage = function(dialogId, message){
-	return Promise.resolve(records.update({id: dialogId}, {$push: { messages: message } }));
+	return Promise.resolve(records.update({id: dialogId}, {$push: { messages: message } }))
+		.then(function() {
+			return setDialogNotViewed(dialogId, message.userId);
+		});
 }
 
 exports.getMessage = function(messageId) {
@@ -75,5 +100,9 @@ function getMaxId() {
             }
           }
        ]
-    ).get(0).get('maxId');
+    ).get(0).then(function(result){
+    	if (!result)
+    		return 0;
+    	return result.maxId;
+    });
 }

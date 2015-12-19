@@ -114,7 +114,6 @@ function getMaxId() {
           }
        ]
     ).get(0).then(function(result){
-    	console.log(result);
     	if (!result)
     		return 0;
     	return result.maxId;

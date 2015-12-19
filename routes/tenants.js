@@ -25,6 +25,17 @@ router.use(function(req, res, next){
         next();
     });    
 });
+router.use(function(req, res, next) {
+    req.data = {status : {} }; 
+    next();      
+});
+router.use(function(req, res, next) {
+    db.messages.getUnreadDialogsCount(req.user.id)
+    .then(function(unreadMessagesCount){
+        req.data.status.unreadMessagesCount = unreadMessagesCount;
+        next();
+    });    
+});
 
 router.get('/', function(req, res) {
 	res.redirect('payments.html');	
@@ -36,6 +47,7 @@ router.get('/problems.html', function(req, res) {
     .then(function(issues){
         res.render('tenant/problems', {
             user: req.user,
+            status: { unreadMessagesCount : req.data.status.unreadMessagesCount },
             issues: issues
         });
     });    
@@ -47,6 +59,7 @@ router.get('/payments.html', function(req, res) {
     .then(function(payments){
         res.render('tenant/payments', {
             user: req.user,
+            status: { unreadMessagesCount : req.data.status.unreadMessagesCount },
             payments: payments,
         }); 
     });    
@@ -61,6 +74,7 @@ router.get('/messages.html', function(req, res) {
         res.render('tenant/messages', {
             user : req.user,
             dialogs : dialogs,
+            status: { unreadMessagesCount : req.data.status.unreadMessagesCount },
             messages : []
         });    
     });
@@ -69,6 +83,7 @@ router.get('/messages.html', function(req, res) {
 router.get('/documents.html', function(req, res) {
     res.render('tenant/documents', {
         user: req.user,
+        status: { unreadMessagesCount : req.data.status.unreadMessagesCount },
     });
 });
 

@@ -3,12 +3,12 @@ var currentDialog = 0;
 function loadMessages(dialogId) {
 	currentDialog = dialogId;
 	$.get('/api/loadMessages', {dialogId : currentDialog}).success(function(data){
-		console.log(data);
 		$.get('/includes/messages.mst').success(function(template){
 			Mustache.parse(template);   // optional, speeds up future uses
 		    var rendered = Mustache.render(template, {messages : data});
 		    $('.messagesData').html(rendered);
 		    $('.messagesData')[0].scrollTop = $('.messagesData')[0].scrollHeight;
+		    $('.messagesDataWrapper').show();
 		});	    
 	});
 }

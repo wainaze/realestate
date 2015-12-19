@@ -10,8 +10,6 @@ exports.getTenants = function(propertyId) {
 }
 
 exports.addTenant = function(tenant) {
-    console.log("Add tenant");
-    console.log(tenant);
     return getMaxId()
     .then(function(maxId){
         tenant.id = maxId + 1;
@@ -50,13 +48,11 @@ exports.getAllTenants = function(userId) {
 
 function sortTenants(tenants) {
     return new Promise(function(resolve){
-        console.log(tenants);
         tenants = tenants.sort(function(a,b){
             return moment(a.contractBegin, 'DD/MM/YYYY').diff(moment(b.contractBegin, 'DD/MM/YYYY'), 'days');
         });
         tenants.reverse();
         resolve(tenants);
-        console.log(tenants);
     })
 }
 
@@ -68,7 +64,6 @@ function updateTenantsAge(tenants) {
             }      
         });
         resolve(tenants);
-        console.log(tenants);
     });
 }
 

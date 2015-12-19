@@ -26,11 +26,10 @@ html
           .nav-no-collapse.navbar-left.pull-left.hidden-sm.hidden-xs
             ul.nav.navbar-nav.pull-left              
               li.dropdown.hidden-xs
-                a.btn.icon
+                a.btn.icon(href='messages.html')
                   i.fa.fa-envelope-o
-                  |  
-                  span.count 1
-          
+                  if status.unreadMessagesCount > 0
+                    span.count= status.unreadMessagesCount
           #header-nav.nav-no-collapse.pull-right
             ul.nav.navbar-nav.pull-right
               li.mobile-search
@@ -40,9 +39,7 @@ html
               li.dropdown.profile-dropdown
                 a.dropdown-toggle(href='#')
                   img(src=user.photo, alt='')
-                  |  
                   span.hidden-xs= user.displayName
-              
               li.hidden-xxs
                 a.btn.icon(href='/logout')
                   i.fa.fa-power-off

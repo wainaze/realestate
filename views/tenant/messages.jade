@@ -19,11 +19,12 @@ block content
         .form-group
           label.sr-only(for='messageText') Amount (in dollars)  
           .input-group
-            input#messageText.form-control(type='text', placeholder='type your message here...')
+            input#messageText.form-control(type='text', placeholder='type your message here...' autofocus)
             #sendButton.input-group-addon.btn.btn-primary #{__('Send')}
 block scripts    
   script(type='text/javascript', src='/js/mustache.min.js') 
   script(type='text/javascript', src='/js/socket.io-1.3.7.js')   
   script(type='text/javascript', src='/js/messages.js')
-  script(type='text/javascript')
-    | loadMessages(#{dialogs[0].id});
+  if (dialogs.length)
+    script(type='text/javascript')
+      | loadMessages(#{dialogs[0].id});

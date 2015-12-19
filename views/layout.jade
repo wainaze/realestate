@@ -36,9 +36,8 @@ html
               li.dropdown.hidden-xs
                 a.btn.icon(href='messages.html')
                   i.fa.fa-envelope-o
-                  |  
-                  
-                  span.count 1
+                  if status.unreadMessagesCount > 0
+                    span.count= status.unreadMessagesCount
           
           #header-nav.nav-no-collapse.pull-right
             ul.nav.navbar-nav.pull-right

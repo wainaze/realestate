@@ -234,14 +234,16 @@ router.get('/loadMessages', function(req, res){
     var dialogId = parseInt(req.query.dialogId);
     console.log('dialogId');
     console.log(dialogId);
-    db.messages.getDialogMessages(dialogId)
+    db.messages.setDialogViewed(dialogId, userId)
+    .then(function() {
+        return db.messages.getDialogMessages(dialogId);
+    })
     .then(function(messages){
         messages.forEach(function(message){
             message.mine = message.userId == userId;
         });
         res.send(messages);
-    })
-    
+    })    
 });
 
 router.post('/addMessage', function(req, res){

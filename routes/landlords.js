@@ -20,6 +20,25 @@ function getTotalDue(properties) {
 // middleware specific to this router
 router.use(ensureLogin.ensureLoggedIn('/'));
 router.use(userAccess.userHasRole('landlord'));
+router.use(function(req, res, next) {
+    req.data = {status : {} }; 
+    next();      
+});
+router.use(function(req, res, next) {
+    db.issues.getNewIssuesCount(req.user.id)
+    .then(function(newIssuesCount){
+        req.data.status.newIssuesCount = newIssuesCount;
+        next();
+    });    
+});
+router.use(function(req, res, next) {
+    db.messages.getUnreadDialogsCount(req.user.id)
+    .then(function(unreadMessagesCount){
+        req.data.status.unreadMessagesCount = unreadMessagesCount;
+        next();
+    });    
+});
+
 
 router.get('/', function(req, res){
 	res.redirect('properties.html');
@@ -32,11 +51,11 @@ router.get('/properties.html', function(req, res) {
     .join(
         db.properties.getAllProperties(req.user.id),
         db.issues.getOpenIssuesCount(req.user.id),
-        db.issues.getNewIssuesCount(req.user.id),
-        function(properties, openIssuesCount, newIssuesCount){
+        function(properties, openIssuesCount){
             data.user = req.user;
             data.status.totalIssues = openIssuesCount;
-            data.status.totalNewIssues = newIssuesCount;
+            data.status.totalNewIssues = req.data.status.newIssuesCount;
+            data.status.unreadMessagesCount = req.data.status.unreadMessagesCount;
             data.status.due = getTotalDue(properties);
             data.status.totalIncome = '39.800';
             data.status.totalCosts = '12.564'; 
@@ -53,10 +72,10 @@ router.get('/paymentStatus.html', function(req, res) {
     Promise
     .join(
         db.properties.getAllProperties(req.user.id),
-        db.issues.getNewIssuesCount(req.user.id),
-        function(properties, newIssuesCount){
+        function(properties){
             data.user = req.user;
-            data.status.totalNewIssues = newIssuesCount;
+            data.status.totalNewIssues = req.data.status.newIssuesCount;
+            data.status.unreadMessagesCount = req.data.status.unreadMessagesCount;
             data.properties = properties;
         }
     )
@@ -66,14 +85,14 @@ router.get('/paymentStatus.html', function(req, res) {
 });
 
 router.get('/payments.html', function(req, res) {
-    var data = {};
+    var data = {status : {}};
     Promise
     .join(
         db.transactions.getAllPayments(req.user.id),
-        db.issues.getNewIssuesCount(req.user.id),
-        function(transactions, newIssuesCount){
+        function(transactions){
             data.user = req.user;
-            data.status = {totalNewIssues: newIssuesCount};
+            data.status.totalNewIssues = req.data.status.newIssuesCount;
+            data.status.unreadMessagesCount = req.data.status.unreadMessagesCount;
             data.transactions = transactions;
     })
     .then(function(){
@@ -82,7 +101,7 @@ router.get('/payments.html', function(req, res) {
 });
 
 router.get('/property.html', function(req, res) {
-    var data = {};
+    var data = {status : {}};
     var userId = parseInt(req.user.id);
     var propertyId = parseInt(req.query.id);
     Promise.join(
@@ -91,10 +110,10 @@ router.get('/property.html', function(req, res) {
         db.contracts.getContracts(propertyId),
         db.issues.getOpenIssuesForProperty(propertyId),
         db.issues.getSolvedIssuesForProperty(propertyId),
-        db.issues.getNewIssuesCount(propertyId),
-        function(property, payments, contracts, openIssues, solvedIssues, newIssuesCount)  {
+        function(property, payments, contracts, openIssues, solvedIssues)  {
             data.user = req.user;
-            data.status = {totalNewIssues : newIssuesCount};
+            data.status.totalNewIssues = req.data.status.newIssuesCount;
+            data.status.unreadMessagesCount = req.data.status.unreadMessagesCount;
             data.property = property;
             data.payments = payments;
             data.contracts = contracts;
@@ -107,14 +126,14 @@ router.get('/property.html', function(req, res) {
 });
 
 router.get('/tenants.html', function(req, res) {
-    var data = {};
+    var data = {status : {}};
     Promise
     .join(
         db.tenants.getAllTenants(req.user.id),
-        db.issues.getNewIssuesCount(req.user.id),
-        function(tenants, newIssuesCount){
+        function(tenants){
             data.user = req.user;
-            data.status = {totalNewIssues: newIssuesCount};
+            data.status.totalNewIssues = req.data.status.newIssuesCount;
+            data.status.unreadMessagesCount = req.data.status.unreadMessagesCount;
             data.tenants = tenants;
         })
     .then(function() {
@@ -124,18 +143,20 @@ router.get('/tenants.html', function(req, res) {
 
 router.get('/problem.html', function(req, res) {
     var data = { status : {}};
+
     var issueId = parseInt(req.query.issueId);
     if (issueId <= 0 || isNaN(issueId)) {
         res.redirect('problems.html');   
         return;    
     }
+
     Promise
     .join(
         db.issues.getIssue(issueId),
-        db.issues.getNewIssuesCount(req.user.id),  
-        function(issue, newIssuesCount){ 
+        function(issue){ 
             data.user = req.user;
-            data.status.totalNewIssues = newIssuesCount;
+            data.status.totalNewIssues = req.data.status.newIssuesCount;
+            data.status.unreadMessagesCount = req.data.status.unreadMessagesCount;
             data.issue = issue;
             data.costs = issue.costs;
         }    
@@ -158,12 +179,12 @@ router.get('/addIssue.html', function(req, res) {
     var data = {status : {}};
     Promise
     .join(
-        db.properties.getAllProperties(userId),
-        db.issues.getNewIssuesCount(req.user.id),  
-        function(properties, newIssuesCount){
+        db.properties.getAllProperties(userId), 
+        function(properties){
             var properties = properties.map(function(property) { return {data: property.id, value: property.name}});
             data.user = req.user;
-            data.status.totalNewIssues = newIssuesCount;
+            data.status.totalNewIssues = req.data.status.newIssuesCount;
+            data.status.unreadMessagesCount = req.data.status.unreadMessagesCount;
             data.properties = properties;
         }
     )
@@ -173,14 +194,14 @@ router.get('/addIssue.html', function(req, res) {
 });
 
 router.get('/problems.html', function(req, res) {
-    var data = {}
+    var data = {status : {}}
     Promise.join(
         db.issues.getAllUnsolvedIssues(req.user.id),
         db.issues.getAllSolvedIssues(req.user.id),
-        db.issues.getNewIssuesCount(req.user.id),
-        function(unsolvedIssues, solvedIssues, newIssuesCount){
+        function(unsolvedIssues, solvedIssues){
             data.user = req.user;
-            data.status = {totalNewIssues: newIssuesCount};
+            data.status.totalNewIssues = req.data.status.newIssuesCount;
+            data.status.unreadMessagesCount = req.data.status.unreadMessagesCount;
             data.openIssues = unsolvedIssues;
             data.solvedIssues = solvedIssues;
         }
@@ -195,10 +216,10 @@ router.get('/manageProperties.html', function(req, res) {
     Promise
     .join(
         db.properties.getAllProperties(req.user.id),
-        db.issues.getNewIssuesCount(req.user.id),
-        function (properties, newIssuesCount){
+        function (properties){
             data.user = req.user;
-            data.status = {totalNewIssues: newIssuesCount};
+            data.status.totalNewIssues = req.data.status.newIssuesCount;
+            data.status.unreadMessagesCount = req.data.status.unreadMessagesCount;
             data.properties = properties; 
         }
     )
@@ -209,88 +230,36 @@ router.get('/manageProperties.html', function(req, res) {
 
 router.get('/addProperty.html', function(req, res) {
     var data = {status : {}};
-    Promise
-    .join(
-        db.issues.getNewIssuesCount(req.user.id),
-        function (newIssuesCount){
-            data.user = req.user;
-            data.status = {totalNewIssues: newIssuesCount};
-        }
-    )
-    .then(function(){
-        res.render('addProperty', data);   
-    });     
+    data.user = req.user;
+    data.status.totalNewIssues = req.data.status.newIssuesCount;
+    data.status.unreadMessagesCount = req.data.status.unreadMessagesCount;
+    res.render('addProperty', data);
 });
 
 router.get('/messages.html', function(req, res) {
-    var data = {};
-    if (req.query.id != null) {
-        var dialogId = parseInt(req.query.id);
-        Promise
-        .join(
-            db.messages.getDialogs(req.user.id),
-            db.messages.getDialogMessages(dialogId),
-            db.issues.getNewIssuesCount(req.user.id),
-            function(dialogs, messages, newIssuesCount){
-                data.user = req.user;
-                data.status = {totalNewIssues: newIssuesCount};
-                data.dialogs = dialogs;
-                data.messages = messages;
-            }        
-        )
-        .then(function(){
-            res.render('messages', data);
-        });        
-    } else {
-        db.messages.getDialogs(req.user.id).
-        then(function(dialogs){
-            if (dialogs.length) {
-                Promise
-                .join(
-                    db.messages.getDialogMessages(dialogs[0].id),
-                    db.issues.getNewIssuesCount(req.user.id),
-                    function(messages, newIssuesCount){
-                        data.user = req.user;
-                        data.status = {totalNewIssues: newIssuesCount};
-                        data.dialogs = dialogs;
-                        data.messages = messages;
-                    }        
-                )
-                .then(function(){
-                    res.render('messages', data);
-                })  
-            } else {
-                Promise
-                .join(
-                    db.issues.getNewIssuesCount(req.user.id),
-                    function(newIssuesCount){
-                        data.user = req.user;
-                        data.status = {totalNewIssues: newIssuesCount};
-                        data.dialogs = dialogs;
-                        data.messages = [];
-                    }        
-                )
-                .then(function(){
-                    res.render('messages', data);
-                })
-            }
-        })
-    }
-    
+    var data = {status : {}};
+    db.messages.getDialogs(req.user.id)
+    .then(function(dialogs){
+
+        data.user = req.user;
+        data.status.totalNewIssues = req.data.status.newIssuesCount;
+        data.status.unreadMessagesCount = req.data.status.unreadMessagesCount;
+        data.dialogs = dialogs;
+        data.messages = [];
+
+        res.render('messages', data);    
+    });    
 });
 
 router.get('/contracts.html', function(req, res) {
-    var data = {};
-    Promise
-    .join(
-        db.contracts.getAllContracts(req.user.id),
-        db.issues.getNewIssuesCount(req.user.id),
-        function(contracts, newIssuesCount){
-            data.user = req.user;
-            data.status = {totalNewIssues: newIssuesCount};
-            data.contracts = contracts;
-        })
-    .then(function() {
+    var data = {status : {}};
+    db.contracts.getAllContracts(req.user.id)
+    .then(function(contracts){
+        data.user = req.user;
+        data.status.totalNewIssues = req.data.status.newIssuesCount;
+        data.status.unreadMessagesCount = req.data.status.unreadMessagesCount;
+        data.contracts = contracts;
+
         res.render('contracts', data)
     });
 });
@@ -301,11 +270,11 @@ router.get('/addContract.html', function(req, res){
     .join(
         db.properties.getPropertyById(req.query.propertyId),
         db.properties.getAllProperties(req.user.id),
-        db.issues.getNewIssuesCount(req.user.id),
-        function (property, properties, newIssuesCount){
+        function (property, properties){
             var properties = properties.map(function(property) { return {data: property.id, value: property.name}});
             data.user = req.user;
-            data.status = {totalNewIssues: newIssuesCount};
+            data.status.totalNewIssues = req.data.status.newIssuesCount;
+            data.status.unreadMessagesCount = req.data.status.unreadMessagesCount;
             data.title = 'Add contract';
             data.properties = properties;
             data.contract.property = property;
@@ -325,11 +294,11 @@ router.get('/editContract.html', function(req, res){
     .join(
         db.contracts.getContractById(parseInt(req.query.id)),
         db.properties.getAllProperties(req.user.id),
-        db.issues.getNewIssuesCount(req.user.id),
-        function (contract, properties, newIssuesCount){
+        function (contract, properties){
             var properties = properties.map(function(property) { return {data: property.id, value: property.name}});
             data.user = req.user;
-            data.status = {totalNewIssues: newIssuesCount};
+            data.status.totalNewIssues = req.data.status.newIssuesCount;
+            data.status.unreadMessagesCount = req.data.status.unreadMessagesCount;
             data.title = 'Update contract';
             data.properties = properties;
             data.contract = contract;  
