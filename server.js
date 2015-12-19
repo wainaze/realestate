@@ -1,6 +1,7 @@
 #!/bin/env node
  //  OpenShift sample Node application
 var express = require('express');
+var app = express();
 var fs = require('fs');
 var passport = require('passport');
 var router = require('./routes/routes');
@@ -116,8 +117,8 @@ var SampleApp = function() {
     self.initializeServer = function() {
         var server = self;
 
-        self.app = express();
-
+        self.app = app;
+    
         self.app.set('views', './views');
         self.app.set('view engine', 'jade');
 
@@ -157,6 +158,8 @@ var SampleApp = function() {
         self.app.use('/landlord', require('./routes/landlords.js'));
         self.app.use('/tenant', require('./routes/tenants.js'));
         self.app.use('/api', require('./routes/api.js'));
+        self.app.use('/includes', require('./routes/includes.js'));
+
 
         contractsService.startPaymentsGeneration();
         contractsService.startPaymentsControle();
@@ -171,7 +174,7 @@ var SampleApp = function() {
     };
 
     self.start = function() {
-        self.app.listen(self.port, self.ipaddress, function() {
+        var server = self.app.listen(self.port, self.ipaddress, function() {
             console.log('%s: Node server started on %s:%d ...',
                 Date(Date.now()), self.ipaddress, self.port);
         });

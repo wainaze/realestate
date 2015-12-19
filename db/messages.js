@@ -2,6 +2,17 @@ var users = require('./users')
 var Promise = require('bluebird');
 var records = Promise.promisifyAll(require('./dbconnection.js').db.get('messages'));
 
+exports.addDialog = function(dialog){
+    return getMaxId()
+    .then(function(maxId){
+        dialog.id = maxId + 1;
+        return records.insert(dialog);
+    })
+    .then(function(dialog){      
+        return dialog.id;
+    });
+}
+
 exports.getDialogs = function(userId){
     return records.find({ users : userId }, { messages : 0})
     		.then(bindDialogsUsers);
@@ -41,3 +52,28 @@ function bindMessagesUsers(messages) {
     }));
 }
 
+
+records.aggregate = function(aggregation){
+    var collection = this.col;
+    var options = {};
+    return new Promise(function(resolve) {
+        collection.aggregate(aggregation, options, function(err, data){
+            if (err) throw err;             
+            resolve(data);
+        });
+    });
+}
+
+
+function getMaxId() {
+    return records.aggregate(
+       [
+          {
+            $group : {
+               _id : null,
+               maxId: { $max: "$id" }
+            }
+          }
+       ]
+    ).get(0).get('maxId');
+}

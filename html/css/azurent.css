@@ -449,8 +449,14 @@ body {
     padding-bottom: 0px;
 }
 
+#content-wrapper.loginFormContainer {
+    background-image: Url("http://www.azurent.be/images/properties/loft_luxury_darker.jpeg");
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-size: cover;    
+}
+
 #loginContainer {
-    border-radius: 4x;
     box-shadow: 0 0 8px rgba(0, 0, 0, 0.4);
     position: absolute;
     top: 50%;
@@ -1129,4 +1135,83 @@ input#messageText {
 .dialog:hover {
     cursor: pointer;
     background-color: #FAFAFA;
+}
+
+
+/* add dialog */
+#addDialogBox {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(250, 250, 250, 0.8);
+    z-index: 2;
+}
+
+
+#addDialogBox div.addDialogHeader {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    background-color: white;
+    padding: 5px;
+    margin-bottom: 10px;
+    border-bottom: 1px solid #DDD;
+    height: 60px;
+    line-height: 60px;
+}
+
+#addDialogBox div.addDialogHeader h1 {
+    margin : 0;
+    margin-top : 6px;
+    padding : 0;
+}
+
+#addDialogBox div.addDialogActions {
+    margin-bottom: 10px;
+    background-color: white;
+    padding: 10px;
+    border: 1px solid #DDD;
+    box-shadow: 1px 1px 6px rgba(0,0,0,0.13);
+}
+
+#addDialogBox div.addDialogWrapper {
+    position: relative;
+    height: 100%;
+    width: 100%;
+}
+#addDialogBox div.addDialogContainer {
+    width: 80%;
+    height: 80%;
+    margin-left: auto;
+    margin-right: auto;
+    position: relative;
+    top: 50%;
+    transform: translateY(-50%);
+    background-color: #f6f6f6;
+    padding: 10px;
+    border: 1px solid #DDD;
+    box-shadow: 1px 1px 6px rgba(0,0,0,0.13);
+    padding-top: 70px;
+}
+
+#addDialogBox div.addDialogData {
+    text-align: left;
+    padding: 20px;
+    border: 1px solid #DDD;
+    box-shadow: 1px 1px 6px rgba(0,0,0,0.13);
+    margin: 10px;
+    background-color: white;
+    position: absolute;
+    left: 0;
+    top: 62px;
+    right: 0;
+    bottom: 0;
+    overflow: auto;
+}
+
+#addDialogClose {
+    width: 120px;
 }

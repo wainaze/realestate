@@ -1,0 +1,19 @@
+#addDialogBox
+  .addDialogWrapper
+    .addDialogContainer
+      .addDialogHeader
+        #addDialog.btn.btn-primary #{__('Add dialog')}
+        #cancelDialog.btn.btn-primary #{__('Cancel')}
+      .addDialogData
+        form
+          .form-group
+            label(for='recipients') #{__('Send to')}
+            input#recipients.form-control(type='text', placeholder= __('Send to...') autofocus )
+          .form-group
+            label(for='title') #{__('Title')}
+            input#title.form-control(type='text', placeholder= __('Title') autofocus )
+          .form-group
+            label(for='message') #{__('Message')}
+            textarea#message.form-control(type='text', placeholder= __('Message') autofocus )
+script(type='text/javascript', src='/js/addDialog.js')
+   

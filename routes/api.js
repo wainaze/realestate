@@ -8,7 +8,7 @@ var moment = require('moment');
 
 // middleware specific to this router
 router.use(ensureLogin.ensureLoggedIn('/'));
-router.use(userAccess.userHasRole('landlord'));
+//router.use(userAccess.userHasRole('landlord'));
 
 router.post('/addCost', function(req, res) {
     var userId = parseInt(req.user.id);
@@ -239,7 +239,6 @@ router.get('/loadMessages', function(req, res){
         messages.forEach(function(message){
             message.mine = message.userId == userId;
         });
-        console.log(messages);
         res.send(messages);
     })
     
@@ -255,6 +254,34 @@ router.post('/addMessage', function(req, res){
         text : messageText
     };
     db.messages.addMessage(dialogId, message)
+    .then(function(){
+        res.send('ok');
+    })
+    .catch(function(err){
+        res.send(err);
+    });
+});
+
+router.post('/addDialog', function(req, res){
+    var userId = req.user.id;
+    var recepients = JSON.parse(req.body.recepients);
+    recepients.push(userId);
+    var title = req.body.title;
+    var messageText = req.body.message;
+    var dialog = {
+        caption : title,
+        users: recepients,
+        messages: []
+    };
+    var message = { 
+        userId : userId,
+        timestamp : moment().format('YYYYMMDDHHmmss'),
+        text : messageText
+    };
+    db.messages.addDialog(dialog)
+    .then(function(dialogId){
+        return db.messages.addMessage(dialogId, message);
+    })
     .then(function(){
         res.send('ok');
     })

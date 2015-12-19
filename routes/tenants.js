@@ -11,48 +11,62 @@ router.use(function(req, res, next){
     var userId = parseInt(req.user.id);
 	db.tenants.getTenantByUserId(userId)
     .then(function(tenant){
-        if (tenant) {
-            req.tenant = tenant;
-            next();
-        } else {
-            res.redirect('/logout');    
+        if (!tenant) {
+            res.redirect('/logout');
+            return;
         }       
-    });	
+
+        req.tenant = tenant;
+        return db.properties.getPropertyById(tenant.propertyId)
+        
+    })	
+    .then(function(property){
+        req.property = property;
+        next();
+    });    
 });
 
 router.get('/', function(req, res) {
 	res.redirect('payments.html');	
 });
 
-// define the home page route
 router.get('/problems.html', function(req, res) {
-	var tenant = req.tenant;
-    var property = db.properties.getProperty(tenant.propertyId);
-    var issues = db.issues.getOpenIssuesForProperty(property.id);
-
-    res.render('tenant/problems', {
-        user: req.user,
-        issues: issues
-    });
+	var property = req.property;
+    db.issues.getOpenIssuesForProperty(property.id)
+    .then(function(issues){
+        res.render('tenant/problems', {
+            user: req.user,
+            issues: issues
+        });
+    });    
 });
 
-// define the home page route
 router.get('/payments.html', function(req, res) {
-	var tenant = req.tenant;
-    var property = db.properties.getProperty(tenant.propertyId);
-    var payments = db.payments.geyPayments(property.id);
+	var property = req.property;
+    db.payments.getPayments(property.id)
+    .then(function(payments){
+        res.render('tenant/payments', {
+            user: req.user,
+            payments: payments,
+        }); 
+    });    
+});
 
-    res.render('tenant/payments', {
-        user: req.user,
-        payments: payments,
+
+router.get('/messages.html', function(req, res) {
+    var userId = req.tenant.userId;
+    var data = {};
+    db.messages.getDialogs(userId).
+    then(function(dialogs){
+        res.render('tenant/messages', {
+            user : req.user,
+            dialogs : dialogs,
+            messages : []
+        });    
     });
 });
 
-// define the home page route
 router.get('/documents.html', function(req, res) {
-	var tenant = req.tenant;
-    var property = db.properties.getProperty(tenant.propertyId);
-
     res.render('tenant/documents', {
         user: req.user,
     });

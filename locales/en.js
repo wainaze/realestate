@@ -72,5 +72,10 @@
 	"Send reminder": "Send reminder",
 	"Mark payed": "Mark payed",
 	"Send": "Send",
-	"Add dialog": "Add dialog"
+	"Add dialog": "Add dialog",
+	"Add new dialog": "Add new dialog",
+	"Send to": "Send to",
+	"Send to...": "Send to...",
+	"Title": "Title",
+	"Message": "Message"
 }

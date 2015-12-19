@@ -31,18 +31,19 @@ html
           #header-nav.nav-no-collapse.pull-right
             ul.nav.navbar-nav.pull-right
               +languages()
-    #content-wrapper(style='margin: 0;')
+    #content-wrapper.loginFormContainer(style='margin: 0;')
       #loginContainer
         form(action='/login' method='post')
           legend= __('Sign in')
           .loginForm
             label= __('Username')
-            input(type='text', name='username')
+            input(type='text', name='username', autofocus)
             label= __('Password')
             input(type='password', name='password')
-            input.btn.btn-primary(type='submit' value=__('Login'))
+            input.btn.btn-primary(type='submit' value=__('Login'), autofocus)
             
-    script(type='text/javascript', src='js/jquery.js')
-    script(type='text/javascript', src='js/bootstrap.js')
-    script(type='text/javascript', src='js/global.js')
+    script(type='text/javascript', src='/js/jquery.js')
+    script(type='text/javascript', src='/js/bootstrap.js')
+    script(type='text/javascript', src='/js/global.js')
+    script(type='text/javascript', src='/js/login.js')
 

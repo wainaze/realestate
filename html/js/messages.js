@@ -8,11 +8,20 @@ function loadMessages(dialogId) {
 			Mustache.parse(template);   // optional, speeds up future uses
 		    var rendered = Mustache.render(template, {messages : data});
 		    $('.messagesData').html(rendered);
+		    $('.messagesData')[0].scrollTop = $('.messagesData')[0].scrollHeight;
 		});	    
 	});
 }
 
-$('#sendButton').on('click', function() {
+function selectDialog(event){
+	var target =  $(event.target);
+	if (!target.hasClass('dialog'))
+		target = target.parents('.dialog').first();
+	var dialogId = target.data('id');
+	loadMessages(dialogId);
+}
+
+function addMessage(){
 	var messageText = $('#messageText').val();
 	$.post('/api/addMessage', 
 		{
@@ -20,14 +29,29 @@ $('#sendButton').on('click', function() {
 			messageText : messageText
 		}
 	).success(function() {
-		loadMessages(currentDialog)
+		$('#messageText').val('');
+		loadMessages(currentDialog);
 	});
-});
+}
 
-$(document).on('click', '.dialog', function(event){
-	var target =  $(event.target);
-	if (!target.hasClass('dialog'))
-		target = target.parents('.dialog').first();
-	var dialogId = target.data('id');
-	loadMessages(dialogId);
-})
+function showAddDialogScreen() {
+	$.get('/includes/addDialog.mst').success(function(template){
+		Mustache.parse(template);   // optional, speeds up future uses
+	    var rendered = Mustache.render(template, {});
+	    $('body').append(rendered);
+	});	   		
+}
+
+function submitOnEnter(e) {
+	if (e.keyCode == 13) {
+		e.stopImmediatePropagation();
+		addMessage();
+		return false;
+	}
+}
+
+$(document).on('click', '#addDialogButton', showAddDialogScreen);
+$(document).on('click', '.dialog', selectDialog);
+$(document).on('click', '#sendButton', addMessage);
+$(document).on('keydown', '#messageText', submitOnEnter);
+

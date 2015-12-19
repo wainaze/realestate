@@ -244,7 +244,6 @@ router.get('/messages.html', function(req, res) {
     } else {
         db.messages.getDialogs(req.user.id).
         then(function(dialogs){
-            console.log(dialogs);
             if (dialogs.length) {
                 Promise
                 .join(

@@ -23,7 +23,7 @@ exports.getPayment = function(contractId, dueDate){
 	return records.findOne({contractId : contractId, dueDate: dueDate});
 }
 
-exports.geyPayments = function(propertyId){
+exports.getPayments = function(propertyId){
     return records.find({propertyId : propertyId})
     		.then(convertDatesToPresent)
     		.then(sortByDateDescending);
