@@ -77,5 +77,9 @@
 	"Send to": "Send to",
 	"Send to...": "Send to...",
 	"Title": "Title",
-	"Message": "Message"
+	"Message": "Message",
+	"Problem costs": "Problem costs",
+	"Click here to add costs": "Click here to add costs",
+	"Comments": "Comments",
+	"Click here to add a comment": "Click here to add a comment"
 }

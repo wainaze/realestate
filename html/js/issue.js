@@ -101,7 +101,7 @@ $('#property').autocomplete({
 $('#addIssueButton').on('click', function() {
     $.post('/api/addIssue', {
         issueSubject: $('#issueSubject').val(),
-        issueDescription: $('#issueDescription').val(),
+        issueDescription: $('#issueDescription').html(),
         issueProperty: $('input[name="property"]').val()
     }).done(function(issueId){
         window.location = 'problem.html?issueId='+issueId;

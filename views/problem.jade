@@ -9,8 +9,7 @@ block content
     #problemMenu.row
       +issueActionButton(issue)
     #problemDescription.row
-      p Dear,
-      p Since yeasterday I have problems with the boiler.
+      != issue.issueDescription 
     #problemCosts.row
       h3 #{__('Problem costs')}
       if issue.status == 'open' || issue.status == 'on-hold'

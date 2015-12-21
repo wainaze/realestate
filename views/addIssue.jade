@@ -9,7 +9,7 @@ block content
 				input#issueSubject(type='text' name='issueSubject' required)
 			.row
 				label.fullWidth(for='issueDescription') #{__('Description')}
-				input#issueDescription(type='text' name='issueDescription' required)
+				div#issueDescription(type='text' name='issueDescription' required contentEditable="true")
 			.row
 				label.fullWidth(for='property') #{__('Property')}
 				input#property(type='text' required)

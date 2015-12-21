@@ -923,6 +923,11 @@ li.language-dropdown  span.caret {
     color: #DDD;
 }
 
+#issueDescription {
+    min-height: 28px;
+    border: 1px solid #AAA;
+}
+
 /* Autocomplete style */
 
 .autocomplete-suggestions { border: 1px solid #999; background: #FFF; overflow: auto; }
