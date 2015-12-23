@@ -1,25 +1,23 @@
 extends ../layoutTenant.jade
 
 block content
-  .row(style='opacity: 1;')
-    .propertyPage.col-xs-12
-      .row
-        #pageCaption.col-xs-12
-          = __('Problems')
-      
-      .row
-        .col-xs-12
-          table.table
-            tr
-              th #{__('Problem')}
-              th #{__('Date')}
-            for issue in issues
-              tr(class= issue.status == 'new' ? 'issue newIssue' : 'issue')
-                td= issue.issueCaption
-                td= issue.creationDate
+  .row.contentRow(style='opacity: 1;')
+    .addIssueButton
+      div 
+        span #{__('Click here to add new issue')}
+    .issues
+      table.table
+        tr
+          th #{__('Problem')}
+          th #{__('Date')}
+          th #{__('Status')}
+        for issue in issues
+          tr(class= issue.status == 'new' ? 'newIssue issue' : 'issue', data-id=issue.id)
+            td= issue.issueCaption
+            td= issue.creationDate
+            td= issue.status
 block scripts    
-  script(type='text/javascript', src='js/jquery.mask.min.js')
-  script(type='text/javascript', src='js/bootstrap-datepicker.min.js')
-  script(type='text/javascript', src='js/property.js')
+  script(type='text/javascript', src='/js/problems.js')
+
 
 

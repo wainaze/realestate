@@ -13,7 +13,7 @@ var Promise = require('bluebird');
 
 Promise.if = function(condition, func){
     if (condition)
-        return func();
+        return func;
     return Promise.return(null);
 }
 

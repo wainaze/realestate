@@ -1,0 +1,31 @@
+extends ../layoutTenant.jade
+
+block content
+  .content
+    #problemCaption.row
+      span= issue.issueCaption
+    #problemDescription.row
+      != issue.issueDescription 
+    #problemCommentsMenu.row
+      h3 #{__('Comments')}
+      if issue.status == 'open' || issue.status == 'on-hold'
+        #addCommmentArea
+          .commentPlaceholder
+            span.glyphicon.glyphicon-plus
+            | #{__('Click here to add a comment')}
+          .commentEditArea
+            .commentText(contenteditable='true')
+            .commentButtons
+              #addCommentButton.btn.btn-primary #{__('Add')}
+              #cancelCommentButton.btn.btn-default #{__('Cancel')}
+    #problemComments.row
+      table.table
+        tbody
+          if issue.comments
+            for comment in issue.comments
+              tr
+                td
+                  != comment
+
+block scripts    
+  script(type='text/javascript', src='/js/issue.js')

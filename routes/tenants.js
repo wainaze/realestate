@@ -53,6 +53,35 @@ router.get('/problems.html', function(req, res) {
     });    
 });
 
+router.get('/problem.html', function(req, res) {
+    var data = { status : {}};
+    var issueId = parseInt(req.query.issueId);
+    db.issues.getIssue(issueId)
+    .then(function(issue){ 
+        data.user = req.user;
+        data.status.totalNewIssues = req.data.status.newIssuesCount;
+        data.status.unreadMessagesCount = req.data.status.unreadMessagesCount;
+        data.issue = issue;
+        data.costs = issue.costs;
+        if (data.issue) {
+            res.render('tenant/problem', data);
+        } else {
+            res.redirect('problems.html');
+        }
+    });
+});
+
+
+router.get('/addIssue.html', function(req, res) {
+    var property = req.property;
+    var data = {status : {}};
+    data.user = req.user;
+    data.status.totalNewIssues = req.data.status.newIssuesCount;
+    data.status.unreadMessagesCount = req.data.status.unreadMessagesCount;
+    data.property = property;
+    res.render('tenant/addIssue', data);
+});
+
 router.get('/payments.html', function(req, res) {
 	var property = req.property;
     db.payments.getPayments(property.id)
@@ -69,8 +98,8 @@ router.get('/payments.html', function(req, res) {
 router.get('/messages.html', function(req, res) {
     var userId = req.tenant.userId;
     var data = {};
-    db.messages.getDialogs(userId).
-    then(function(dialogs){
+    db.messages.getDialogs(userId)
+    .then(function(dialogs){
         res.render('tenant/messages', {
             user : req.user,
             dialogs : dialogs,

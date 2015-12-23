@@ -22,9 +22,15 @@ $('#addTenantDialogClose').on('click', function() {
 	location.href = document.referrer + '#contracts';
 });
 
+function setProperty( event, ui ){
+    $('#property').val(ui.item.label);
+    $('input[name="property"]').val(ui.item.value);
+    event.preventDefault();   
+}
+
 $('#property').autocomplete({
-    lookup: propertiesLookup,
-    onSelect: function (suggestion) {
-        $('#propertyId').val(suggestion.data);
-    }
+    delay: 50,
+    source: 'properties.json',
+    select: setProperty,
+    focus: setProperty
 });

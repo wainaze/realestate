@@ -1,0 +1,21 @@
+extends ../layout.jade
+
+block content
+	.addIssueForm
+		h1 #{__('Add new issue')}
+		form#issue(method='POST')
+			.row
+				label.fullWidth(for='issueSubject') #{__('Subject')}
+				input#issueSubject(type='text' name='issueSubject' required)
+			.row
+				label.fullWidth(for='issueDescription') #{__('Description')}
+				div#issueDescription(type='text' name='issueDescription' required contentEditable="true")
+			.row
+				label.fullWidth(for='property') #{__('Property')}
+				input(type='text' value=property.name readonly)
+				input(type='hidden' name='property' value=property.id)
+			.row
+				#addIssueButton.btn.btn-primary(type='submit') #{__('Add')}
+				#cancelAddIssueButton.btn.btn-default(type='cancel') #{__('Cancel')}
+block scripts   
+	script(type='text/javascript', src='/js/issue.js')

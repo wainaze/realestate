@@ -91,11 +91,17 @@ $('.rejectIssue').on('click', function() {
     window.location.reload();
 });
 
+function setProperty( event, ui ){
+        $('#property').val(ui.item.label);
+        $('input[name="property"]').val(ui.item.value);
+        event.preventDefault();   
+}
+
 $('#property').autocomplete({
-    lookup: propertiesLookup,
-    onSelect: function (suggestion) {
-        $('input[name="property"]').val(suggestion.data);
-    }
+    delay: 50,
+    source: 'properties.json',
+    select: setProperty,
+    focus: setProperty
 });
 
 $('#addIssueButton').on('click', function() {

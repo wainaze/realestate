@@ -5,6 +5,7 @@ var userAccess = require('../services/userAccessService');
 var messagesService = require('../services/messagesService');
 var router = express.Router();
 var moment = require('moment');
+var Promise = require('bluebird');
 
 // middleware specific to this router
 router.use(ensureLogin.ensureLoggedIn('/'));

@@ -60,43 +60,33 @@ router.get('/properties.html', function(req, res) {
             data.status.totalIncome = '39.800';
             data.status.totalCosts = '12.564'; 
             data.properties = properties;
+            res.render('properties', data);
         }        
-    )
-    .then(function(){
-        res.render('properties', data);
-    });
+    );
 });
 
 router.get('/paymentStatus.html', function(req, res) {
     var data = {status : {}};
-    Promise
-    .join(
-        db.properties.getAllProperties(req.user.id),
-        function(properties){
-            data.user = req.user;
-            data.status.totalNewIssues = req.data.status.newIssuesCount;
-            data.status.unreadMessagesCount = req.data.status.unreadMessagesCount;
-            data.properties = properties;
-        }
-    )
-    .then(function(){
+
+    db.properties.getAllProperties(req.user.id)
+    .then(function(properties){
+        data.user = req.user;
+        data.status.totalNewIssues = req.data.status.newIssuesCount;
+        data.status.unreadMessagesCount = req.data.status.unreadMessagesCount;
+        data.properties = properties;
         res.render('paymentStatus', data);
     }); 
 });
 
 router.get('/payments.html', function(req, res) {
     var data = {status : {}};
-    Promise
-    .join(
-        db.transactions.getAllPayments(req.user.id),
-        function(transactions){
-            data.user = req.user;
-            data.status.totalNewIssues = req.data.status.newIssuesCount;
-            data.status.unreadMessagesCount = req.data.status.unreadMessagesCount;
-            data.transactions = transactions;
-    })
-    .then(function(){
-        res.render('payments', data);   
+    db.transactions.getAllPayments(req.user.id)
+    .then(function(transactions){
+        data.user = req.user;
+        data.status.totalNewIssues = req.data.status.newIssuesCount;
+        data.status.unreadMessagesCount = req.data.status.unreadMessagesCount;
+        data.transactions = transactions;
+        res.render('payments', data);  
     });   
 });
 
@@ -106,7 +96,7 @@ router.get('/property.html', function(req, res) {
     var propertyId = parseInt(req.query.id);
     Promise.join(
         db.properties.getProperty(userId, propertyId),
-        db.payments.geyPayments(propertyId),
+        db.payments.getPayments(propertyId),
         db.contracts.getContracts(propertyId),
         db.issues.getOpenIssuesForProperty(propertyId),
         db.issues.getSolvedIssuesForProperty(propertyId),
@@ -119,52 +109,36 @@ router.get('/property.html', function(req, res) {
             data.contracts = contracts;
             data.openIssues = openIssues;
             data.solvedIssues = solvedIssues;
-        })
-    .then(function() {
-        res.render('property', data)
-    });
+            res.render('property', data);
+        }
+    );
 });
 
 router.get('/tenants.html', function(req, res) {
     var data = {status : {}};
-    Promise
-    .join(
-        db.tenants.getAllTenants(req.user.id),
-        function(tenants){
-            data.user = req.user;
-            data.status.totalNewIssues = req.data.status.newIssuesCount;
-            data.status.unreadMessagesCount = req.data.status.unreadMessagesCount;
-            data.tenants = tenants;
-        })
-    .then(function() {
-        res.render('tenants', data)
+    db.tenants.getAllTenants(req.user.id)
+    .then(function(tenants){
+        data.user = req.user;
+        data.status.totalNewIssues = req.data.status.newIssuesCount;
+        data.status.unreadMessagesCount = req.data.status.unreadMessagesCount;
+        data.tenants = tenants;
+        res.render('tenants', data);
     });
 });
 
 router.get('/problem.html', function(req, res) {
     var data = { status : {}};
-
     var issueId = parseInt(req.query.issueId);
-    if (issueId <= 0 || isNaN(issueId)) {
-        res.redirect('problems.html');   
-        return;    
-    }
-
-    Promise
-    .join(
-        db.issues.getIssue(issueId),
-        function(issue){ 
-            data.user = req.user;
-            data.status.totalNewIssues = req.data.status.newIssuesCount;
-            data.status.unreadMessagesCount = req.data.status.unreadMessagesCount;
-            data.issue = issue;
-            data.costs = issue.costs;
-        }    
-    )
-    .then(function(){
+    db.issues.getIssue(issueId)
+    .then(function(issue){ 
+        data.user = req.user;
+        data.status.totalNewIssues = req.data.status.newIssuesCount;
+        data.status.unreadMessagesCount = req.data.status.unreadMessagesCount;
+        data.issue = issue;
+        data.costs = issue.costs;
         if (data.issue) {
             if (data.issue.status == 'new') {
-                db.issues.updateIssueStatus(req.user.id, req.query.issueId, 'open');            
+                db.issues.updateIssueStatus(req.user.id, issueId, 'open');            
                 data.issue.status = 'open';
             }
             res.render('problem', data);
@@ -177,20 +151,11 @@ router.get('/problem.html', function(req, res) {
 router.get('/addIssue.html', function(req, res) {
     var userId = parseInt(req.user.id);
     var data = {status : {}};
-    Promise
-    .join(
-        db.properties.getAllProperties(userId), 
-        function(properties){
-            var properties = properties.map(function(property) { return {data: property.id, value: property.name}});
-            data.user = req.user;
-            data.status.totalNewIssues = req.data.status.newIssuesCount;
-            data.status.unreadMessagesCount = req.data.status.unreadMessagesCount;
-            data.properties = properties;
-        }
-    )
-    .then(function(){
-        res.render('addIssue',data);
-    })
+
+    data.user = req.user;
+    data.status.totalNewIssues = req.data.status.newIssuesCount;
+    data.status.unreadMessagesCount = req.data.status.unreadMessagesCount;
+    res.render('addIssue',data);
 });
 
 router.get('/problems.html', function(req, res) {
@@ -204,27 +169,21 @@ router.get('/problems.html', function(req, res) {
             data.status.unreadMessagesCount = req.data.status.unreadMessagesCount;
             data.openIssues = unsolvedIssues;
             data.solvedIssues = solvedIssues;
+            res.render('problems', data);
         }
-    )
-    .then(function() {
-        res.render('problems', data)
-    });
+    );
 });
 
 router.get('/manageProperties.html', function(req, res) {
     var data = {status : {}};
-    Promise
-    .join(
-        db.properties.getAllProperties(req.user.id),
-        function (properties){
-            data.user = req.user;
-            data.status.totalNewIssues = req.data.status.newIssuesCount;
-            data.status.unreadMessagesCount = req.data.status.unreadMessagesCount;
-            data.properties = properties; 
-        }
-    )
-    .then(function(){
-        res.render('manageProperties', data);   
+
+    db.properties.getAllProperties(req.user.id)
+    .then(function (properties){
+        data.user = req.user;
+        data.status.totalNewIssues = req.data.status.newIssuesCount;
+        data.status.unreadMessagesCount = req.data.status.unreadMessagesCount;
+        data.properties = properties; 
+        res.render('manageProperties', data);
     });      
 });
 
@@ -266,49 +225,84 @@ router.get('/contracts.html', function(req, res) {
 
 router.get('/addContract.html', function(req, res){
     var data = {status : {}, contract : {}};
-    Promise
-    .join(
-        db.properties.getPropertyById(req.query.propertyId),
-        db.properties.getAllProperties(req.user.id),
-        function (property, properties){
-            var properties = properties.map(function(property) { return {data: property.id, value: property.name}});
-            data.user = req.user;
-            data.status.totalNewIssues = req.data.status.newIssuesCount;
-            data.status.unreadMessagesCount = req.data.status.unreadMessagesCount;
-            data.title = 'Add contract';
-            data.properties = properties;
-            data.contract.property = property;
-            data.contract.fromDate = moment().format('DD/MM/YYYY');
-            data.contract.tillDate = moment().add(1, 'years').format('DD/MM/YYYY');
-            data.contract.paymentDay = 15;
-        }
-    )
-    .then(function(){
-        res.render('contract', data);   
+
+    db.properties.getPropertyById(req.query.propertyId)
+    .then(function (property, properties){
+        data.user = req.user;
+        data.status.totalNewIssues = req.data.status.newIssuesCount;
+        data.status.unreadMessagesCount = req.data.status.unreadMessagesCount;
+        data.title = 'Add contract';
+        data.contract.property = property;
+        data.contract.fromDate = moment().format('DD/MM/YYYY');
+        data.contract.tillDate = moment().add(1, 'years').format('DD/MM/YYYY');
+        data.contract.paymentDay = 15;
+
+        res.render('contract', data);
     });           
 });
 
 router.get('/editContract.html', function(req, res){
     var data = {status : {}};
-    Promise
-    .join(
-        db.contracts.getContractById(parseInt(req.query.id)),
-        db.properties.getAllProperties(req.user.id),
-        function (contract, properties){
-            var properties = properties.map(function(property) { return {data: property.id, value: property.name}});
-            data.user = req.user;
-            data.status.totalNewIssues = req.data.status.newIssuesCount;
-            data.status.unreadMessagesCount = req.data.status.unreadMessagesCount;
-            data.title = 'Update contract';
-            data.properties = properties;
-            data.contract = contract;  
-        }
-    )
-    .then(function(){
-        res.render('contract', data);   
+    db.contracts.getContractById(parseInt(req.query.id))
+    .then(function (contract){
+        data.user = req.user;
+        data.status.totalNewIssues = req.data.status.newIssuesCount;
+        data.status.unreadMessagesCount = req.data.status.unreadMessagesCount;
+        data.title = 'Update contract';
+        data.contract = contract; 
+
+        res.render('contract', data);    
     });           
 });
 
 
+RegExp.escape= function(s) {
+    s = s.replace(/[-\/\\^$+?.()|[\]{}]/g, '\\$&')
+    return s.replace('*', '.+');
+};
+
+function fullTextSearch(list, searchString){
+    try {
+        var tokens = searchString.split(' ');
+        var arrFiltered = list;
+        tokens.forEach(function(token){
+            var regex = new RegExp('\:"(:?[^"]*)' + RegExp.escape(token) + '(:?[^"]*)"','i');
+            arrFiltered =  arrFiltered.filter(function(obj) {
+                return JSON.stringify(obj).match(regex);
+            });       
+        });
+        return arrFiltered;
+    } catch(e){
+        console.error(e);
+        return list;
+    }
+
+}
+
+router.get('/properties.json', function(req, res) {
+    var term = req.query.term;
+    db.properties.getAllProperties(req.user.id)
+    .then(function(properties){
+        var properties = properties.map(function(property) { return {value: property.id, label: property.name}});
+        if (term) {
+            properties = fullTextSearch(properties, term);
+        }
+        res.send(properties);
+    });
+});
+
+router.get('/recipients.json', function(req, res) {
+    var term = req.query.term;
+    db.contracts.getAllContracts(req.user.id)
+    .then(function(contracts){
+        contracts = contracts.filter(function(contract){ return contract.tenant && contract.tenant.userId });
+        var recipients = contracts.map(function(contract){ return { value : contract.tenant.userId, label : contract.tenant.tenantName }; });
+        if (term) {
+            recipients = fullTextSearch(recipients, term);
+        }
+
+        res.send(recipients);
+    });
+});
 
 module.exports = router;
