@@ -159,7 +159,7 @@ var SampleApp = function() {
         self.app.use('/tenant', require('./routes/tenants.js'));
         self.app.use('/api', require('./routes/api.js'));
         self.app.use('/includes', require('./routes/includes.js'));
-
+        self.app.use('/files', require('./routes/files.js'));
 
         contractsService.startPaymentsGeneration();
         contractsService.startPaymentsControle();

@@ -1,0 +1,56 @@
+style.
+  .dropzone.dz-clickable {
+      cursor: pointer;
+  }
+  .dropzone {
+      border: 2px dashed #0087F7;
+      border-radius: 5px;
+      background: white;
+  }
+  .dropzone {
+      min-height: 150px;
+      border: 2px solid rgba(0, 0, 0, 0.3);
+      background: white;
+      padding: 54px 54px;
+  }
+  .dropzone, .dropzone * {
+      box-sizing: border-box;
+  }
+  .dropzone.dz-clickable .dz-message, .dropzone.dz-clickable .dz-message * {
+      cursor: pointer;
+  }
+  .dropzone .dz-message {
+      font-weight: 400;
+  }
+  .dropzone .dz-message {
+      text-align: center;
+      margin: 2em 0;
+  }
+  .dropzone.dz-clickable * {
+      cursor: default;
+  }
+  .dropzone, .dropzone * {
+      box-sizing: border-box;
+  }
+.test
+form#my-awesome-dropzone.dropzone.needsclick.dz-clickable(method="post", enctype="multipart/form-data", action="/files/")
+  .dz-message.needsclick
+      | Drop files here or click to upload.
+      br     
+      span.note.needsclick
+        | (This is just a demo dropzone. Selected files are 
+        strong not
+        |  actually uploaded.)   
+script(type='text/javascript', src='/js/jquery.js')
+script(type='text/javascript', src='/js/dropzone.js')
+script(type='text/javascript').
+  Dropzone.options.myAwesomeDropzone = {
+    init: function() {
+      this.on("success", function(file, response) {  
+        console.log(file);
+        console.log(response);
+        $('.test').append('<p>' + file.name + '</p>');
+      });
+    },
+    previewsContainer: false,
+  };
