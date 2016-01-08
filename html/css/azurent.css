@@ -1287,3 +1287,37 @@ ui-autocomplete.ui-front.ui-menu.ui-widget.ui-widget-content li {
     }
   }
 }
+
+.dropzone.dz-clickable {
+  cursor: pointer;
+}
+.dropzone {
+  border: 2px dashed #0087F7;
+  border-radius: 5px;
+  background: white;
+}
+.dropzone {
+  min-height: 150px;
+  border: 2px solid rgba(0, 0, 0, 0.3);
+  background: white;
+  padding: 54px 54px;
+}
+.dropzone, .dropzone * {
+  box-sizing: border-box;
+}
+.dropzone.dz-clickable .dz-message, .dropzone.dz-clickable .dz-message * {
+  cursor: pointer;
+}
+.dropzone .dz-message {
+  font-weight: 400;
+}
+.dropzone .dz-message {
+  text-align: center;
+  margin: 2em 0;
+}
+.dropzone.dz-clickable * {
+  cursor: default;
+}
+.dropzone, .dropzone * {
+  box-sizing: border-box;
+}

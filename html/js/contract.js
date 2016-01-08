@@ -1,3 +1,16 @@
+function removeDocumentClicked(e) {
+    var url = e.target.href;
+    $.ajax({
+        url: url,
+        type: 'DELETE',
+        success: function(result) {
+            $(e.target).parent().parent().remove();
+        }
+    });
+    e.stopImmediatePropagation;
+    return false;
+}
+
 $('#addTenantDialogSave').on('click', function() {
     $.post('/api/saveContract', {
         contractId: getParameterByName('id'),    
@@ -28,9 +41,20 @@ function setProperty( event, ui ){
     event.preventDefault();   
 }
 
+$(document).on('click', '.removeDocument', removeDocumentClicked);
+
 $('#property').autocomplete({
     delay: 50,
     source: 'properties.json',
     select: setProperty,
     focus: setProperty
 });
+
+Dropzone.options.myAwesomeDropzone = {
+  init: function() {
+    this.on("success", function(file, response) {
+        $('#documents > tbody').append('<tr><td><a href="/files/' + response.fileId + '">' + response.title + '</a></td><td><a class="removeDocument" href="/api/contract/' + response.contractId + '/document/' + response.id + '"> remove</a></td></tr>');
+    });
+  },
+  previewsContainer: false,
+};

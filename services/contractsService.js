@@ -3,7 +3,7 @@ var schedule = require('node-schedule');
 var Promise = require('bluebird');
 var moment = require('moment');
 
-exports.startPaymentsGeneration = function(){
+function startPaymentsGeneration(){
     var job = schedule.scheduleJob('*/5 * * * * *', function(){
     	var prom = db.contracts
     	.getContractsToPay()
@@ -11,7 +11,7 @@ exports.startPaymentsGeneration = function(){
     });
 }
 
-exports.startPaymentsControle = function() {
+function startPaymentsControle() {
 	var job = schedule.scheduleJob('*/5 * * * * *', function(){
     	db.payments.updateOverduePayments();
     });
@@ -28,6 +28,14 @@ function addPayment(contract) {
 	});
 }
 
+function addContractDocument(contractId, fileId, contractDocumentTitle){
+  return db.contracts.addContractDocument(contractId, fileId, contractDocumentTitle);
+}
+
+function removeContractDocument(contractId, documentId) {
+  return db.contracts.removeContractDocument(contractId, documentId);
+}
+
 function removeExistingPayments(contracts){
 	return Promise.filter(contracts, filterExistingPayment).each(addPayment);	
 }
@@ -38,3 +46,8 @@ function filterExistingPayment(contract){
 		.getPayment(contract.id, dueDate)
 		.then(function(payment){ return payment == null	});
 }
+
+exports.startPaymentsControle = startPaymentsControle;
+exports.startPaymentsGeneration = startPaymentsGeneration;
+exports.addContractDocument = addContractDocument;
+exports.removeContractDocument = removeContractDocument;

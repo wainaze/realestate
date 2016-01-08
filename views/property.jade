@@ -16,17 +16,16 @@ block content
             ul#tabs.nav.nav-tabs(role='tablist')
               li.active(role='presentation')
                 a(href='#paymentsList', aria-controls='paymentsList', role='tab', data-toggle='tab')
-                  | #{__('Payments')}(
-                  span(class= property.payment > 0 ? 'paymentOK' : 'paymentNOK')
-                    = property.payment
-                    |&euro;
-                  | )
+                  | #{__('Payments')}
                   
               li(role='presentation')
                 a(href='#contracts', aria-controls='contracts', role='tab', data-toggle='tab') #{__('Contracts')}
                   
               li(role='presentation')
-                a(href='#issues', aria-controls='issues', role='tab', data-toggle='tab') #{__('Issues')} (5)
+                a(href='#issues', aria-controls='issues', role='tab', data-toggle='tab') 
+                  | #{__('Issues')} 
+                  if openIssues.count
+                    | (#{openIssues.count})
                   
               li(role='presentation')
                 a(href='#photos', aria-controls='photos', role='tab', data-toggle='tab') #{__('Pictures')}
@@ -67,7 +66,7 @@ block content
                     th.nowrap #{__('Payment frequency')}
                     th.nowrap #{__('Payment')}
                   for contract in contracts
-                    tr.tenant
+                    tr.tenant(onclick='location.href="editContract.html?id=#{contract.id}"')
                       td.fullWidth= contract.contractCaption
                       td= contract.fromDate
                       td= contract.tillDate
@@ -102,8 +101,18 @@ block content
                 .row.propertyDataRow
                   .col-xs-4
                     #propertyPicture
-                      img(src=property.img)
+                      form#my-awesome-dropzone.dropzone.needsclick.dz-clickable(method="post", enctype="multipart/form-data", action="/api/property/#{property.id}/photo")
+                        .dz-message.needsclick= __('Drop files here or click to upload')
+                  if property.photos
+                    for photo in property.photos
+                      .col-xs-4
+                        #propertyPicture
+                          img(src="/files/#{photo.fileId}")
+                          a.removePhoto(href="/api/property/#{property.id}/photo/#{photo.id}")
+                            span.glyphicon.glyphicon-trash
+
 block scripts    
+  script(type='text/javascript', src='/js/dropzone.js')
   script(type='text/javascript', src='/js/jquery.mask.min.js')
   script(type='text/javascript', src='/js/bootstrap-datepicker.min.js')
   script(type='text/javascript', src='/js/property.js')

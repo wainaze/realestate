@@ -18,12 +18,7 @@ function add(filename, contentType, size, data) {
 }
 
 function load(fileId) {
-  console.log(fileId);
-  return records.findOne({fileId : fileId})
-    .then(function(file) {
-      console.log(file);
-      return file;
-    });
+  return records.findOne({fileId : fileId});
 }
 
 exports.add = add;

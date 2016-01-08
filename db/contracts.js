@@ -3,6 +3,11 @@ var properties = require('./properties');
 var tenants = require('./tenants');
 var Promise = require('bluebird');
 var records = Promise.promisifyAll(require('./dbconnection').db.get('contracts'));
+var uuid = require('node-uuid');
+
+function getNewId() {
+  return uuid.v4();
+}
 
 exports.addContract = function(contract) {
     return getMaxId()
@@ -47,6 +52,23 @@ exports.getContractsToPay = function(){
         }
     });
 }
+
+function addContractDocument(contractId, fileId, contractDocumentTitle){
+    var contractDocument = {
+        id : getNewId(),
+        title : contractDocumentTitle,
+        fileId : fileId,
+        contractId : contractId
+    };
+    return Promise.resolve(records.update({id: contractId}, {$push: { documents: contractDocument } })).then(function(){ return contractDocument; });
+}
+
+function removeContractDocument(contractId, documentId) {
+    return Promise.resolve(records.update({id: contractId}, {$pull: { documents: {id : documentId }}}));
+}
+
+exports.addContractDocument = addContractDocument;
+exports.removeContractDocument = removeContractDocument;
 
 /* Internal functions */
 

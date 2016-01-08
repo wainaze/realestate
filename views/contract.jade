@@ -77,9 +77,25 @@ block content
             .form-group
               label(for='email') #{__('Email')}
               input#email.form-control(type='text', placeholder= __('Email'))
+       .container.collapsible
+        h3 
+          div.glyphicon.glyphicon-collapsible
+          = __('Documents')
+        .contents
+          table#documents
+            tr
+              th
+                form#my-awesome-dropzone.dropzone.needsclick.dz-clickable(method="post", enctype="multipart/form-data", action="/api/contract/#{contract.id}/document")
+                  .dz-message.needsclick= __('Drop files here or click to upload')
+            if contract.documents 
+              for document in contract.documents
+                tr
+                  td
+                    a(href="/files/#{document.fileId}")= document.title
+                  td 
+                    a.removeDocument(href="/api/contract/#{contract.id}/document/#{document.id}") remove
 block scripts
+  script(type='text/javascript', src='/js/dropzone.js')
   script(type='text/javascript', src='/js/jquery.mask.min.js')
   script(type='text/javascript', src='/js/bootstrap-datepicker.min.js')   
-  script(type='text/javascript') var propertiesLookup = 
-    != JSON.stringify(properties)
-  script(type='text/javascript', src='/js/contract.js')
+  script(type='text/javascript', src='/js/contract.js')   

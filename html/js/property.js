@@ -53,10 +53,24 @@ function markPaymentPayed(event){
 	$.post('/api/paymentPayed', {id : paymentId}).done(location.reload());
 }
 
+function removePhoto(e) {
+	  var url = e.target.parentElement.href;
+    $.ajax({
+        url: url,
+        type: 'DELETE',
+        success: function(result) {
+            $(e.target).parent().parent().parent().remove();
+        }
+    });
+    e.stopImmediatePropagation;
+    return false;
+}
+
 $(document).on('click', '#addTenant', addTenant);
 $(document).on('click', '#addTenantDialogClose', closeTenantDialog);
 $(document).on('click', '#addTenantDialogSave', saveTenant);
 $(document).on('click', '.payedButton', markPaymentPayed);
+$(document).on('click', '.removePhoto', removePhoto);
 
 $('#fromDate, #tillDate, #birthDate').mask('99/99/9999'); 
 
@@ -65,3 +79,11 @@ if (tabToOpen) {
 	$('.nav-tabs a[href="'+tabToOpen+'"]').tab('show');	
 }
 
+Dropzone.options.myAwesomeDropzone = {
+  init: function() {
+    this.on("queuecomplete", function() {
+        window.location.reload();
+    });
+  },
+  previewsContainer: false
+};

@@ -1,6 +1,11 @@
 var Promise = require('bluebird');
 var records = Promise.promisifyAll(require('./dbconnection.js').db.get('properties'));
 var commonExceptions = require('../common/commonExceptions');
+var uuid = require('node-uuid');
+
+function getNewId() {
+  return uuid.v4();
+}
 
 records.aggregate = function(aggregation){
     var collection = this.col;
@@ -61,3 +66,20 @@ function getMaxId() {
        ]
     ).get(0).get('maxId');
 }
+
+
+function addPropertyPhoto(propertyId, fileId){
+  var propertyPhoto = {
+        id : getNewId(),
+        fileId : fileId,
+        propertyId : propertyId
+    };
+    return Promise.resolve(records.update({id: propertyId}, {$push: { photos: propertyPhoto } })).then(function(){ return propertyPhoto; });
+}
+
+function removePropertyPhoto(propertyId, photoId) {
+    return Promise.resolve(records.update({id: propertyId}, {$pull: { photos: {id : photoId }}}));
+}
+
+exports.addPropertyPhoto = addPropertyPhoto;
+exports.removePropertyPhoto = removePropertyPhoto;

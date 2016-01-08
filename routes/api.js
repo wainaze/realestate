@@ -3,9 +3,13 @@ var db = require('../db');
 var ensureLogin = require('connect-ensure-login');
 var userAccess = require('../services/userAccessService');
 var messagesService = require('../services/messagesService');
+var filesService = require('../services/filesService');
+var contractsService = require('../services/contractsService');
+var propertiesService = require('../services/propertiesService');
 var router = express.Router();
 var moment = require('moment');
 var Promise = require('bluebird');
+var multipart = require('connect-multiparty')();
 
 // middleware specific to this router
 router.use(ensureLogin.ensureLoggedIn('/'));
@@ -135,6 +139,22 @@ router.post('/removeProperty', function(req, res) {
     });
 });
 
+router.post('/property/:propertId/photo', multipart, function(req, res) {
+    var file = req.files.file;
+    var propertId = parseInt(req.params.propertId);
+    storeFile(file)
+    .then(addPropertyPhoto(propertId, file))
+    .then(sendPhoto(res));
+});
+
+router.delete('/property/:propertId/photo/:photoId', function(req, res){
+    var propertId = parseInt(req.params.propertId);
+    var photoId = req.params.photoId;
+    // FIXME remove file from DB
+    removePropertyPhoto(propertId, photoId)
+    .then(sendOk(res));
+});
+
 router.post('/saveContract', function(req, res) {
     var userId = parseInt(req.user.id);
     var contractId = (req.body.contractId == '' ? null : parseInt(req.body.contractId));
@@ -174,7 +194,7 @@ router.post('/saveContract', function(req, res) {
                 fromDate: req.body.fromDate,
                 tillDate: req.body.tillDate,
                 paymentFrequency: req.body.paymentFrequency,
-                payment: req.body.payment,
+                payment: req.body.payment,  
                 paymentDay: parseInt(req.body.paymentDay),
                 tenantId: tenantId
             })
@@ -188,6 +208,69 @@ router.post('/saveContract', function(req, res) {
         });   
     }         
 });
+
+router.post('/contract/:contractId/document', multipart, function(req, res){
+    var file = req.files.file;
+    var contractId = parseInt(req.params.contractId);
+    storeFile(file)
+    .then(addContractDocument(contractId, file))
+    .then(sendDocument(res));
+});
+
+router.delete('/contract/:contractId/document/:documentId', function(req, res){
+    var contractId = parseInt(req.params.contractId);
+    var documentId = req.params.documentId;
+    // FIXME remove file from DB
+    removeContractDocument(contractId, documentId)
+    .then(sendOk(res));
+});
+
+function removeContractDocument(contractId, documentId){
+    return contractsService.removeContractDocument(contractId, documentId);   
+}
+
+function removePropertyPhoto(propertId, photoId){
+    return propertiesService.removePropertyPhoto(propertId, photoId);   
+}
+
+function sendOk(res) {
+    return function() {
+        res.sendStatus(200);
+    }
+}
+
+function storeFile(file){
+    return filesService.storeFile({
+      filelocation : file.path,
+      filename : file.originalFilename,
+      contentType: file.type,
+      size: file.size
+    });    
+}
+
+function sendDocument(res) {
+    return function(document) {
+        res.send(document);
+    }
+}
+
+function sendPhoto(res) {
+    return function(photo) {
+        res.send(photo);
+    }
+}
+
+function addPropertyPhoto(propertId, file) {
+    return function(fileId) {
+        return propertiesService.addPropertyPhoto(propertId, fileId);     
+    };
+}
+
+function addContractDocument(contractId, file) {
+    return function(fileId) {
+        return contractsService.addContractDocument(contractId, fileId, file.originalFilename);     
+    };
+}
 
 function addTenant(req) {
     return db.tenants.addTenant({
