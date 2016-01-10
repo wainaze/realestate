@@ -162,9 +162,18 @@ router.post('/saveContract', function(req, res) {
     if (contractId) {
         db.contracts.getContractById(contractId)
         .then(function(contract){
-            return Promise.if(req.body.tenantName != null, function() {return contract.tenant ? updateTenant(req, contract.tenant) : addTenant(req)});
+            if (contract.tenant && !req.body.tenantName) {
+              // FIXME remove tenant
+              return null;
+            }  else if (contract.tenant && req.body.tenantName) {
+              return updateTenant(req, contract.tenant);
+            } else {
+              return addTenant(req);
+            }
         })       
         .then(function(tenantId){
+            console.log('tenantId');
+            console.log(tenantId);
             return db.contracts.updateContract({
                 id: contractId,
                 propertyId: parseInt(req.body.propertyId),

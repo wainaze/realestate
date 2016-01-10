@@ -43,6 +43,7 @@ exports.addProperty = function(property){
     return getMaxId()
     .then(function(maxId){
         property.id = maxId + 1;
+        property.photos = [];
         return records.insert(property);
     })
     .then(function(property){      

@@ -13,6 +13,7 @@ exports.addContract = function(contract) {
     return getMaxId()
     .then(function(maxId){
         contract.id = maxId + 1;
+        contract.documents = [];
         return records.insert(contract);
     })
     .then(function(contract){      
