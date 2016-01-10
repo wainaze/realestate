@@ -6,7 +6,7 @@ var port = process.env.OPENSHIFT_MONGODB_DB_PORT ? process.env.OPENSHIFT_MONGODB
 
 var connectionString = '';
 if (process.env.OPENSHIFT_MONGODB_DB_HOST) {
-	connectionString = 'mongodb://azurent:ZjdtsdfYsdof@' + host + ':' + port + '/web';		
+	connectionString = 'mongodb://admin:CEKcvaGRqGDG@' + host + ':' + port + '/web';		
 } else {
 	connectionString = host + ':' + port + '/web';	
 }
