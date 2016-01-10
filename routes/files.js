@@ -7,6 +7,10 @@ var multipart = require('connect-multiparty')();
 // middleware specific to this router
 router.use(ensureLogin.ensureLoggedIn('/'));
 
+router.get('/', function(req, res){
+  res.render('testForm', {});
+});
+
 router.post('/', multipart, function(req, res) {
     var file = req.files.file;
     filesService.storeFile({
