@@ -82,5 +82,9 @@
 	"Click here to add costs": "Click here to add costs",
 	"Comments": "Comments",
 	"Click here to add a comment": "Click here to add a comment",
-	"Drop files here or click to upload": "Drop files here or click to upload"
+	"Drop files here or click to upload": "Drop files here or click to upload",
+	"Add new property": "Add new property",
+	"Caption": "Caption",
+	"Address": "Address",
+	"Monthly payment": "Monthly payment"
 }

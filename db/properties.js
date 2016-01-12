@@ -82,5 +82,16 @@ function removePropertyPhoto(propertyId, photoId) {
     return Promise.resolve(records.update({id: propertyId}, {$pull: { photos: {id : photoId }}}));
 }
 
+function setOverdueStatus(propertyId, amount) {
+    return Promise.resolve(records.update({id: propertyId}, {$set: { payment : -amount }}));
+}
+function setPayedStatus(propertyId, amount) {
+    console.log('amount');
+    console.log(amount);
+    return Promise.resolve(records.update({id: propertyId}, {$set: { payment : amount }}));
+}
+
 exports.addPropertyPhoto = addPropertyPhoto;
 exports.removePropertyPhoto = removePropertyPhoto;
+exports.setOverdueStatus = setOverdueStatus;
+exports.setPayedStatus = setPayedStatus;

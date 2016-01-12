@@ -1,6 +1,7 @@
 var properties = require('./properties');
 var Promise = require('bluebird');
 var records = Promise.promisifyAll(require('./dbconnection.js').db.get('transactions'));
+var moment = require('moment');
 
 records.aggregate = function(aggregation){
     var collection = this.col;
@@ -53,22 +54,26 @@ function sortAndCleanTransactions(transactions) {
 
 }
 
-exports.getAllPayments = function(userId) {
+function getTransactionsFromDate(userId, searchDate) {
+  return records.find({userId : userId, timestamp: {$gte: searchDate}});
+}
+
+function getAllPayments(userId) {
     return records.find({userId : userId}).then(bindAllProperties).then(sortAndCleanTransactions);
 }
 
-exports.getTransaction = function(transactionId) {
+function getTransaction(transactionId) {
     return records.findOne({id: parseInt(transactionId)});
 }
 
-exports.addTransaction = function(userId, issuePropertyId, costAmount, costDescription) {
+function addTransaction(userId, issuePropertyId, costAmount, costDescription) {
     return getMaxId()
     .then(function(maxId){
         transaction = {
                 id: maxId + 1,
-                date: '17/10/2015',
-                timestamp: '20151017',
-                amount: -costAmount,
+                date: moment().format('DD/MM/YYYY'),
+                timestamp: moment().format('YYYYMMDDHHmmss'),
+                amount: costAmount,
                 userId: userId,
                 propertyId: issuePropertyId,
                 description: costDescription
@@ -98,3 +103,8 @@ function getMaxId() {
        ]
     ).get(0).get('maxId');
 }
+
+exports.getAllPayments = getAllPayments;
+exports.addTransaction = addTransaction;
+exports.getTransaction = getTransaction;
+exports.getTransactionsFromDate = getTransactionsFromDate;

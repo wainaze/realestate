@@ -1,113 +1,28 @@
 var express = require('express');
-var db = require('../db');
-var ensureLogin = require('connect-ensure-login');
-var userAccess = require('../services/userAccessService');
-var messagesService = require('../services/messagesService');
-var filesService = require('../services/filesService');
-var contractsService = require('../services/contractsService');
-var propertiesService = require('../services/propertiesService');
 var router = express.Router();
 var moment = require('moment');
 var Promise = require('bluebird');
 var multipart = require('connect-multiparty')();
+var ensureLogin = require('connect-ensure-login');
 
-// middleware specific to this router
+var db = require('../db');
+var messagesService = require('../services/messagesService');
+var filesService = require('../services/filesService');
+var contractsService = require('../services/contractsService');
+var propertiesService = require('../services/propertiesService');
+
+var paymentsController = require('../controllers/paymentsController');
+var problemsController = require('../controllers/problemsController');
+
 router.use(ensureLogin.ensureLoggedIn('/'));
-//router.use(userAccess.userHasRole('landlord'));
 
-router.post('/addCost', function(req, res) {
-    var userId = parseInt(req.user.id);
-    var issueId = parseInt(req.body.issueId);
-    var costDescription = req.body.costDescription;
-    var costAmount = req.body.costAmount;
-    db.issues.addCost(issueId, userId, costAmount, costDescription)
-    .then(function() {
-            res.send('ok');
-        }
-    )
-    .catch(function(err){
-            res.send('error');
-        }
-    );
-});
-
-router.post('/addComment', function(req, res) {
-    var userId = parseInt(req.user.id);
-    var issueId = parseInt(req.body.issueId);
-    var commentText = req.body.commentText;
-    if (!commentText || !commentText.length)
-        res.send('ok');
-
-    db.issues.addComment(userId, issueId, commentText)
-    .then(function(){
-        res.send('ok');
-    })
-    .catch(function(err){
-        res.send(err);
-    });
-});
-
-router.post('/addIssue', function(req, res){
-    var userId = parseInt(req.user.id);
-    var subject = req.body.issueSubject;
-    var description = req.body.issueDescription;
-    var propertyId = parseInt(req.body.issueProperty);
-    db.issues.addIssue(userId, subject, description, propertyId)
-    .then(function(issue){
-        res.send( issue.id.toString());
-    })
-    .catch(function(err){
-        res.send(err);
-    })
-});
-
-router.post('/solveIssue', function(req, res) {
-    var userId = parseInt(req.user.id);
-    var issueId = parseInt(req.body.issueId);
-    db.issues.updateIssueStatus(userId, issueId, 'solved')
-    .then(function(){
-        res.send('ok');
-    })
-    .catch(function(err){
-        res.send(err);
-    });
-});
-
-router.post('/holdIssue', function(req, res) {
-    var userId = parseInt(req.user.id);
-    var issueId = parseInt(req.body.issueId);
-    db.issues.updateIssueStatus(userId, issueId, 'on-hold')
-    .then(function(){
-        res.send('ok');
-    })
-    .catch(function(err){
-        res.send(err);
-    });
-});
-
-router.post('/rejectIssue', function(req, res) {
-    var userId = parseInt(req.user.id);
-    var issueId = parseInt(req.body.issueId);
-    db.issues.updateIssueStatus(userId, issueId, 'rejected')
-    .then(function(){
-        res.send('ok');
-    })
-    .catch(function(err){
-        res.send(err);
-    });
-});
-
-router.post('/reopenIssue', function(req, res) {
-    var userId = parseInt(req.user.id);
-    var issueId = parseInt(req.body.issueId);
-    db.issues.updateIssueStatus(userId, issueId, 'open')
-    .then(function(){
-        res.send('ok');
-    })
-    .catch(function(err){
-        res.send(err);
-    });
-});
+router.post('/addCost', problemsController.processAddCost);
+router.post('/addComment', problemsController.processAddComment);
+router.post('/addIssue', problemsController.processAddProblem);
+router.post('/solveIssue', problemsController.processIssueSolved);
+router.post('/holdIssue', problemsController.processIssueOnHold);
+router.post('/rejectIssue', problemsController.processIssueRejected);
+router.post('/reopenIssue',problemsController.processIssueReopend);
 
 router.post('/addProperty', function(req, res) {
     var userId = parseInt(req.user.id);
@@ -172,8 +87,6 @@ router.post('/saveContract', function(req, res) {
             }
         })       
         .then(function(tenantId){
-            console.log('tenantId');
-            console.log(tenantId);
             return db.contracts.updateContract({
                 id: contractId,
                 propertyId: parseInt(req.body.propertyId),
@@ -392,8 +305,6 @@ router.get('/propertyPayments', function(req, res){
         payments = payments.map(function(payment){
             return payment.payment;
         });
-        console.log('payments');
-        console.log(payments);
         res.send(payments);
     })
     .catch(function(err){
@@ -403,7 +314,8 @@ router.get('/propertyPayments', function(req, res){
 
 router.post('/paymentPayed', function(req, res){
     var paymentId = parseInt(req.body.id);
-    db.payments.markPaymentPayed(paymentId)
+    var propertyId = parseInt(req.body.propertyId);
+    contractsService.markPaymentPayed(propertyId, paymentId)
     .then(function(){
         res.send('ok');
     })

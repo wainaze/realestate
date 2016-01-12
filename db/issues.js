@@ -158,7 +158,7 @@ exports.addCost = function(issueId, userId, costAmount, costDescription) {
     return Promise.resolve(  
     records.findOne({id : issueId})
     .then(function(issue){
-        return transactions.addTransaction(parseInt(userId), issue.issuePropertyId, parseFloat(costAmount), costDescription)
+        return transactions.addTransaction(parseInt(userId), issue.issuePropertyId, -parseFloat(costAmount), costDescription)
     })
     .then(function(transactionId){
         return records.update(

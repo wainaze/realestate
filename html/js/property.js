@@ -50,7 +50,8 @@ function saveTenant(){
 function markPaymentPayed(event){
 	var button = $(event.target);
 	var paymentId = button.data('id');
-	$.post('/api/paymentPayed', {id : paymentId}).done(location.reload());
+	var propertyId = getParameterByName('id');
+	$.post('/api/paymentPayed', {id : paymentId, propertyId : propertyId}).done(location.reload());
 }
 
 function removePhoto(e) {

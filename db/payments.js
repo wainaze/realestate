@@ -15,6 +15,10 @@ exports.addPayment = function(payment) {
     });
 }
 
+function getAllPayments(propertyId) {
+  return records.find({ propertyId : propertyId});
+}
+
 exports.markPaymentPayed = function(paymentId) {
 	return Promise.resolve(records.update({ id : paymentId} , { $set : {payed : true, overdue: false, paymentDate : moment().format('YYYYMMDD') }}));
 }
@@ -119,3 +123,5 @@ function getMaxId() {
     	return result.maxId;
     });
 }
+
+exports.getAllPayments = getAllPayments;
