@@ -3,15 +3,15 @@ var router = express.Router();
 var Promise = require('bluebird');
 
 var ensureLogin = require('connect-ensure-login');
-var userAccess = require('../services/userAccessService');
 
-var db = require('../db');
+var db = azurent.db;
 
-var propertiesController = require('../controllers/propertiesController');
-var paymentsController = require('../controllers/paymentsController');
-var problemsController = require('../controllers/problemsController');
-var messagesController = require('../controllers/messagesController');
-var contractsController = require('../controllers/contractsController');
+var userAccess = azurent.services.userAccessService;
+var propertiesController = azurent.landlord.controllers.propertiesController;
+var paymentsController = azurent.landlord.controllers.paymentsController;
+var problemsController = azurent.landlord.controllers.problemsController;
+var messagesController = azurent.landlord.controllers.messagesController;
+var contractsController = azurent.landlord.controllers.contractsController;
 
 router.use(ensureLogin.ensureLoggedIn('/'));
 router.use(userAccess.userHasRole('landlord'));

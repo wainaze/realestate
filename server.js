@@ -117,8 +117,9 @@ var SampleApp = function() {
     self.initializeServer = function() {
         var server = self;
 
+        require('./azurent');
         self.app = app;
-    
+
         self.app.set('views', './views');
         self.app.set('view engine', 'jade');
 

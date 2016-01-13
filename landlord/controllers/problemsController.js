@@ -2,9 +2,7 @@
  * Created by Sergey on 12/01/2016.
  */
 var Promise = require('bluebird');
-var db = require('../db'); // FIXME controller should not talk to db directly
-
-var db = require('../db');
+var db = azurent.db; // FIXME controller should not talk to db directly
 
 function renderProblems(req, res) {
     var data = {status : {}}

@@ -1,7 +1,8 @@
 var express = require('express');
 var db = require('../db');
 var ensureLogin = require('connect-ensure-login');
-var userAccess = require('../services/userAccessService');
+
+var userAccess = azurent.services.userAccessService;
 var router = express.Router();
 
 // middleware specific to this router
