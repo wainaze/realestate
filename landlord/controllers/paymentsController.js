@@ -1,3 +1,4 @@
+var moment = require('moment');
 var db = azurent.db; // FIXME controller should not talk to db directly
 var contractsService = azurent.services.contractsService;
 
@@ -27,7 +28,7 @@ function renderPaymentStatus(req, res) {
 }
 
 function listPropertyPayments(req, res){
-    var propertyId = parseInt(req.query.id);
+    var propertyId = req.query.id;
     db.payments.getLastYearPayments(propertyId)
     .then(function(payments){
         payments = payments.map(function(payment){
@@ -41,9 +42,9 @@ function listPropertyPayments(req, res){
 }
 
 function processMarkPaymentPayed(req, res){
-    var paymentId = parseInt(req.body.id);
-    var propertyId = parseInt(req.body.propertyId);
-    contractsService.markPaymentPayed(propertyId, paymentId)
+    var paymentId = req.body.id;
+    var propertyId = req.body.propertyId;
+    contractsService.markPaymentPayed(propertyId, paymentId, moment())
     .then(function(){
         res.send('ok');
     })

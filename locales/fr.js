@@ -66,5 +66,13 @@
 	"Cost description": "Cost description",
 	"Click here to add new contract": "Click here to add new contract",
 	"Payment frequency": "Payment frequency",
-	"Email": "Email"
+	"Email": "Email",
+	"Drop files here or click to upload": "Drop files here or click to upload",
+	"Mark payed": "Mark payed",
+	"Contract reference": "Contract reference",
+	"Uw reference": "Uw reference",
+	"Montly": "Montly",
+	"Weekly": "Weekly",
+	"Daily": "Daily",
+	"Payment day": "Payment day"
 }

@@ -1,17 +1,19 @@
 var Promise = require('bluebird');
 var moment = require('moment');
 var records = Promise.promisifyAll(require('./dbconnection.js').db.get('payments'));
+var uuid = require('node-uuid');
+var eventBus = require('eventBus').eventBus;
+
+function getNewId() {
+    return uuid.v4();
+}
 
 exports.addPayment = function(payment) {
-    console.log("Add payment");
-    console.log(payment);
-    return getMaxId()
-    .then(function(maxId){
-        payment.id = maxId + 1;
-        return records.insert(payment);
-    })
-    .then(function(payment){      
-        return payment.id;
+    payment.id = getNewId();
+    return records.insert(payment)
+    .then(function(payment){
+        eventBus.emit('paymentAdded', payment);
+        return payment;
     });
 }
 
@@ -19,8 +21,8 @@ function getAllPayments(propertyId) {
   return records.find({ propertyId : propertyId});
 }
 
-exports.markPaymentPayed = function(paymentId) {
-	return Promise.resolve(records.update({ id : paymentId} , { $set : {payed : true, overdue: false, paymentDate : moment().format('YYYYMMDD') }}));
+exports.markPaymentPayed = function(paymentId, paymentMoment) {
+	return Promise.resolve(records.update({ id : paymentId} , { $set : {payed : true, overdue: false, paymentDate : paymentMoment.format('YYYYMMDD') }}));
 }
 
 exports.getPayment = function(contractId, dueDate){
@@ -29,8 +31,8 @@ exports.getPayment = function(contractId, dueDate){
 
 exports.getPayments = function(propertyId){
     return records.find({propertyId : propertyId})
-    		.then(convertDatesToPresent)
-    		.then(sortByDateDescending);
+        .then(sortByDateDescending)
+        .then(convertDatesToPresent);
 }
 
 exports.getLastYearPayments = function(propertyId) {

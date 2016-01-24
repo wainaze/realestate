@@ -4,6 +4,7 @@ var tenants = require('./tenants');
 var Promise = require('bluebird');
 var records = Promise.promisifyAll(require('./dbconnection').db.get('contracts'));
 var uuid = require('node-uuid');
+var eventBus = require('eventBus').eventBus;
 
 function getNewId() {
   return uuid.v4();
@@ -13,7 +14,11 @@ exports.saveContract = Promise.method(function(contract) {
     if (!contract.id) {
         contract.id = getNewId();
         contract.documents = [];
-        return records.insert(contract);
+        return records.insert(contract)
+            .then(function(contract){
+                eventBus.emit('contractAdded', contract);
+                return contract;
+            });
     } else {
         return records.update({ id: contract.id }, contract).then(function() { return contract; });
     }

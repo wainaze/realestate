@@ -2,6 +2,7 @@ var db = require('../db');
 var schedule = require('node-schedule');
 var Promise = require('bluebird');
 var moment = require('moment');
+var eventBus = require('eventBus').eventBus;
 
 function startPaymentsGeneration(){
     var job = schedule.scheduleJob('*/5 * * * * *', function(){
@@ -28,8 +29,8 @@ function addPayment(contract) {
 	});
 }
 
-function markPaymentPayed(propertyId, paymentId) {
-  return db.payments.markPaymentPayed(paymentId)
+function markPaymentPayed(propertyId, paymentId, paymentMoment) {
+  return db.payments.markPaymentPayed(paymentId, paymentMoment)
           .then(function(){
             console.log('marked payed');
             db.payments.getAllPayments(propertyId)
@@ -84,8 +85,43 @@ function filterExistingPayment(contract){
 		.then(function(payment){ return payment == null	});
 }
 
+function generatePaymentsBackInTime(contract) {
+    var paymentDate = contract.paymentDay;
+    var contractBegin = moment(contract.fromDate , "DD/MM/YYYY");
+    var currentMoment = contractBegin;
+    if (currentMoment.date() >= paymentDate) {
+        currentMoment.add(1, 'M');
+    }
+    currentMoment.add(-1, 'M');
+    var finalMoment = moment();
+    while (currentMoment.diff(finalMoment, 'M') < 0) {
+        currentMoment.add(1, 'M');
+        if (paymentDate > currentMoment.daysInMonth()){
+            currentMoment.date(currentMoment.daysInMonth());
+        } else {
+            currentMoment.date(paymentDate);
+        }
+
+        if (currentMoment.diff(finalMoment, 'd') < 0) {
+            var paymentMoment = currentMoment.format('YYYYMMDD');
+            db.payments.addPayment({
+                    contractId: contract.id,
+                    propertyId: contract.propertyId,
+                    month: currentMoment.format('MMMM'),
+                    dueDate: currentMoment.format('YYYYMMDD'),
+                    payment: contract.payment
+                })
+                .then(function (payment) {
+                    return markPaymentPayed(contract.propertyId, payment.id, moment(payment.dueDate, 'YYYYMMDD'));
+                });
+        }
+    }
+}
+
 exports.startPaymentsControle = startPaymentsControle;
 exports.startPaymentsGeneration = startPaymentsGeneration;
 exports.addContractDocument = addContractDocument;
 exports.removeContractDocument = removeContractDocument;
 exports.markPaymentPayed = markPaymentPayed;
+
+eventBus.on('contractAdded', generatePaymentsBackInTime);
