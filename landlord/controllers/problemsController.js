@@ -44,7 +44,7 @@ function renderProblem(req, res) {
 
 function renderAddProblem(req, res) {
     var data = {status : {}};
-    var propertyId = parseInt(req.query.propertyId);
+    var propertyId = req.query.propertyId;
     db.properties.getPropertyById(propertyId)
     .then(function(property){
         data.property = property;
@@ -56,7 +56,7 @@ function renderAddProblem(req, res) {
 }
 
 function processAddCost(req, res) {
-    var userId = parseInt(req.user.id);
+    var userId = req.user.id;
     var issueId = parseInt(req.body.issueId);
     var costDescription = req.body.costDescription;
     var costAmount = req.body.costAmount;
@@ -72,7 +72,7 @@ function processAddCost(req, res) {
 }
 
 function processAddComment(req, res) {
-    var userId = parseInt(req.user.id);
+    var userId = req.user.id;
     var issueId = parseInt(req.body.issueId);
     var commentText = req.body.commentText;
     if (!commentText || !commentText.length)
@@ -88,10 +88,10 @@ function processAddComment(req, res) {
 }
 
 function processAddProblem(req, res){
-    var userId = parseInt(req.user.id);
+    var userId = req.user.id;
     var subject = req.body.issueSubject;
     var description = req.body.issueDescription;
-    var propertyId = parseInt(req.body.issueProperty);
+    var propertyId = req.body.issueProperty;
     db.issues.addIssue(userId, subject, description, propertyId)
         .then(function(issue){
             res.send( issue.id.toString());
@@ -102,7 +102,7 @@ function processAddProblem(req, res){
 }
 
 function processIssueSolved(req, res) {
-    var userId = parseInt(req.user.id);
+    var userId = req.user.id;
     var issueId = parseInt(req.body.issueId);
     db.issues.updateIssueStatus(userId, issueId, 'solved')
         .then(function(){
@@ -114,7 +114,7 @@ function processIssueSolved(req, res) {
 }
 
 function processIssueOnHold(req, res) {
-    var userId = parseInt(req.user.id);
+    var userId = req.user.id;
     var issueId = parseInt(req.body.issueId);
     db.issues.updateIssueStatus(userId, issueId, 'on-hold')
         .then(function(){
@@ -126,7 +126,7 @@ function processIssueOnHold(req, res) {
 }
 
 function processIssueRejected(req, res) {
-    var userId = parseInt(req.user.id);
+    var userId = req.user.id;
     var issueId = parseInt(req.body.issueId);
     db.issues.updateIssueStatus(userId, issueId, 'rejected')
         .then(function(){
@@ -138,7 +138,7 @@ function processIssueRejected(req, res) {
 }
 
 function processIssueReopend(req, res) {
-    var userId = parseInt(req.user.id);
+    var userId = req.user.id;
     var issueId = parseInt(req.body.issueId);
     db.issues.updateIssueStatus(userId, issueId, 'open')
         .then(function(){

@@ -110,11 +110,11 @@ exports.getNewIssuesForPropertiesCount = function(propertyIds) {
 }
 
 exports.getOpenIssuesForProperty = function(propertyId) {
-    return getAllUnsolvedIssuesForPropertiesIds([parseInt(propertyId)]).then(sortIssues);
+    return getAllUnsolvedIssuesForPropertiesIds([propertyId]).then(sortIssues);
 }
 
 exports.getSolvedIssuesForProperty = function(propertyId) {
-    return getAllSolvedIssuesForPropertiesIds([parseInt(propertyId)]).then(sortIssues);
+    return getAllSolvedIssuesForPropertiesIds([propertyId]).then(sortIssues);
 }
 
 exports.getOpenIssuesForPropertiesCount = function(propertyIds) {
@@ -158,7 +158,7 @@ exports.addCost = function(issueId, userId, costAmount, costDescription) {
     return Promise.resolve(  
     records.findOne({id : issueId})
     .then(function(issue){
-        return transactions.addTransaction(parseInt(userId), issue.issuePropertyId, -parseFloat(costAmount), costDescription)
+        return transactions.addTransaction(userId, issue.issuePropertyId, -parseFloat(costAmount), costDescription)
     })
     .then(function(transactionId){
         return records.update(

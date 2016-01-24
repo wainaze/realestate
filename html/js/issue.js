@@ -115,5 +115,5 @@ $('#addIssueButton').on('click', function() {
 });
 
 $('#cancelAddIssueButton').on('click', function() {
-    window.location = '/home.html';
+    location.href = document.referrer + '#issues';
 });

@@ -26,18 +26,18 @@ exports.getContractById = function(contractId) {
                 .then(bindProperty)
                 .then(bindTenanant)
             );  
-}
+};
 
 exports.getContracts = function(propertyId) {
     return getContractsForPropertiesIds([propertyId]);  
-}
+};
 
 exports.getAllContracts = function(userId) {
     return properties.getAllPropertiesIds(userId)
             .then(getContractsForPropertiesIds)
             .then(bindProperties)
             .then(bindTenanants);
-}
+};
 
 exports.getContractsToPay = function(){
     return records.find({
@@ -46,7 +46,7 @@ exports.getContractsToPay = function(){
             $lte: moment().date() + 2
         }
     });
-}
+};
 
 function addContractDocument(contractId, fileId, contractDocumentTitle){
     var contractDocument = {
