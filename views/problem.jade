@@ -6,6 +6,9 @@ block content
   .content
     #problemCaption.row
       span= issue.issueCaption
+    div
+      span
+        a(href= 'property.html?id=#{issue.property.id}#issues') #{__('Other issues from ') + issue.property.name}
     #problemMenu.row
       +issueActionButton(issue)
     #problemDescription.row

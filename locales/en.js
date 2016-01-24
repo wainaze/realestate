@@ -89,5 +89,6 @@
 	"Monthly payment": "Monthly payment",
 	"Manage properties": "Manage properties",
 	"Property caption": "Property caption",
-	"Property address": "Property address"
+	"Property address": "Property address",
+	"Other issues from ": "Other issues from "
 }
