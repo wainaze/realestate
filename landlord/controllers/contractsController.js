@@ -21,7 +21,8 @@ function renderContractsList(req, res) {
 
 function renderAddContract(req, res){
     var data = {status : {}, contract : {}};
-    db.properties.getPropertyById(req.query.propertyId)
+    var propertyId = req.query.propertyId.length < 5 ? parseInt(req.query.propertyId) : req.query.propertyId;
+    db.properties.getPropertyById(propertyId)
     .then(function (property){
         data.user = req.user;
         data.status.totalNewIssues = req.data.status.newIssuesCount;
@@ -63,8 +64,8 @@ function renderTenantsList(req, res) {
 }
 
 function processSaveContract(req, res) {
-    var userId = parseInt(req.user.id);
     var contractId = (req.body.contractId == '' ? null : parseInt(req.body.contractId));
+    var propertyId = req.body.propertyId.length < 5 ? parseInt(req.body.propertyId) : req.body.propertyId;
 
     if (contractId) {
         db.contracts.getContractById(contractId)
@@ -81,7 +82,7 @@ function processSaveContract(req, res) {
         .then(function(tenantId){
             return db.contracts.updateContract({
                 id: contractId,
-                propertyId: parseInt(req.body.propertyId),
+                propertyId: propertyId,
                 contractCaption: req.body.contractCaption,
                 fromDate: req.body.fromDate,
                 tillDate: req.body.tillDate,
@@ -99,11 +100,10 @@ function processSaveContract(req, res) {
             res.send(err);
         });
     } else {
-        var propertyId = parseInt(req.body.propertyId);
         Promise.if(req.body.tenantName != null, addTenant(req))
         .then(function(tenantId){
             return db.contracts.addContract({
-                propertyId: parseInt(req.body.propertyId),
+                propertyId: propertyId,
                 contractCaption: req.body.contractCaption,
                 fromDate: req.body.fromDate,
                 tillDate: req.body.tillDate,

@@ -73,7 +73,7 @@ block content
                       td= contract.paymentFrequency
                       td= contract.payment
               #issues.tab-pane(role='tabpanel')
-                .addIssueButton
+                .addIssueButton(data-propertyid= property.id)
                   div 
                     span #{__('Click here to add new issue')}
                 table.table

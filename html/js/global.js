@@ -11,8 +11,12 @@ function getParameterByName(name) {
     return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
 }
 
-function addIssue() {
-	location.href = 'addIssue.html';
+function addIssue(e) {
+	var propertyId = $(e.target).parent().data('propertyid');
+	if(propertyId)
+		location.href = 'addIssue.html?propertyId=' + propertyId;
+	else
+		location.href = 'addIssue.html';
 }
 
 function addContract() {
@@ -30,6 +34,6 @@ function toggleCollapsibleContents(event) {
 	glyph.toggleClass('open');
 }
 
-$(document).on('click',' .addIssueButton', addIssue);
+$(document).on('click','.addIssueButton', addIssue);
 $(document).on('click', '#addContract', addContract);
 $(document).on('click', '.glyphicon-collapsible', toggleCollapsibleContents)

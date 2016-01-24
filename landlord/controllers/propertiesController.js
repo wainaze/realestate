@@ -27,7 +27,7 @@ function renderPropertiesList(req, res) {
         financeService.getCostsOfTheYear(req.user.id),
         function(properties, openIssuesCount, totalIncome, totalCosts){
             fixPayments(properties);
-
+            fixPictures(properties);
             data.user = req.user;
             data.status.totalIssues = openIssuesCount;
             data.status.totalNewIssues = req.data.status.newIssuesCount;
@@ -43,6 +43,16 @@ function renderPropertiesList(req, res) {
 
 function fixPayments(properties) {
     properties.forEach(function(property){ if (!property.payment) property.payment = 0});
+}
+
+function fixPictures(properties) {
+    properties.forEach(function(property) {
+       if (property.photos && property.photos.length) {
+           property.img = '/files/' + property.photos[0].fileId;
+       } else {
+           property.img = '/img/house1.jpg';
+       }
+    });
 }
 
 function renderProperty(req, res) {

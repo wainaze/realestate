@@ -44,10 +44,15 @@ function renderProblem(req, res) {
 
 function renderAddProblem(req, res) {
     var data = {status : {}};
-    data.user = req.user;
-    data.status.totalNewIssues = req.data.status.newIssuesCount;
-    data.status.unreadMessagesCount = req.data.status.unreadMessagesCount;
-    res.render('addIssue',data);
+    var propertyId = parseInt(req.query.propertyId);
+    db.properties.getPropertyById(propertyId)
+    .then(function(property){
+        data.property = property;
+        data.user = req.user;
+        data.status.totalNewIssues = req.data.status.newIssuesCount;
+        data.status.unreadMessagesCount = req.data.status.unreadMessagesCount;
+        res.render('addIssue',data);
+    });
 }
 
 function processAddCost(req, res) {
