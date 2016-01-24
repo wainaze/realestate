@@ -10,7 +10,7 @@ $(document).on('click', '.viewProperty', function(){
 $(document).on('click', '.removeProperty', function(){
     var propertyId = $(this).data('propertyid');
     $.post('/api/removeProperty', {
-        propertyId: propertyId
+        id: propertyId
     }).done(function(){
         window.location.reload();
     });

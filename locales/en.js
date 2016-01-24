@@ -86,5 +86,8 @@
 	"Add new property": "Add new property",
 	"Caption": "Caption",
 	"Address": "Address",
-	"Monthly payment": "Monthly payment"
+	"Monthly payment": "Monthly payment",
+	"Manage properties": "Manage properties",
+	"Property caption": "Property caption",
+	"Property address": "Property address"
 }

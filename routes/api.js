@@ -21,8 +21,8 @@ router.post('/reopenIssue',problemsController.processIssueReopend);
 
 router.post('/addProperty', propertiesController.processAddProperty);
 router.post('/removeProperty', propertiesController.processRemoveProperty);
-router.post('/property/:propertId/photo', multipart, propertiesController.processAddPhoto);
-router.delete('/property/:propertId/photo/:photoId', propertiesController.processRemovePhoto);
+router.post('/property/:propertyId/photo', multipart, propertiesController.processAddPhoto);
+router.delete('/property/:propertyId/photo/:photoId', propertiesController.processRemovePhoto);
 
 router.post('/saveContract', contractsController.processSaveContract);
 router.post('/contract/:contractId/document', multipart, contractsController.processAddDocument);

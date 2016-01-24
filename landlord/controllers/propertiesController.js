@@ -26,6 +26,8 @@ function renderPropertiesList(req, res) {
         financeService.getIncomeOfTheYear(req.user.id),
         financeService.getCostsOfTheYear(req.user.id),
         function(properties, openIssuesCount, totalIncome, totalCosts){
+            fixPayments(properties);
+
             data.user = req.user;
             data.status.totalIssues = openIssuesCount;
             data.status.totalNewIssues = req.data.status.newIssuesCount;
@@ -37,12 +39,16 @@ function renderPropertiesList(req, res) {
             res.render('properties', data);
         }
     );
-};
+}
+
+function fixPayments(properties) {
+    properties.forEach(function(property){ if (!property.payment) property.payment = 0});
+}
 
 function renderProperty(req, res) {
     var data = {status : {}};
     var userId = parseInt(req.user.id);
-    var propertyId = parseInt(req.query.id);
+    var propertyId =  req.query.id.length < 5 ? parseInt(req.query.id) : req.query.id;
     Promise.join(
         db.properties.getProperty(userId, propertyId),
         db.payments.getPayments(propertyId),
@@ -74,8 +80,8 @@ function renderAddProperty(req, res) {
 function listProperties(req, res) {
     var term = req.query.term;
     db.properties.getAllProperties(req.user.id)
-        .then(function(properties){
-            var properties = properties.map(function(property) { return {value: property.id, label: property.name}});
+        .then(function(foundProperties){
+            var properties = foundProperties.map(function(property) { return {value: property.id, label: property.name}});
             if (term) {
                 properties = textUtils.fullTextSearch(properties, term);
             }
@@ -100,41 +106,43 @@ function processAddProperty(req, res) {
         name: req.body.name,
         address: req.body.address,
         img: '/img/house1.jpg',
-        issuesTotal: 0
-    }
+        issuesTotal: 0,
+        payment: 0
+    };
     db.properties.addProperty(newProperty)
         .then(function(){
             res.send('ok');
         })
-        .catch(function(err){
+        .error(function(err){
             res.send(err);
         });
 }
 
 function processRemoveProperty(req, res) {
-    var propertyId = parseInt(req.body.propertyId);
+    var propertyId =  req.body.id.length < 5 ? parseInt(req.body.id) : req.body.id;
+    // FIXME should remove all of the related data
     db.properties.removeProperty(propertyId)
-        .then(function(){
-            res.send('ok');
-        })
-        .catch(function(err){
-            res.send(err);
-        });
+    .then(function(){
+        res.send('ok');
+    })
+    .error(function(err){
+        res.send(err);
+    });
 }
 
 function processAddPhoto(req, res) {
     var file = req.files.file;
-    var propertId = parseInt(req.params.propertId);
+    var propertyId =  req.params.propertyId.length < 5 ? parseInt(req.params.propertyId) : req.params.propertyId;
     storeFile(file)
-        .then(addPropertyPhoto(propertId))
+        .then(addPropertyPhoto(propertyId))
         .then(sendPhoto(res));
 }
 
 function processRemovePhoto(req, res) {
-    var propertId = parseInt(req.params.propertId);
+    var propertyId =  req.params.propertyId.length < 5 ? parseInt(req.params.propertyId) : req.params.propertyId;
     var photoId = req.params.photoId;
     // FIXME remove file from DB
-    removePropertyPhoto(propertId, photoId)
+    removePropertyPhoto(propertyId, photoId)
         .then(sendOk(res));
 }
 
@@ -153,14 +161,14 @@ function sendPhoto(res) {
     }
 }
 
-function addPropertyPhoto(propertId) {
+function addPropertyPhoto(propertyId) {
     return function(fileId) {
-        return propertiesService.addPropertyPhoto(propertId, fileId);
+        return propertiesService.addPropertyPhoto(propertyId, fileId);
     };
 }
 
-function removePropertyPhoto(propertId, photoId){
-    return propertiesService.removePropertyPhoto(propertId, photoId);
+function removePropertyPhoto(propertyId, photoId){
+    return propertiesService.removePropertyPhoto(propertyId, photoId);
 }
 
 function sendOk(res) {

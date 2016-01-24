@@ -3,6 +3,7 @@
  */
 var db = azurent.db; // FIXME controller should not talk to db directly
 var textUtils = azurent.common.textUtils;
+var moment = require('moment');
 
 function renderMessages(req, res) {
     var data = {status : {}};

@@ -1,6 +1,5 @@
 var Promise = require('bluebird');
 var records = Promise.promisifyAll(require('./dbconnection.js').db.get('properties'));
-var commonExceptions = require('../common/commonExceptions');
 var uuid = require('node-uuid');
 
 function getNewId() {
@@ -19,12 +18,11 @@ records.aggregate = function(aggregation){
 }
 
 exports.getProperty = function(userId, propertyId) {
-    //throw new AccessNotAllowed();
-    return records.findOne({id : parseInt(propertyId), userId : parseInt(userId)});
+    return records.findOne({id : propertyId, userId : userId});
 }
 
 exports.getPropertyById = function(propertyId) {
-    return records.findOne({id : parseInt(propertyId)});
+    return records.findOne({id : propertyId});
 }
 
 exports.getAllProperties = function(userId){
@@ -32,7 +30,7 @@ exports.getAllProperties = function(userId){
 };
 
 exports.getAllPropertiesIds = function(userId){
-    return records.find({userId : parseInt(userId)}, { id : 1 }).then(function(ids){
+    return records.find({userId : userId}, { id : 1 }).then(function(ids){
         return ids.map(function(id){
             return id.id;
         })
@@ -40,34 +38,17 @@ exports.getAllPropertiesIds = function(userId){
 };
 
 exports.addProperty = function(property){
-    return getMaxId()
-    .then(function(maxId){
-        property.id = maxId + 1;
-        property.photos = [];
-        return records.insert(property);
-    })
-    .then(function(property){      
-        return property.id;
-    });
+    property.id = getNewId();
+    property.photos = [];
+    return records.insert(property)
+        .then(function(property){
+            return property.id;
+        });
 };
 
 exports.removeProperty = function(propertyId) {
     return Promise.resolve(records.remove( { id: propertyId } ));
 }
-
-function getMaxId() {
-    return records.aggregate(
-       [
-          {
-            $group : {
-               _id : null,
-               maxId: { $max: "$id" }
-            }
-          }
-       ]
-    ).get(0).get('maxId');
-}
-
 
 function addPropertyPhoto(propertyId, fileId){
   var propertyPhoto = {
