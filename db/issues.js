@@ -58,6 +58,8 @@ function getAllSolvedIssuesForPropertiesIds(propertyIds) {
 }
 
 function getAllUnsolvedIssuesForPropertiesIds(propertyIds) {
+    console.log('Getting unsolved issues');
+    console.log(propertyIds);
     return records.find({issuePropertyId : { $in : propertyIds}, status : { $in: ['new', 'open'] } }).then(sortIssues);    
 }
 

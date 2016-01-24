@@ -115,17 +115,16 @@ function processAddProperty(req, res) {
         userId: userId,
         name: req.body.name,
         address: req.body.address,
-        img: '/img/house1.jpg',
         issuesTotal: 0,
         payment: 0
     };
     db.properties.addProperty(newProperty)
-        .then(function(){
-            res.send('ok');
-        })
-        .error(function(err){
-            res.send(err);
-        });
+    .then(function(){
+        res.send('ok');
+    })
+    .catch(function(err){
+        res.send(err);
+    });
 }
 
 function processRemoveProperty(req, res) {
