@@ -12,7 +12,7 @@ function getIncomeOfTheYear(userId) {
                         .map(function(transaction) { return transaction.amount; })
                         .reduce(function(prev, curr) {
                             return  prev + curr;
-                        });
+                        }, 0);
             });
 }
 
@@ -26,7 +26,7 @@ function getCostsOfTheYear(userId) {
               .map(function(transaction) { return transaction.amount; })
               .reduce(function(prev, curr) {
                   return  prev + curr;
-              });
+              }, 0);
       });
 }
 

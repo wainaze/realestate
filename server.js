@@ -186,7 +186,7 @@ var SampleApp = function() {
 // NOTE: event name is camelCase as per node convention
 process.on("unhandledRejection", function(reason, promise) {
     console.log('Unhandled rejection');
-    console.log(reason);
+    console.log(reason.stack);
     console.log(promise);
 });
 
