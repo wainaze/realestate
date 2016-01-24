@@ -2,6 +2,11 @@ var moment = require('moment');
 var properties = require('./properties');
 var Promise = require('bluebird');
 var records = Promise.promisifyAll(require('./dbconnection').db.get('tenants'));
+var uuid = require('node-uuid');
+
+function getNewId() {
+    return uuid.v4();
+}
 
 exports.getTenants = function(propertyId) {
     return records.find({propertyId: parseInt(propertyId)})
@@ -9,15 +14,14 @@ exports.getTenants = function(propertyId) {
     .then(updateTenantsAge);
 }
 
-exports.addTenant = function(tenant) {
-    return getMaxId()
-    .then(function(maxId){
-        tenant.id = maxId + 1;
-        return records.insert(tenant);
-    })
-    .then(function(tenant){      
-        return tenant.id;
-    });
+exports.saveTenant = function(tenant) {
+    if (!tenant.id) {
+        tenant.id = getNewId();
+        tenant.documents = [];
+        return Promise.resolve(records.insert(tenant));
+    } else {
+        return Promise.resolve(records.update({ id: tenant.id }, tenant));
+    }
 }
 
 exports.updateTenant = function(tenant) {

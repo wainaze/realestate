@@ -1,8 +1,8 @@
 /**
  * Created by Sergey on 12/01/2016.
  */
+var moment = require('moment');
 var db = azurent.db; // FIXME controller should not talk to db directly
-var textUtils = azurent.common.textUtils;
 var filesService = azurent.services.filesService;
 var contractsService = azurent.services.contractsService;
 
@@ -21,7 +21,7 @@ function renderContractsList(req, res) {
 
 function renderAddContract(req, res){
     var data = {status : {}, contract : {}};
-    var propertyId = req.query.propertyId.length < 5 ? parseInt(req.query.propertyId) : req.query.propertyId;
+    var propertyId = req.query.propertyId;
     db.properties.getPropertyById(propertyId)
     .then(function (property){
         data.user = req.user;
@@ -39,7 +39,7 @@ function renderAddContract(req, res){
 
 function renderEditContract(req, res){
     var data = {status : {}};
-    db.contracts.getContractById(parseInt(req.query.id))
+    db.contracts.getContractById(req.query.id)
     .then(function (contract){
         data.user = req.user;
         data.status.totalNewIssues = req.data.status.newIssuesCount;
@@ -53,8 +53,9 @@ function renderEditContract(req, res){
 
 function renderTenantsList(req, res) {
     var data = {status : {}};
-    db.tenants.getAllTenants(req.user.id)
-    .then(function(tenants){
+    db.contracts.getAllContracts(req.user.id)
+    .then(function(contracts){
+        var tenants = mapTenantsFromContracts(contracts);
         data.user = req.user;
         data.status.totalNewIssues = req.data.status.newIssuesCount;
         data.status.unreadMessagesCount = req.data.status.unreadMessagesCount;
@@ -63,64 +64,57 @@ function renderTenantsList(req, res) {
     });
 }
 
-function processSaveContract(req, res) {
-    var contractId = (req.body.contractId == '' ? null : parseInt(req.body.contractId));
-    var propertyId = req.body.propertyId.length < 5 ? parseInt(req.body.propertyId) : req.body.propertyId;
+function mapTenantsFromContracts(contracts) {
+    var tenants = [];
+    contracts.forEach(function(contract){
+        if (contract.tenant){
+            var tenant = contract.tenant;
+            tenant.property = contract.property;
+            tenants.push(tenant);
+        }
+    });
+    return tenants;
+}
 
-    if (contractId) {
-        db.contracts.getContractById(contractId)
-        .then(function(contract){
-            if (contract.tenant && !req.body.tenantName) {
-                // FIXME remove tenant
-                return null;
-            }  else if (contract.tenant && req.body.tenantName) {
-                return updateTenant(req, contract.tenant);
-            } else {
-                return addTenant(req);
-            }
-        })
-        .then(function(tenantId){
-            return db.contracts.updateContract({
-                id: contractId,
-                propertyId: propertyId,
-                contractCaption: req.body.contractCaption,
-                fromDate: req.body.fromDate,
-                tillDate: req.body.tillDate,
-                paymentFrequency: req.body.paymentFrequency,
-                payment: req.body.payment,
-                paymentDay: parseInt(req.body.paymentDay),
-                tenantId: tenantId
+function processSaveContract(req, res) {
+    var contractId = req.body.contractId;
+    var propertyId = req.body.propertyId;
+
+    db.contracts.saveContract({
+        id: contractId,
+        propertyId: propertyId,
+        contractCaption: req.body.contractCaption,
+        fromDate: req.body.fromDate,
+        tillDate: req.body.tillDate,
+        paymentFrequency: req.body.paymentFrequency,
+        payment: req.body.payment,
+        paymentDay: parseInt(req.body.paymentDay)
+    })
+    .then(function(contract){
+        if (req.body.tenantName) {
+            return db.tenants.saveTenant({
+                id: contract.tenantId,
+                landlordId: req.user.id,
+                tenantName: req.body.tenantName,
+                birthDate: req.body.birthDate,
+                phonenumber: req.body.phonenumber,
+                email: req.body.email,
             })
-        })
-        .then(function(){
-            res.send('ok');
-        })
-        .catch(function(err){
-            console.log(err);
-            res.send(err);
-        });
-    } else {
-        Promise.if(req.body.tenantName != null, addTenant(req))
-        .then(function(tenantId){
-            return db.contracts.addContract({
-                propertyId: propertyId,
-                contractCaption: req.body.contractCaption,
-                fromDate: req.body.fromDate,
-                tillDate: req.body.tillDate,
-                paymentFrequency: req.body.paymentFrequency,
-                payment: req.body.payment,
-                paymentDay: parseInt(req.body.paymentDay),
-                tenantId: tenantId
-            })
-        })
-        .then(function(){
-            res.send('ok');
-        })
-        .catch(function(err){
-            console.log(err);
-            res.send(err);
-        });
-    }
+            .then(function(tenant){
+                return db.contracts.setTenant(contract.id, tenant.id);
+            });
+        } else {
+            return db.contracts.setTenant(contract.id, null);
+        }
+    })
+    .catch(function(err){
+        console.log(err);
+        res.send(err);
+    })
+    .then(function(){
+        res.send('ok');
+        console.log('ok');
+    })
 }
 
 function storeFile(file){
@@ -134,7 +128,7 @@ function storeFile(file){
 
 function processAddDocument(req, res){
     var file = req.files.file;
-    var contractId = parseInt(req.params.contractId);
+    var contractId = req.params.contractId;
     storeFile(file)
     .then(addContractDocument(contractId, file))
     .then(sendDocument(res));
@@ -152,27 +146,6 @@ function addContractDocument(contractId, file) {
     };
 }
 
-function addTenant(req) {
-    return db.tenants.addTenant({
-        landlordId: req.user.id,
-        tenantName: req.body.tenantName,
-        birthDate: req.body.birthDate,
-        phonenumber: req.body.phonenumber,
-        email: req.body.email,
-    });
-}
-
-function updateTenant(req, tenant) {
-    return db.tenants.updateTenant({
-        id: tenant.id,
-        landlordId: req.user.id,
-        tenantName: req.body.tenantName,
-        birthDate: req.body.birthDate,
-        phonenumber: req.body.phonenumber,
-        email: req.body.email,
-    });
-}
-
 function removeContractDocument(contractId, documentId){
     return contractsService.removeContractDocument(contractId, documentId);
 }
@@ -184,7 +157,7 @@ function sendOk(res) {
 }
 
 function processRemoveDocument(req, res){
-    var contractId = parseInt(req.params.contractId);
+    var contractId = req.params.contractId;
     var documentId = req.params.documentId;
     // FIXME remove file from DB
     removeContractDocument(contractId, documentId)
@@ -192,8 +165,7 @@ function processRemoveDocument(req, res){
 }
 
 function processSaveTenant(req, res) {
-    var userId = parseInt(req.user.id);
-    var propertyId = parseInt(req.body.propertyId);
+    var propertyId = req.body.propertyId;
     db.tenants.addTenant({
         propertyId: propertyId,
         name: req.body.tenantName,

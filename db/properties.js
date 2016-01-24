@@ -6,17 +6,6 @@ function getNewId() {
   return uuid.v4();
 }
 
-records.aggregate = function(aggregation){
-    var collection = this.col;
-    var options = {};
-    return new Promise(function(resolve) {
-        collection.aggregate(aggregation, options, function(err, data){
-            if (err) throw err;             
-            resolve(data);
-        });
-    });
-}
-
 exports.getProperty = function(userId, propertyId) {
     return records.findOne({id : propertyId, userId : userId});
 }
@@ -51,7 +40,7 @@ exports.removeProperty = function(propertyId) {
 }
 
 function addPropertyPhoto(propertyId, fileId){
-  var propertyPhoto = {
+    var propertyPhoto = {
         id : getNewId(),
         fileId : fileId,
         propertyId : propertyId
@@ -67,8 +56,6 @@ function setOverdueStatus(propertyId, amount) {
     return Promise.resolve(records.update({id: propertyId}, {$set: { payment : -amount }}));
 }
 function setPayedStatus(propertyId, amount) {
-    console.log('amount');
-    console.log(amount);
     return Promise.resolve(records.update({id: propertyId}, {$set: { payment : amount }}));
 }
 

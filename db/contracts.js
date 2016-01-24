@@ -9,21 +9,15 @@ function getNewId() {
   return uuid.v4();
 }
 
-exports.addContract = function(contract) {
-    return getMaxId()
-    .then(function(maxId){
-        contract.id = maxId + 1;
+exports.saveContract = Promise.method(function(contract) {
+    if (!contract.id) {
+        contract.id = getNewId();
         contract.documents = [];
         return records.insert(contract);
-    })
-    .then(function(contract){      
-        return contract.id;
-    });
-}
-
-exports.updateContract = function(contract) {
-    return records.update({ id: contract.id }, contract);
-}
+    } else {
+        return records.update({ id: contract.id }, contract).then(function() { return contract; });
+    }
+});
 
 exports.getContractById = function(contractId) {
     return Promise.resolve(
@@ -68,11 +62,15 @@ function removeContractDocument(contractId, documentId) {
     return Promise.resolve(records.update({id: contractId}, {$pull: { documents: {id : documentId }}}));
 }
 
+function setTenant(contractId, tenantId){
+    return Promise.resolve(records.update({id: contractId}, {$set: { tenantId: tenantId }}));
+}
+
 exports.addContractDocument = addContractDocument;
 exports.removeContractDocument = removeContractDocument;
+exports.setTenant = setTenant;
 
 /* Internal functions */
-
 
 function getContractsForPropertiesIds(propertiesIds) {
     return records.find({propertyId : { $in : propertiesIds}});  
@@ -102,33 +100,4 @@ function bindTenanant(contract){
 
 function bindTenanants(contracts){
     return Promise.all(contracts.map(bindTenanant));
-}
-
-records.aggregate = function(aggregation){
-    var collection = this.col;
-    var options = {};
-    return new Promise(function(resolve) {
-        collection.aggregate(aggregation, options, function(err, data){
-            if (err) throw err;             
-            resolve(data);
-        });
-    });
-}
-
-
-function getMaxId() {
-    return records.aggregate(
-       [
-          {
-            $group : {
-               _id : null,
-               maxId: { $max: "$id" }
-            }
-          }
-       ]
-    ).get(0).then(function(result){
-        if (!result)
-            return 0;
-        return result.maxId;
-    });
 }

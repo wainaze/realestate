@@ -5,14 +5,15 @@ block content
     .tenants
       table.table
         tr
-          th #{__('Tenants_Name')}
+          th
           th #{__('Property')}
+          th #{__('Tenants_Name')}
         for tenant in tenants
           tr.tenant
             td
               span.glyphicon.glyphicon-chevron-right
-            td= tenant.name
-            td= tenant.property.name
+            td.nowrap= tenant.property.name
+            td.fullWidth= tenant.tenantName
           tr.detailsRow
             td(colspan='999')
               .details
@@ -27,7 +28,10 @@ block content
                         .fieldValue= tenant.age
                       .field
                         .fieldName #{__('Phone')}:
-                        .fieldValue= tenant.phone
+                        .fieldValue= tenant.phonenumber
+                      .field
+                        .fieldName #{__('Email')}:
+                        .fieldValue= tenant.email
 block scripts
   script(type='text/javascript', src='/js/tenants.js')
     

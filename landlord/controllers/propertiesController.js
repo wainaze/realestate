@@ -58,7 +58,7 @@ function fixPictures(properties) {
 function renderProperty(req, res) {
     var data = {status : {}};
     var userId = parseInt(req.user.id);
-    var propertyId =  req.query.id.length < 5 ? parseInt(req.query.id) : req.query.id;
+    var propertyId =  req.query.id;
     Promise.join(
         db.properties.getProperty(userId, propertyId),
         db.payments.getPayments(propertyId),
@@ -129,7 +129,7 @@ function processAddProperty(req, res) {
 }
 
 function processRemoveProperty(req, res) {
-    var propertyId =  req.body.id.length < 5 ? parseInt(req.body.id) : req.body.id;
+    var propertyId =  req.body.id;
     // FIXME should remove all of the related data
     db.properties.removeProperty(propertyId)
     .then(function(){
@@ -142,14 +142,14 @@ function processRemoveProperty(req, res) {
 
 function processAddPhoto(req, res) {
     var file = req.files.file;
-    var propertyId =  req.params.propertyId.length < 5 ? parseInt(req.params.propertyId) : req.params.propertyId;
+    var propertyId =  req.params.propertyId;
     storeFile(file)
         .then(addPropertyPhoto(propertyId))
         .then(sendPhoto(res));
 }
 
 function processRemovePhoto(req, res) {
-    var propertyId =  req.params.propertyId.length < 5 ? parseInt(req.params.propertyId) : req.params.propertyId;
+    var propertyId =  req.params.propertyId;
     var photoId = req.params.photoId;
     // FIXME remove file from DB
     removePropertyPhoto(propertyId, photoId)
