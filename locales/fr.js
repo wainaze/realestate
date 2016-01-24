@@ -59,5 +59,12 @@
 	"Add contract": "Add contract",
 	"Contract name": "Contract name",
 	"Click here to add new issue": "Click here to add new issue",
-	"Add tenant": "Add tenant"
+	"Add tenant": "Add tenant",
+	"Other issues from ": "Other issues from ",
+	"Click here to add costs": "Click here to add costs",
+	"Add": "Add",
+	"Cost description": "Cost description",
+	"Click here to add new contract": "Click here to add new contract",
+	"Payment frequency": "Payment frequency",
+	"Email": "Email"
 }
